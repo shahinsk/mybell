@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>🔔 Bell Trigger</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:system-ui,sans-serif;
+    background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+    min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;color:#fff;padding:20px;
+  }
+  h1{font-size:2rem;margin-bottom:4px;text-align:center}
+  .sub{color:#a0aec0;font-size:0.9rem;margin-bottom:32px;text-align:center}
+
+  .card{
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:24px;padding:32px 24px;
+    width:100%;max-width:380px;
+    display:flex;flex-direction:column;gap:20px;
+  }
+
+  /* Room join screen */
+  #joinScreen{display:flex;flex-direction:column;gap:16px;align-items:center}
+  #joinScreen h2{font-size:1.1rem;color:#63b3ed;text-align:center}
+  #roomInput{
+    width:100%;background:rgba(0,0,0,0.35);
+    border:2px solid rgba(255,255,255,0.15);border-radius:14px;
+    padding:16px;color:#fff;font-size:1.5rem;
+    letter-spacing:6px;text-align:center;outline:none;
+    transition:border-color 0.2s;
+  }
+  #roomInput:focus{border-color:#63b3ed}
+  #roomInput::placeholder{letter-spacing:2px;font-size:0.9rem;color:#4a5568}
+  .join-btn{
+    width:100%;padding:16px;border-radius:14px;border:none;
+    background:linear-gradient(135deg,#3182ce,#2b6cb0);
+    color:#fff;font-size:1.1rem;font-weight:700;cursor:pointer;
+    transition:transform 0.1s,opacity 0.2s;
+  }
+  .join-btn:active{transform:scale(0.97)}
+  .join-btn:disabled{opacity:0.4;cursor:not-allowed}
+
+  /* Main screen */
+  #mainScreen{display:none;flex-direction:column;gap:20px}
+
+  .room-label{
+    text-align:center;padding:10px 16px;
+    background:rgba(0,0,0,0.25);border-radius:12px;
+    font-size:0.85rem;color:#a0aec0;
+  }
+  .room-label strong{color:#68d391;letter-spacing:3px;font-size:1rem}
+
+  .status-badge{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:10px 14px;border-radius:20px;font-size:0.9rem;font-weight:500;
+    transition:all 0.3s;
+  }
+  .status-badge.waiting{background:rgba(237,137,54,0.12);color:#f6ad55;border:1px solid rgba(237,137,54,0.25)}
+  .status-badge.connected{background:rgba(104,211,145,0.12);color:#68d391;border:1px solid rgba(104,211,145,0.25)}
+  .status-badge.disconnected{background:rgba(229,62,62,0.1);color:#fc8181;border:1px solid rgba(229,62,62,0.2)}
+  .dot{width:9px;height:9px;border-radius:50%;background:currentColor}
+  .dot.pulse{animation:pulse 1.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.25}}
+
+  /* Bell button */
+  .bell-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+  .bell-btn{
+    width:160px;height:160px;border-radius:50%;border:none;cursor:pointer;
+    background:radial-gradient(circle at 35% 35%, #f6ad55, #dd6b20);
+    box-shadow:0 0 0 0 rgba(246,173,85,0.5),0 12px 40px rgba(0,0,0,0.4);
+    font-size:4rem;transition:transform 0.12s;
+    display:flex;align-items:center;justify-content:center;
+    animation:none;
+  }
+  .bell-btn:not(:disabled):active{transform:scale(0.92)}
+  .bell-btn:disabled{filter:grayscale(0.7);cursor:not-allowed;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+  .bell-btn.ringing{animation:ring 0.5s ease-in-out}
+  @keyframes ring{
+    0%{transform:rotate(0deg) scale(1)}
+    15%{transform:rotate(-18deg) scale(1.08)}
+    30%{transform:rotate(18deg) scale(1.08)}
+    45%{transform:rotate(-12deg)}
+    60%{transform:rotate(12deg)}
+    75%{transform:rotate(-6deg)}
+    90%{transform:rotate(6deg)}
+    100%{transform:rotate(0deg) scale(1)}
+  }
+  .bell-btn.pulse-ring{
+    animation:ring 0.5s ease-in-out,ripple 0.5s ease-out;
+  }
+  @keyframes ripple{
+    0%{box-shadow:0 0 0 0 rgba(246,173,85,0.6),0 12px 40px rgba(0,0,0,0.4)}
+    100%{box-shadow:0 0 0 60px rgba(246,173,85,0),0 12px 40px rgba(0,0,0,0.4)}
+  }
+  .bell-hint{font-size:0.8rem;color:#718096;text-align:center}
+
+  /* Received flash */
+  .flash-overlay{
+    position:fixed;inset:0;
+    background:radial-gradient(circle,rgba(246,173,85,0.35),transparent 70%);
+    pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:99;
+  }
+  .flash-overlay.show{opacity:1}
+
+  /* Log */
+  .log{
+    background:rgba(0,0,0,0.25);border-radius:12px;padding:12px 14px;
+    font-size:0.78rem;color:#718096;min-height:48px;max-height:80px;overflow-y:auto;
+    display:flex;flex-direction:column;gap:4px;
+  }
+  .log-entry{color:#a0aec0}
+  .log-entry.recv{color:#f6ad55}
+
+  .divider{height:1px;background:rgba(255,255,255,0.08)}
+
+  /* Notif permission banner */
+  #notifBanner{
+    background:rgba(99,179,237,0.1);border:1px solid rgba(99,179,237,0.25);
+    border-radius:12px;padding:10px 14px;
+    font-size:0.8rem;color:#90cdf4;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+  }
+  #notifBanner button{
+    background:#3182ce;border:none;color:#fff;
+    border-radius:8px;padding:5px 10px;font-size:0.78rem;cursor:pointer;white-space:nowrap;
+  }
+  #notifBanner.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div class="flash-overlay" id="flashOverlay"></div>
+
+<h1>🔔 Bell Trigger</h1>
+<p class="sub">Ring a bell on another device</p>
+
+<div class="card">
+
+  <!-- JOIN SCREEN -->
+  <div id="joinScreen">
+    <h2>Enter a shared room code<br><small style="color:#718096;font-size:0.8rem">Both devices use the same code</small></h2>
+    <input type="text" id="roomInput" maxlength="12" placeholder="e.g.  MYBELL"
+      oninput="this.value=this.value.toUpperCase()"
+      onkeydown="if(event.key==='Enter')joinRoom()">
+    <button class="join-btn" id="joinBtn" onclick="joinRoom()">Join Room</button>
+  </div>
+
+  <!-- MAIN SCREEN -->
+  <div id="mainScreen">
+    <div class="room-label">Room: <strong id="roomDisplay"></strong></div>
+
+    <div id="notifBanner">
+      <span>Enable notifications to ring when browser is closed</span>
+      <button onclick="requestNotifPerm()">Enable</button>
+    </div>
+
+    <div id="statusBadge" class="status-badge waiting">
+      <div class="dot pulse"></div>
+      <span id="statusText">Waiting for other device…</span>
+    </div>
+
+    <div class="bell-wrap">
+      <button class="bell-btn" id="bellBtn" onclick="sendBell()" disabled>🔔</button>
+      <div class="bell-hint" id="bellHint">Connect another device to ring</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="log" id="log">
+      <div class="log-entry" style="color:#4a5568">Activity log will appear here…</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── Audio Context ────────────────────────────────────────────────
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+function unlockAudio(){ if(AC.state==='suspended') AC.resume(); }
+
+function playBell(volume=1){
+  unlockAudio();
+  // Main bell tone
+  const osc = AC.createOscillator();
+  const gain = AC.createGain();
+  osc.connect(gain); gain.connect(AC.destination);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(900, AC.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(450, AC.currentTime + 2);
+  gain.gain.setValueAtTime(volume, AC.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 2);
+  osc.start(); osc.stop(AC.currentTime + 2);
+
+  // Harmonics for richness
+  [1800, 2700].forEach((f, i) => {
+    const o2 = AC.createOscillator();
+    const g2 = AC.createGain();
+    o2.connect(g2); g2.connect(AC.destination);
+    o2.type = 'sine'; o2.frequency.value = f;
+    g2.gain.setValueAtTime(volume * 0.15, AC.currentTime);
+    g2.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 1.2 - i*0.3);
+    o2.start(); o2.stop(AC.currentTime + 1.2 - i*0.3);
+  });
+}
+
+// ─── Service Worker ───────────────────────────────────────────────
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
+// ─── Notification permission ──────────────────────────────────────
+function checkNotifBanner(){
+  if(!('Notification' in window) || Notification.permission === 'granted'){
+    document.getElementById('notifBanner').classList.add('hidden');
+  }
+}
+function requestNotifPerm(){
+  Notification.requestPermission().then(p => {
+    if(p==='granted') document.getElementById('notifBanner').classList.add('hidden');
+    addLog('Notifications: ' + p, false);
+  });
+}
+
+function sendNotification(title, body){
+  if(!('Notification' in window)) return;
+  if(Notification.permission !== 'granted') return;
+  navigator.serviceWorker.ready.then(reg => {
+    reg.showNotification(title, {
+      body,
+      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔔</text></svg>',
+      badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔔</text></svg>',
+      vibrate: [200, 100, 200, 100, 200],
+      tag: 'bell-trigger',
+      renotify: true,
+    });
+  }).catch(() => {
+    // fallback if SW not ready
+    new Notification(title, { body });
+  });
+}
+
+// ─── PeerJS / Room logic ──────────────────────────────────────────
+let peer, conn, myRoom;
+
+function joinRoom(){
+  const code = document.getElementById('roomInput').value.trim().toUpperCase();
+  if(code.length < 2){ alert('Please enter a room code (at least 2 characters)'); return; }
+  document.getElementById('joinBtn').disabled = true;
+  document.getElementById('joinBtn').textContent = 'Joining…';
+  myRoom = code;
+  initPeer(code);
+}
+
+function initPeer(roomCode){
+  // We use a deterministic ID scheme:
+  // Device A always tries to be HOST-<roomCode>
+  // Device B connects to HOST-<roomCode>
+  // If HOST is taken, become GUEST and connect to HOST
+
+  const hostId = 'BELLROOM-HOST-' + roomCode;
+  const guestId = 'BELLROOM-GUEST-' + roomCode + '-' + Math.random().toString(36).substr(2,4);
+
+  // Try to claim the host ID first
+  peer = new Peer(hostId, {
+    host: '0.peerjs.com', port: 443, secure: true,
+    config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] }
+  });
+
+  peer.on('open', id => {
+    // We are the HOST
+    showMainScreen(roomCode);
+    addLog('You joined as Host. Waiting for other device…', false);
+    setStatus('waiting', 'Waiting for other device…');
+  });
+
+  peer.on('connection', incoming => {
+    conn = incoming;
+    setupConn('host');
+  });
+
+  peer.on('error', err => {
+    if(err.type === 'unavailable-id'){
+      // Host slot taken — become guest
+      peer.destroy();
+      becomeGuest(hostId, guestId, roomCode);
+    } else {
+      addLog('Connection error: ' + err.message, false);
+      setStatus('disconnected', 'Error — try reloading');
+      document.getElementById('joinBtn').disabled = false;
+      document.getElementById('joinBtn').textContent = 'Join Room';
+    }
+  });
+}
+
+function becomeGuest(hostId, guestId, roomCode){
+  peer = new Peer(guestId, {
+    host: '0.peerjs.com', port: 443, secure: true,
+    config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] }
+  });
+
+  peer.on('open', () => {
+    showMainScreen(roomCode);
+    addLog('You joined as Guest. Connecting to host…', false);
+    setStatus('waiting', 'Connecting to host…');
+    conn = peer.connect(hostId);
+    setupConn('guest');
+  });
+
+  peer.on('error', err => {
+    addLog('Error: ' + err.message, false);
+    setStatus('disconnected', 'Could not connect — reload and retry');
+  });
+}
+
+function setupConn(role){
+  conn.on('open', () => {
+    setStatus('connected', role === 'host' ? 'Guest connected! 🎉' : 'Connected to host! 🎉');
+    document.getElementById('bellBtn').disabled = false;
+    document.getElementById('bellHint').textContent = 'Tap to ring on the other device';
+    addLog('Connected! Both devices ready.', false);
+  });
+
+  conn.on('data', data => {
+    if(data === 'BELL'){
+      receiveBell();
+    }
+  });
+
+  conn.on('close', () => {
+    setStatus('disconnected', 'Other device disconnected');
+    document.getElementById('bellBtn').disabled = true;
+    document.getElementById('bellHint').textContent = 'Waiting for other device to reconnect…';
+    addLog('Other device left the room.', false);
+    conn = null;
+  });
+
+  conn.on('error', err => {
+    addLog('Connection error: ' + err.message, false);
+  });
+}
+
+function sendBell(){
+  if(!conn || !conn.open) return;
+  conn.send('BELL');
+  // animate sender button too
+  animateBell();
+  addLog('🔔 You rang the bell!', false);
+}
+
+function receiveBell(){
+  playBell();
+  animateBell();
+  flashScreen();
+  if(navigator.vibrate) navigator.vibrate([200,80,200,80,400]);
+  addLog('🔔 Bell received!', true);
+  sendNotification('🔔 Bell Trigger', 'Someone rang your bell!');
+}
+
+function animateBell(){
+  const btn = document.getElementById('bellBtn');
+  btn.classList.remove('pulse-ring');
+  void btn.offsetWidth; // reflow
+  btn.classList.add('pulse-ring');
+  setTimeout(() => btn.classList.remove('pulse-ring'), 600);
+}
+
+function flashScreen(){
+  const o = document.getElementById('flashOverlay');
+  o.classList.add('show');
+  setTimeout(() => o.classList.remove('show'), 250);
+}
+
+// ─── UI helpers ───────────────────────────────────────────────────
+function showMainScreen(roomCode){
+  document.getElementById('joinScreen').style.display = 'none';
+  document.getElementById('mainScreen').style.display = 'flex';
+  document.getElementById('roomDisplay').textContent = roomCode;
+  checkNotifBanner();
+  // Ring bell on page load
+  setTimeout(() => {
+    playBell(0.5);
+    animateBell();
+    addLog('🔔 Bell rang on page load!', false);
+  }, 600);
+}
+
+function setStatus(type, msg){
+  const b = document.getElementById('statusBadge');
+  b.className = 'status-badge ' + type;
+  b.innerHTML = `<div class="dot${type==='waiting'?' pulse':''}"></div><span>${msg}</span>`;
+}
+
+function addLog(msg, isReceive){
+  const log = document.getElementById('log');
+  // remove placeholder
+  const placeholder = log.querySelector('[style]');
+  if(placeholder) placeholder.remove();
+  const entry = document.createElement('div');
+  entry.className = 'log-entry' + (isReceive ? ' recv' : '');
+  const time = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  entry.textContent = `[${time}] ${msg}`;
+  log.appendChild(entry);
+  log.scrollTop = log.scrollHeight;
+}
+
+// Unlock audio on first tap (iOS requirement)
+document.addEventListener('touchstart', unlockAudio, { once: true });
+document.addEventListener('click', unlockAudio, { once: true });
+</script>
+</body>
+</html>
