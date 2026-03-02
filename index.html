@@ -56,7 +56,7 @@ input::placeholder{color:var(--soft);letter-spacing:1px;font-size:0.78rem}
 .btn-ghost:hover{color:var(--red)}
 
 /* ── Main ── */
-#mainScr{min-height:100svh;justify-content:space-between;padding-top:20px;padding-bottom:36px}
+#mainScr{padding-top:20px;padding-bottom:36px}
 .topbar{display:flex;align-items:center;gap:8px}
 .room-chip{flex:1;font-size:0.62rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--hint);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:20px;padding:5px 13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .room-chip b{color:var(--text);letter-spacing:3.5px}
@@ -73,7 +73,7 @@ input::placeholder{color:var(--soft);letter-spacing:1px;font-size:0.78rem}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
 .rbar{font-size:0.66rem;color:var(--blue);text-align:center;display:none}
 .rbar.on{display:block}
-.bell-zone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:10px 0}
+.bell-zone{display:flex;flex-direction:column;align-items:center;gap:18px;padding:16px 0}
 .bell-wrap{position:relative;display:flex;align-items:center;justify-content:center}
 .ring1,.ring2,.ring3{position:absolute;border-radius:50%;border:1px solid rgba(240,165,0,0.14);pointer-events:none;opacity:0}
 .ring1{width:260px;height:260px}.ring2{width:315px;height:315px}.ring3{width:370px;height:370px}
@@ -228,7 +228,6 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
       <div class="wa-ico">💬</div>
       <div><div class="wa-name" id="waName">—</div><div class="wa-num" id="waNum">—</div></div>
     </div>
-  </div>
   </div>
 
   <!-- ── Chat ── -->
