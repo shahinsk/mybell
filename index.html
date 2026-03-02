@@ -116,29 +116,28 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 #flash.on{opacity:1}
 
 /* ── Chat ── */
-.chat-box{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:rgba(255,255,255,0.02);}
-.chat-head{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);}
-.chat-head-lbl{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--hint);}
-.chat-badge{background:var(--gold);color:#000;font-size:0.56rem;font-weight:700;padding:2px 7px;border-radius:20px;display:none;}
+.chat-box{display:flex;flex-direction:column;border:2px solid rgba(255,255,255,0.12);border-radius:var(--r);overflow:hidden;background:#0d0d1c;}
+.chat-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#13132a;border-bottom:2px solid rgba(255,255,255,0.1);}
+.chat-head-lbl{font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:#c0b8ff;font-weight:500;}
+.chat-badge{background:var(--gold);color:#000;font-size:0.6rem;font-weight:700;padding:3px 8px;border-radius:20px;display:none;letter-spacing:0.5px;}
 .chat-badge.on{display:inline-block;}
-.chat-msgs{height:210px;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px;}
-.chat-empty{font-size:0.65rem;color:var(--muted);text-align:center;padding:70px 0 0;letter-spacing:1px;}
-.cmsg{display:flex;flex-direction:column;gap:3px;max-width:80%;}
+.chat-msgs{height:230px;overflow-y:auto;padding:12px 12px;display:flex;flex-direction:column;gap:10px;background:#080812;}
+.chat-empty{font-size:0.72rem;color:#4a4a70;text-align:center;padding:80px 0 0;letter-spacing:1px;}
+.cmsg{display:flex;flex-direction:column;gap:4px;max-width:84%;}
 .cmsg.me{align-self:flex-end;align-items:flex-end;}
 .cmsg.them{align-self:flex-start;align-items:flex-start;}
-.cmsg-meta{font-size:0.57rem;color:var(--muted);}
-.cmsg-bub{padding:8px 12px;border-radius:14px;font-size:0.8rem;line-height:1.45;word-break:break-word;}
-.cmsg.me .cmsg-bub{background:rgba(240,165,0,0.18);border:1px solid rgba(240,165,0,0.22);border-bottom-right-radius:4px;}
-.cmsg.them .cmsg-bub{background:rgba(255,255,255,0.07);border:1px solid var(--border);border-bottom-left-radius:4px;}
-.chat-status{font-size:0.66rem;color:var(--muted);text-align:center;padding:11px 14px;border-top:1px solid var(--border);display:none;}
+.cmsg-meta{font-size:0.62rem;color:#7070a0;font-weight:500;padding:0 4px;}
+.cmsg-bub{padding:10px 14px;border-radius:16px;font-size:0.86rem;line-height:1.5;word-break:break-word;font-family:var(--mono);}
+.cmsg.me .cmsg-bub{background:rgba(240,165,0,0.22);border:1.5px solid rgba(240,165,0,0.45);color:#fff0cc;border-bottom-right-radius:5px;}
+.cmsg.them .cmsg-bub{background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.18);color:#e8e8ff;border-bottom-left-radius:5px;}
+.chat-status{font-size:0.68rem;color:#4a4a70;text-align:center;padding:12px 14px;border-top:1px solid rgba(255,255,255,0.07);display:none;background:#080812;}
 .chat-status.on{display:block;}
-.chat-inp-row{display:flex;border-top:1px solid var(--border);}
-.chat-inp{flex:1;background:transparent;border:none;padding:12px 14px;color:var(--text);font-family:var(--mono);font-size:0.84rem;outline:none;}
-.chat-inp::placeholder{color:var(--muted);font-size:0.75rem;}
-.chat-inp:disabled{opacity:0.4;cursor:not-allowed;}
-.chat-send-btn{background:none;border:none;border-left:1px solid var(--border);color:var(--gold);font-size:1.1rem;padding:0 16px;cursor:pointer;flex-shrink:0;transition:background .15s;}
-.chat-send-btn:active{background:rgba(240,165,0,0.1);}
-.chat-send-btn:disabled{color:var(--muted);cursor:not-allowed;}
+.chat-inp-row{display:flex;border-top:2px solid rgba(255,255,255,0.1);background:#0f0f20;}
+.chat-inp{flex:1;background:transparent;border:none;padding:13px 14px;color:#e8e8ff;font-family:var(--mono);font-size:0.86rem;outline:none;}
+.chat-inp::placeholder{color:#3a3a60;font-size:0.78rem;}
+.chat-send-btn{background:none;border:none;border-left:2px solid rgba(255,255,255,0.1);color:var(--gold);font-size:1.2rem;padding:0 18px;cursor:pointer;flex-shrink:0;transition:background .15s;}
+.chat-send-btn:active{background:rgba(240,165,0,0.15);}
+.chat-send-btn:disabled{color:#2a2a40;cursor:not-allowed;}
 
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 </style>
@@ -453,7 +452,7 @@ function showMain(){
   rc.className='role-chip '+(myRole==='host'?'h':'g');
   checkNotif();
   setChatEnabled(false); // enabled once connected
-  setTimeout(()=>{playBell(.38);doRingUI();lg('🔔 Bell on load','s');},600);
+  // Fix 2: No self-ring on load — only ring other device on connect (see ANNOUNCE below)
   // FIX 3: evaluate WA immediately when screen loads
   setTimeout(evalWa,800);
 }
@@ -547,16 +546,21 @@ function acceptGuest(conn,dev){
   conn.on('open',()=>{
     lg(`Guest connected: ${dev}`,'s');
     updateHostStatus();
-    // FIX 2: push updated guest count to ALL mirrors immediately
     broadcastGC();
     hideWa();
     setChatEnabled(true);
+    // Fix 3: ring the guest to announce host is here
+    try{conn.send({t:'ANNOUNCE',from:myDev});}catch(e){}
   });
   conn.on('data',d=>{
     if(d==='BELL'){
       onReceiveBell(dev);
-      // Fan bell to all mirrors so they ring too
       broadcastToMirrors({t:'BELL',from:dev});
+    }
+    if(d&&d.t==='ANNOUNCE'){
+      // guest arrived — ring host and all mirrors
+      onReceiveBell(d.from||dev);
+      broadcastToMirrors({t:'BELL',from:d.from||dev});
     }
     if(d&&d.t==='CHAT'){
       // Show on this host device
@@ -844,8 +848,10 @@ function doConnect(p){
     setSbar('ok','Host connected 🎉');
     setBell(true,'tap to ring the host');
     renderPills();
-    hideWa(); // FIX 3: immediately hide WA on connect
+    hideWa();
     setChatEnabled(true);
+    // Fix 3: ring the host to announce guest has arrived
+    try{c.send({t:'ANNOUNCE',from:myDev});}catch(e){}
     // Heartbeat — detect silent disconnects
     const hb=setInterval(()=>{
       if(!c.open){
@@ -857,7 +863,11 @@ function doConnect(p){
     },8000);
   });
 
-  c.on('data',d=>{if(d==='BELL')onReceiveBell('Host');if(d&&d.t==='CHAT')onReceiveChat(d);});
+  c.on('data',d=>{
+    if(d==='BELL') onReceiveBell('Host');
+    if(d&&d.t==='CHAT') onReceiveChat(d);
+    if(d&&d.t==='ANNOUNCE') onReceiveBell(d.from||'Host'); // host arrived — ring guest
+  });
 
   c.on('close',()=>{
     clearTimeout(to);
@@ -1042,18 +1052,17 @@ function onReceiveChat(pkg){
 
 function addChatMsg(text,from,isMe){
   const box=document.getElementById('chatMsgs');
-  // Remove empty placeholder on first message
   const empty=document.getElementById('chatEmpty');
   if(empty) empty.remove();
 
   const wrap=document.createElement('div');
   wrap.className='cmsg '+(isMe?'me':'them');
 
-  const now=new Date();
-  const ts=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   const meta=document.createElement('div');
   meta.className='cmsg-meta';
-  meta.textContent=isMe?`You · ${ts}`:`${from} · ${ts}`;
+  // Always show device name as sender — use myDev for own messages
+  meta.textContent=isMe?`${myDev}  ${ts}`:`${from}  ${ts}`;
 
   const bub=document.createElement('div');
   bub.className='cmsg-bub';
@@ -1063,7 +1072,6 @@ function addChatMsg(text,from,isMe){
   wrap.appendChild(bub);
   box.appendChild(wrap);
 
-  // Keep last 200 messages
   while(box.children.length>200) box.removeChild(box.firstChild);
   box.scrollTop=box.scrollHeight;
 }
