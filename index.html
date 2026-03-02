@@ -30,7 +30,6 @@
   /* JOIN SCREEN */
   #joinScreen{display:flex;flex-direction:column;gap:14px;align-items:center}
   #joinScreen h2{font-size:1.05rem;color:#63b3ed;text-align:center;line-height:1.6}
-
   .saved-pill{
     display:flex;align-items:center;gap:10px;
     background:rgba(104,211,145,0.1);border:1px solid rgba(104,211,145,0.25);
@@ -43,8 +42,6 @@
     color:#fc8181;border-radius:8px;padding:5px 10px;
     font-size:0.75rem;cursor:pointer;white-space:nowrap;
   }
-  .clear-btn:hover{background:rgba(252,129,129,0.25)}
-
   #roomInput{
     width:100%;background:rgba(0,0,0,0.35);
     border:2px solid rgba(255,255,255,0.15);border-radius:14px;
@@ -54,7 +51,6 @@
   }
   #roomInput:focus{border-color:#63b3ed}
   #roomInput::placeholder{letter-spacing:2px;font-size:0.9rem;color:#4a5568}
-
   .join-btn{
     width:100%;padding:16px;border-radius:14px;border:none;
     background:linear-gradient(135deg,#3182ce,#2b6cb0);
@@ -66,7 +62,6 @@
 
   /* MAIN SCREEN */
   #mainScreen{display:none;flex-direction:column;gap:20px}
-
   .room-label{
     text-align:center;padding:10px 16px;
     background:rgba(0,0,0,0.25);border-radius:12px;
@@ -81,18 +76,31 @@
   }
   .change-room-btn:hover{background:rgba(255,255,255,0.12);color:#fff}
 
+  /* Role badge */
+  .role-badge{
+    text-align:center;font-size:0.75rem;padding:5px 12px;
+    border-radius:20px;display:inline-flex;align-items:center;
+    gap:6px;margin:0 auto;
+  }
+  .role-badge.host{background:rgba(159,122,234,0.15);color:#b794f4;border:1px solid rgba(159,122,234,0.25)}
+  .role-badge.guest{background:rgba(99,179,237,0.15);color:#63b3ed;border:1px solid rgba(99,179,237,0.25)}
+
   .status-badge{
     display:flex;align-items:center;justify-content:center;gap:8px;
-    padding:10px 14px;border-radius:20px;font-size:0.9rem;font-weight:500;
-    transition:all 0.3s;
+    padding:10px 14px;border-radius:20px;font-size:0.85rem;font-weight:500;
+    transition:all 0.3s;text-align:center;
   }
   .status-badge.waiting{background:rgba(237,137,54,0.12);color:#f6ad55;border:1px solid rgba(237,137,54,0.25)}
   .status-badge.connected{background:rgba(104,211,145,0.12);color:#68d391;border:1px solid rgba(104,211,145,0.25)}
+  .status-badge.reconnecting{background:rgba(99,179,237,0.1);color:#63b3ed;border:1px solid rgba(99,179,237,0.2)}
   .status-badge.disconnected{background:rgba(229,62,62,0.1);color:#fc8181;border:1px solid rgba(229,62,62,0.2)}
-  .dot{width:9px;height:9px;border-radius:50%;background:currentColor}
+  .dot{width:9px;height:9px;border-radius:50%;background:currentColor;flex-shrink:0}
   .dot.pulse{animation:pulse 1.4s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.25}}
+  .dot.spin{animation:spin 1s linear infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.2}}
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
+  /* Bell */
   .bell-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
   .bell-btn{
     width:160px;height:160px;border-radius:50%;border:none;cursor:pointer;
@@ -102,23 +110,29 @@
     display:flex;align-items:center;justify-content:center;
   }
   .bell-btn:not(:disabled):active{transform:scale(0.92)}
-  .bell-btn:disabled{filter:grayscale(0.7);cursor:not-allowed;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+  .bell-btn:disabled{filter:grayscale(0.6);cursor:not-allowed;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
   .bell-btn.pulse-ring{animation:ring 0.55s ease-in-out,ripple 0.55s ease-out}
   @keyframes ring{
     0%{transform:rotate(0) scale(1)}
     15%{transform:rotate(-18deg) scale(1.08)}
     30%{transform:rotate(18deg) scale(1.08)}
-    45%{transform:rotate(-12deg)}
-    60%{transform:rotate(12deg)}
-    75%{transform:rotate(-6deg)}
-    90%{transform:rotate(6deg)}
+    45%{transform:rotate(-12deg)}60%{transform:rotate(12deg)}
+    75%{transform:rotate(-6deg)}90%{transform:rotate(6deg)}
     100%{transform:rotate(0) scale(1)}
   }
   @keyframes ripple{
     0%{box-shadow:0 0 0 0 rgba(246,173,85,0.6),0 12px 40px rgba(0,0,0,0.4)}
-    100%{box-shadow:0 0 0 60px rgba(246,173,85,0),0 12px 40px rgba(0,0,0,0.4)}
+    100%{box-shadow:0 0 0 70px rgba(246,173,85,0),0 12px 40px rgba(0,0,0,0.4)}
   }
-  .bell-hint{font-size:0.8rem;color:#718096;text-align:center}
+  .bell-hint{font-size:0.8rem;color:#718096;text-align:center;line-height:1.5}
+
+  /* Reconnect countdown */
+  .reconnect-info{
+    font-size:0.78rem;color:#63b3ed;text-align:center;
+    background:rgba(99,179,237,0.07);border-radius:10px;
+    padding:8px 12px;display:none;
+  }
+  .reconnect-info.visible{display:block}
 
   .flash-overlay{
     position:fixed;inset:0;
@@ -127,15 +141,16 @@
   }
   .flash-overlay.show{opacity:1}
 
+  .divider{height:1px;background:rgba(255,255,255,0.08)}
+
   .log{
     background:rgba(0,0,0,0.25);border-radius:12px;padding:12px 14px;
-    font-size:0.78rem;color:#718096;min-height:48px;max-height:90px;overflow-y:auto;
+    font-size:0.78rem;min-height:48px;max-height:90px;overflow-y:auto;
     display:flex;flex-direction:column;gap:4px;
   }
   .log-entry{color:#a0aec0}
   .log-entry.recv{color:#f6ad55}
-
-  .divider{height:1px;background:rgba(255,255,255,0.08)}
+  .log-entry.sys{color:#718096;font-style:italic}
 
   #notifBanner{
     background:rgba(99,179,237,0.1);border:1px solid rgba(99,179,237,0.25);
@@ -153,7 +168,6 @@
 <body>
 
 <div class="flash-overlay" id="flashOverlay"></div>
-
 <h1>🔔 Bell Trigger</h1>
 <p class="sub">Ring a bell on another device</p>
 
@@ -161,14 +175,13 @@
 
   <!-- JOIN SCREEN -->
   <div id="joinScreen">
-    <h2>Enter a shared room code<br><small style="color:#718096;font-size:0.8rem">Both devices use the same code</small></h2>
-
-    <!-- Saved room pill (shown if a saved code exists) -->
+    <h2>Enter a shared room code<br>
+      <small style="color:#718096;font-size:0.8rem">Both devices use the same code</small>
+    </h2>
     <div class="saved-pill" id="savedPill" style="display:none">
       <span>Last room: <strong id="savedCodeLabel"></strong></span>
       <button class="clear-btn" onclick="clearSaved()">✕ Clear</button>
     </div>
-
     <input type="text" id="roomInput" maxlength="12" placeholder="e.g.  MYBELL"
       oninput="this.value=this.value.toUpperCase()"
       onkeydown="if(event.key==='Enter')joinRoom()">
@@ -179,11 +192,13 @@
   <div id="mainScreen">
     <div class="room-label">
       Room: <strong id="roomDisplay"></strong>
-      <button class="change-room-btn" onclick="changeRoom()">Change Room</button>
+      <button class="change-room-btn" onclick="changeRoom()">Change</button>
     </div>
 
+    <div id="roleBadge" class="role-badge host">⚓ Host — always listening</div>
+
     <div id="notifBanner">
-      <span>Enable notifications to ring when browser is closed</span>
+      <span>Enable notifications for background alerts</span>
       <button onclick="requestNotifPerm()">Enable</button>
     </div>
 
@@ -192,66 +207,45 @@
       <span id="statusText">Waiting for other device…</span>
     </div>
 
+    <div class="reconnect-info" id="reconnectInfo"></div>
+
     <div class="bell-wrap">
       <button class="bell-btn" id="bellBtn" onclick="sendBell()" disabled>🔔</button>
-      <div class="bell-hint" id="bellHint">Connect another device to ring</div>
+      <div class="bell-hint" id="bellHint">Waiting for other device to connect…</div>
     </div>
 
     <div class="divider"></div>
 
     <div class="log" id="log">
-      <div class="log-entry" style="color:#4a5568">Activity log will appear here…</div>
+      <div class="log-entry sys">Activity will appear here…</div>
     </div>
   </div>
 
 </div>
 
 <script>
-// ─── Storage key ─────────────────────────────────────────────────
-const STORAGE_KEY = 'bell_trigger_room_code';
+// ─── Constants ────────────────────────────────────────────────────
+const STORAGE_KEY   = 'bell_trigger_room_code';
+const PEER_HOST     = '0.peerjs.com';
+const RECONNECT_DELAYS = [2000, 3000, 5000, 8000, 10000]; // escalating retry delays
 
-// ─── On load: check for saved room code ──────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if(saved){
-    // Show saved pill and pre-fill input
-    document.getElementById('savedCodeLabel').textContent = saved;
-    document.getElementById('savedPill').style.display = 'flex';
-    document.getElementById('roomInput').value = saved;
-    document.getElementById('joinBtn').textContent = `Rejoin "${saved}"`;
-    // Auto-join after a brief moment so user can see it
-    setTimeout(() => joinRoom(), 800);
-  }
-});
+// ─── State ────────────────────────────────────────────────────────
+let peer         = null;
+let conn         = null;
+let myRoom       = null;
+let myRole       = null;   // 'host' | 'guest'
+let reconnectTimer   = null;
+let reconnectAttempt = 0;
+let isChangingRoom   = false;
+let heartbeatTimer   = null;
 
-function clearSaved(){
-  localStorage.removeItem(STORAGE_KEY);
-  document.getElementById('savedPill').style.display = 'none';
-  document.getElementById('roomInput').value = '';
-  document.getElementById('joinBtn').textContent = 'Join Room';
-}
-
-function changeRoom(){
-  // Disconnect cleanly and go back to join screen
-  if(conn){ try{ conn.close(); }catch(e){} conn = null; }
-  if(peer){ try{ peer.destroy(); }catch(e){} peer = null; }
-  localStorage.removeItem(STORAGE_KEY);
-  document.getElementById('mainScreen').style.display = 'none';
-  document.getElementById('joinScreen').style.display = 'flex';
-  document.getElementById('savedPill').style.display = 'none';
-  document.getElementById('roomInput').value = '';
-  document.getElementById('joinBtn').textContent = 'Join Room';
-  document.getElementById('joinBtn').disabled = false;
-}
-
-// ─── Audio ───────────────────────────────────────────────────────
+// ─── Audio ────────────────────────────────────────────────────────
 const AC = new (window.AudioContext || window.webkitAudioContext)();
-function unlockAudio(){ if(AC.state==='suspended') AC.resume(); }
+function unlockAudio(){ if(AC.state === 'suspended') AC.resume(); }
 
-function playBell(volume=1){
+function playBell(volume = 1){
   unlockAudio();
-  const osc = AC.createOscillator();
-  const gain = AC.createGain();
+  const osc = AC.createOscillator(), gain = AC.createGain();
   osc.connect(gain); gain.connect(AC.destination);
   osc.type = 'sine';
   osc.frequency.setValueAtTime(900, AC.currentTime);
@@ -260,29 +254,27 @@ function playBell(volume=1){
   gain.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 2);
   osc.start(); osc.stop(AC.currentTime + 2);
   [1800, 2700].forEach((f, i) => {
-    const o2 = AC.createOscillator(), g2 = AC.createGain();
-    o2.connect(g2); g2.connect(AC.destination);
-    o2.type = 'sine'; o2.frequency.value = f;
-    g2.gain.setValueAtTime(volume * 0.15, AC.currentTime);
-    g2.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 1.2 - i*0.3);
-    o2.start(); o2.stop(AC.currentTime + 1.2 - i*0.3);
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.connect(g); g.connect(AC.destination);
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(volume * 0.15, AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 1.2 - i * 0.3);
+    o.start(); o.stop(AC.currentTime + 1.2 - i * 0.3);
   });
 }
 
-// ─── Service Worker ───────────────────────────────────────────────
+// ─── Service Worker & Notifications ──────────────────────────────
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
+  navigator.serviceWorker.register('sw.js').catch(() => {});
 }
-
 function checkNotifBanner(){
-  if(!('Notification' in window) || Notification.permission === 'granted'){
+  if(!('Notification' in window) || Notification.permission === 'granted')
     document.getElementById('notifBanner').classList.add('hidden');
-  }
 }
 function requestNotifPerm(){
   Notification.requestPermission().then(p => {
-    if(p==='granted') document.getElementById('notifBanner').classList.add('hidden');
-    addLog('Notifications: ' + p, false);
+    if(p === 'granted') document.getElementById('notifBanner').classList.add('hidden');
+    addLog('Notifications ' + (p === 'granted' ? 'enabled ✓' : 'not enabled'), 'sys');
   });
 }
 function sendNotification(title, body){
@@ -296,105 +288,231 @@ function sendNotification(title, body){
   }).catch(() => { try{ new Notification(title,{body}); }catch(e){} });
 }
 
-// ─── PeerJS / Room logic ──────────────────────────────────────────
-let peer, conn, myRoom;
+// ─── Saved room code ──────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if(saved){
+    document.getElementById('savedCodeLabel').textContent = saved;
+    document.getElementById('savedPill').style.display = 'flex';
+    document.getElementById('roomInput').value = saved;
+    document.getElementById('joinBtn').textContent = `Rejoin "${saved}"`;
+    setTimeout(() => joinRoom(), 700);
+  }
+});
 
+function clearSaved(){
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById('savedPill').style.display = 'none';
+  document.getElementById('roomInput').value = '';
+  document.getElementById('joinBtn').textContent = 'Join Room';
+}
+
+function changeRoom(){
+  isChangingRoom = true;
+  stopReconnect();
+  if(conn){ try{ conn.close(); }catch(e){} conn = null; }
+  if(peer){ try{ peer.destroy(); }catch(e){} peer = null; }
+  localStorage.removeItem(STORAGE_KEY);
+  isChangingRoom = false;
+  document.getElementById('mainScreen').style.display = 'none';
+  document.getElementById('joinScreen').style.display = 'flex';
+  document.getElementById('savedPill').style.display = 'none';
+  document.getElementById('roomInput').value = '';
+  document.getElementById('joinBtn').textContent = 'Join Room';
+  document.getElementById('joinBtn').disabled = false;
+}
+
+// ─── Join & init ──────────────────────────────────────────────────
 function joinRoom(){
   const code = document.getElementById('roomInput').value.trim().toUpperCase();
   if(code.length < 2){ alert('Please enter a room code (at least 2 characters)'); return; }
   document.getElementById('joinBtn').disabled = true;
   document.getElementById('joinBtn').textContent = 'Joining…';
   myRoom = code;
-
-  // ✅ Save the code to localStorage
   localStorage.setItem(STORAGE_KEY, code);
-
-  initPeer(code);
+  reconnectAttempt = 0;
+  tryBecomeHost(code);
 }
 
-function initPeer(roomCode){
+// ─── Core: try to claim host slot ────────────────────────────────
+function tryBecomeHost(roomCode){
   const hostId = 'BELLROOM-HOST-' + roomCode;
-  const guestId = 'BELLROOM-GUEST-' + roomCode + '-' + Math.random().toString(36).substr(2,4);
+  if(peer){ try{ peer.destroy(); }catch(e){} peer = null; }
 
-  peer = new Peer(hostId, {
-    host:'0.peerjs.com', port:443, secure:true,
-    config:{ iceServers:[{ urls:'stun:stun.l.google.com:19302' }] }
+  peer = new Peer(hostId, peerConfig());
+
+  peer.on('open', id => {
+    myRole = 'host';
+    reconnectAttempt = 0;
+    showMainScreen(roomCode, 'host');
+    addLog('You are the Host — listening for connections…', 'sys');
+    setStatus('waiting', 'Waiting for other device to join…');
   });
 
-  peer.on('open', () => {
-    showMainScreen(roomCode);
-    addLog('You joined as Host. Waiting for other device…', false);
-    setStatus('waiting','Waiting for other device…');
-  });
-
+  // Host receives incoming connections
   peer.on('connection', incoming => {
+    // Close any existing stale connection
+    if(conn){ try{ conn.close(); }catch(e){} }
     conn = incoming;
-    setupConn('host');
+    setupConn();
   });
 
   peer.on('error', err => {
     if(err.type === 'unavailable-id'){
-      peer.destroy();
-      becomeGuest(hostId, guestId, roomCode);
+      // Host slot taken — become guest instead
+      peer.destroy(); peer = null;
+      tryBecomeGuest(roomCode);
     } else {
-      addLog('Connection error: ' + err.message, false);
-      setStatus('disconnected','Error — try reloading');
-      document.getElementById('joinBtn').disabled = false;
-      document.getElementById('joinBtn').textContent = 'Join Room';
+      handlePeerError(err, roomCode);
     }
   });
+
+  peer.on('disconnected', () => {
+    if(isChangingRoom) return;
+    addLog('Peer server disconnected. Reconnecting…', 'sys');
+    // Try to reconnect to peer server (keeps same ID)
+    try{ peer.reconnect(); }catch(e){ scheduleReconnect(roomCode); }
+  });
 }
 
-function becomeGuest(hostId, guestId, roomCode){
-  peer = new Peer(guestId, {
-    host:'0.peerjs.com', port:443, secure:true,
-    config:{ iceServers:[{ urls:'stun:stun.l.google.com:19302' }] }
-  });
+// ─── Core: become guest and connect to host ───────────────────────
+function tryBecomeGuest(roomCode){
+  const hostId   = 'BELLROOM-HOST-' + roomCode;
+  const guestId  = 'BELLROOM-GUEST-' + roomCode + '-' + Math.random().toString(36).substr(2,5).toUpperCase();
+  if(peer){ try{ peer.destroy(); }catch(e){} peer = null; }
+
+  peer = new Peer(guestId, peerConfig());
+
   peer.on('open', () => {
-    showMainScreen(roomCode);
-    addLog('You joined as Guest. Connecting to host…', false);
-    setStatus('waiting','Connecting to host…');
-    conn = peer.connect(hostId);
-    setupConn('guest');
+    myRole = 'guest';
+    reconnectAttempt = 0;
+    showMainScreen(roomCode, 'guest');
+    addLog('Connecting to host…', 'sys');
+    setStatus('reconnecting', 'Connecting to host…');
+    conn = peer.connect(hostId, { reliable: true });
+    setupConn();
   });
-  peer.on('error', err => {
-    addLog('Error: ' + err.message, false);
-    setStatus('disconnected','Could not connect — reload and retry');
+
+  peer.on('error', err => handlePeerError(err, roomCode));
+
+  peer.on('disconnected', () => {
+    if(isChangingRoom) return;
+    try{ peer.reconnect(); }catch(e){ scheduleReconnect(roomCode); }
   });
 }
 
-function setupConn(role){
+// ─── Connection setup (shared for host & guest) ───────────────────
+function setupConn(){
+  clearHeartbeat();
+
   conn.on('open', () => {
-    setStatus('connected', role==='host' ? 'Guest connected! 🎉' : 'Connected to host! 🎉');
+    stopReconnect();
+    reconnectAttempt = 0;
+    const role = myRole === 'host' ? 'Other device connected!' : 'Connected to host!';
+    setStatus('connected', role + ' 🎉');
     document.getElementById('bellBtn').disabled = false;
-    document.getElementById('bellHint').textContent = 'Tap to ring on the other device';
-    addLog('Connected! Both devices ready.', false);
+    document.getElementById('bellHint').textContent = 'Tap to ring the other device';
+    addLog('✅ Connected — ready to ring!', 'sys');
+    hideReconnectInfo();
+    startHeartbeat();
   });
-  conn.on('data', data => { if(data==='BELL') receiveBell(); });
+
+  conn.on('data', data => {
+    if(data === 'BELL') receiveBell();
+    // heartbeat pings are silently ignored
+  });
+
   conn.on('close', () => {
-    setStatus('disconnected','Other device disconnected');
+    if(isChangingRoom) return;
+    clearHeartbeat();
+    setStatus('disconnected', 'Other device disconnected');
     document.getElementById('bellBtn').disabled = true;
-    document.getElementById('bellHint').textContent = 'Waiting for other device to reconnect…';
-    addLog('Other device left the room.', false);
+    document.getElementById('bellHint').textContent = 'Waiting to reconnect…';
+    addLog('Other device disconnected.', 'sys');
     conn = null;
+    // Host just waits — guest tries to reconnect
+    if(myRole === 'guest') scheduleReconnect(myRoom);
+    else setStatus('waiting', 'Waiting for other device to rejoin…');
   });
-  conn.on('error', err => addLog('Connection error: ' + err.message, false));
+
+  conn.on('error', err => {
+    if(isChangingRoom) return;
+    clearHeartbeat();
+    addLog('Connection error. Retrying…', 'sys');
+    conn = null;
+    scheduleReconnect(myRoom);
+  });
 }
 
+// ─── Heartbeat (keeps connection alive) ──────────────────────────
+function startHeartbeat(){
+  clearHeartbeat();
+  heartbeatTimer = setInterval(() => {
+    if(conn && conn.open){
+      try{ conn.send('ping'); }catch(e){}
+    }
+  }, 10000); // every 10 seconds
+}
+function clearHeartbeat(){
+  if(heartbeatTimer){ clearInterval(heartbeatTimer); heartbeatTimer = null; }
+}
+
+// ─── Auto-reconnect logic ─────────────────────────────────────────
+function scheduleReconnect(roomCode){
+  if(isChangingRoom) return;
+  stopReconnect();
+  const delay = RECONNECT_DELAYS[Math.min(reconnectAttempt, RECONNECT_DELAYS.length - 1)];
+  reconnectAttempt++;
+  let countdown = Math.round(delay / 1000);
+  setStatus('reconnecting', `Reconnecting in ${countdown}s… (attempt ${reconnectAttempt})`);
+  showReconnectInfo(`Retrying in ${countdown}s…`);
+
+  // Live countdown
+  const countTimer = setInterval(() => {
+    countdown--;
+    if(countdown > 0){
+      setStatus('reconnecting', `Reconnecting in ${countdown}s… (attempt ${reconnectAttempt})`);
+      showReconnectInfo(`Retrying in ${countdown}s…`);
+    } else {
+      clearInterval(countTimer);
+    }
+  }, 1000);
+
+  reconnectTimer = setTimeout(() => {
+    clearInterval(countTimer);
+    if(isChangingRoom) return;
+    addLog(`Reconnect attempt ${reconnectAttempt}…`, 'sys');
+    hideReconnectInfo();
+    // Always try host first, fall back to guest
+    tryBecomeHost(roomCode);
+  }, delay);
+}
+
+function stopReconnect(){
+  if(reconnectTimer){ clearTimeout(reconnectTimer); reconnectTimer = null; }
+}
+
+function handlePeerError(err, roomCode){
+  if(isChangingRoom) return;
+  addLog('Network error: ' + err.type + '. Retrying…', 'sys');
+  scheduleReconnect(roomCode);
+}
+
+// ─── Bell send / receive ──────────────────────────────────────────
 function sendBell(){
   if(!conn || !conn.open) return;
   conn.send('BELL');
   animateBell();
-  addLog('🔔 You rang the bell!', false);
+  addLog('🔔 You rang the bell!', 'send');
 }
 
 function receiveBell(){
   playBell();
   animateBell();
   flashScreen();
-  if(navigator.vibrate) navigator.vibrate([200,80,200,80,400]);
-  addLog('🔔 Bell received!', true);
-  sendNotification('🔔 Bell Trigger','Someone rang your bell!');
+  if(navigator.vibrate) navigator.vibrate([200, 80, 200, 80, 400]);
+  addLog('🔔 Bell received!', 'recv');
+  sendNotification('🔔 Bell Trigger', 'Someone rang your bell!');
 }
 
 function animateBell(){
@@ -411,38 +529,90 @@ function flashScreen(){
   setTimeout(() => o.classList.remove('show'), 250);
 }
 
-function showMainScreen(roomCode){
+// ─── UI helpers ───────────────────────────────────────────────────
+function showMainScreen(roomCode, role){
   document.getElementById('joinScreen').style.display = 'none';
-  document.getElementById('mainScreen').style.display = 'flex';
+  const ms = document.getElementById('mainScreen');
+  ms.style.display = 'flex';
   document.getElementById('roomDisplay').textContent = roomCode;
+
+  const rb = document.getElementById('roleBadge');
+  if(role === 'host'){
+    rb.className = 'role-badge host';
+    rb.textContent = '⚓ Host — always listening';
+  } else {
+    rb.className = 'role-badge guest';
+    rb.textContent = '📱 Guest — connected to host';
+  }
+
   checkNotifBanner();
+
+  // Ring bell on page load
   setTimeout(() => {
-    playBell(0.5);
+    playBell(0.45);
     animateBell();
-    addLog('🔔 Bell rang on page load!', false);
-  }, 600);
+    addLog('🔔 Bell rang on page load', 'sys');
+  }, 500);
 }
 
 function setStatus(type, msg){
   const b = document.getElementById('statusBadge');
   b.className = 'status-badge ' + type;
-  b.innerHTML = `<div class="dot${type==='waiting'?' pulse':''}"></div><span>${msg}</span>`;
+  let dotClass = 'dot';
+  if(type === 'waiting') dotClass += ' pulse';
+  if(type === 'reconnecting') dotClass += ' pulse';
+  b.innerHTML = `<div class="${dotClass}"></div><span>${msg}</span>`;
 }
 
-function addLog(msg, isReceive){
+function showReconnectInfo(msg){
+  const el = document.getElementById('reconnectInfo');
+  el.textContent = '🔄 ' + msg;
+  el.classList.add('visible');
+}
+function hideReconnectInfo(){
+  document.getElementById('reconnectInfo').classList.remove('visible');
+}
+
+function addLog(msg, type){
   const log = document.getElementById('log');
-  const placeholder = log.querySelector('[style]');
-  if(placeholder) placeholder.remove();
+  // Remove initial placeholder
+  const ph = log.querySelector('.sys');
+  if(ph && log.children.length === 1) ph.remove();
   const entry = document.createElement('div');
-  entry.className = 'log-entry' + (isReceive ? ' recv' : '');
-  const time = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  entry.className = 'log-entry ' + (type || '');
+  const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
   entry.textContent = `[${time}] ${msg}`;
   log.appendChild(entry);
+  // Keep max 30 entries
+  while(log.children.length > 30) log.removeChild(log.firstChild);
   log.scrollTop = log.scrollHeight;
 }
 
-document.addEventListener('touchstart', unlockAudio, { once:true });
-document.addEventListener('click', unlockAudio, { once:true });
+function peerConfig(){
+  return {
+    host: PEER_HOST, port: 443, secure: true,
+    config: { iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+    ]}
+  };
+}
+
+// Unlock audio on first interaction (iOS)
+document.addEventListener('touchstart', unlockAudio, { once: true });
+document.addEventListener('click', unlockAudio, { once: true });
+
+// Reconnect when tab becomes visible again (e.g. user switches back)
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible' && myRoom){
+    if(!conn || !conn.open){
+      if(!reconnectTimer){
+        addLog('Tab refocused — checking connection…', 'sys');
+        scheduleReconnect(myRoom);
+      }
+    }
+  }
+});
 </script>
 </body>
 </html>
