@@ -114,6 +114,54 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .le{font-size:0.66rem;color:var(--soft)}.le.r{color:var(--gold)}.le.w{color:var(--wa)}.le.s{color:var(--muted)}
 #flash{position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0;transition:opacity .1s;background:radial-gradient(circle at center,rgba(240,165,0,0.22),transparent 65%);}
 #flash.on{opacity:1}
+
+/* ── Chat ── */
+.chat-wrap{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:rgba(255,255,255,0.02);}
+.chat-header{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.03);}
+.chat-header-lbl{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--hint);}
+.chat-unread{display:none;background:var(--gold);color:#000;font-size:0.55rem;font-weight:700;padding:2px 6px;border-radius:20px;letter-spacing:0.5px;}
+.chat-unread.on{display:inline-block}
+.chat-msgs{height:180px;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth;}
+.chat-msgs:empty::after{content:'No messages yet';font-size:0.65rem;color:var(--muted);text-align:center;display:block;margin-top:60px;}
+.msg{display:flex;flex-direction:column;gap:3px;max-width:82%;}
+.msg.me{align-self:flex-end;align-items:flex-end;}
+.msg.them{align-self:flex-start;align-items:flex-start;}
+.msg-meta{font-size:0.58rem;color:var(--muted);letter-spacing:0.5px;}
+.msg-bubble{padding:8px 12px;border-radius:12px;font-size:0.78rem;line-height:1.45;word-break:break-word;}
+.msg.me .msg-bubble{background:rgba(240,165,0,0.18);color:var(--text);border-bottom-right-radius:4px;border:1px solid rgba(240,165,0,0.2);}
+.msg.them .msg-bubble{background:rgba(255,255,255,0.07);color:var(--text);border-bottom-left-radius:4px;border:1px solid var(--border);}
+.chat-input-row{display:flex;gap:0;border-top:1px solid var(--border);}
+.chat-input-row input{border:none;border-radius:0;background:transparent;padding:11px 13px;font-size:0.82rem;flex:1;color:var(--text);}
+.chat-input-row input:focus{background:rgba(255,255,255,0.03);border-color:transparent;}
+.chat-input-row input::placeholder{color:var(--muted);font-size:0.75rem;letter-spacing:0.5px;}
+.chat-send{background:none;border:none;border-left:1px solid var(--border);color:var(--gold);font-size:1.1rem;padding:0 14px;cursor:pointer;transition:background .15s;flex-shrink:0;}
+.chat-send:active{background:rgba(240,165,0,0.1);}
+.chat-send:disabled{color:var(--muted);cursor:not-allowed;}
+.chat-offline{font-size:0.66rem;color:var(--muted);text-align:center;padding:14px 0;letter-spacing:1px;}
+
+/* ── Chat ── */
+.chat-box{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:rgba(255,255,255,0.02);}
+.chat-head{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);}
+.chat-head-lbl{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--hint);}
+.chat-badge{background:var(--gold);color:#000;font-size:0.56rem;font-weight:700;padding:2px 7px;border-radius:20px;display:none;}
+.chat-badge.on{display:inline-block;}
+.chat-msgs{height:200px;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px;}
+.chat-empty{font-size:0.65rem;color:var(--muted);text-align:center;padding:70px 0 0;letter-spacing:1px;}
+.cmsg{display:flex;flex-direction:column;gap:3px;max-width:80%;}
+.cmsg.me{align-self:flex-end;align-items:flex-end;}
+.cmsg.them{align-self:flex-start;align-items:flex-start;}
+.cmsg-meta{font-size:0.57rem;color:var(--muted);}
+.cmsg-bub{padding:8px 12px;border-radius:14px;font-size:0.8rem;line-height:1.45;word-break:break-word;}
+.cmsg.me .cmsg-bub{background:rgba(240,165,0,0.18);border:1px solid rgba(240,165,0,0.22);border-bottom-right-radius:4px;}
+.cmsg.them .cmsg-bub{background:rgba(255,255,255,0.07);border:1px solid var(--border);border-bottom-left-radius:4px;}
+.chat-offline{font-size:0.66rem;color:var(--muted);text-align:center;padding:12px;letter-spacing:0.5px;}
+.chat-inp-row{display:flex;border-top:1px solid var(--border);}
+.chat-inp{flex:1;background:transparent;border:none;padding:11px 13px;color:var(--text);font-family:var(--mono);font-size:0.82rem;outline:none;}
+.chat-inp::placeholder{color:var(--muted);font-size:0.74rem;}
+.chat-send{background:none;border:none;border-left:1px solid var(--border);color:var(--gold);font-size:1.05rem;padding:0 15px;cursor:pointer;flex-shrink:0;transition:background .15s;}
+.chat-send:active{background:rgba(240,165,0,0.1);}
+.chat-send:disabled{color:var(--muted);cursor:not-allowed;}
+
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 </style>
 </head>
@@ -203,6 +251,25 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
       <div><div class="wa-name" id="waName">—</div><div class="wa-num" id="waNum">—</div></div>
     </div>
   </div>
+  </div>
+
+  <!-- ── Chat ── -->
+  <div class="chat-box">
+    <div class="chat-head">
+      <span class="chat-head-lbl">💬 Chat</span>
+      <span class="chat-badge" id="chatBadge">NEW</span>
+    </div>
+    <div class="chat-msgs" id="chatMsgs">
+      <div class="chat-empty" id="chatEmpty">No messages yet</div>
+    </div>
+    <div id="chatOffline" class="chat-offline" style="display:none">Connect first to chat</div>
+    <div class="chat-inp-row" id="chatInputRow">
+      <input class="chat-inp" id="chatIn" placeholder="Type a message…" maxlength="300"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}">
+      <button class="chat-send" id="chatSendBtn" onclick="sendChat()" disabled>➤</button>
+    </div>
+  </div>
+
   <label class="dt-row">
     <input type="checkbox" id="dtToggle" onchange="toggleDt(this.checked)">
     <div class="trk"></div><span class="dt-lbl">Show Details</span>
@@ -408,6 +475,7 @@ function showMain(){
   rc.textContent=(myRole==='host'?'⚓ ':'📱 ')+myDev;
   rc.className='role-chip '+(myRole==='host'?'h':'g');
   checkNotif();
+  setChatEnabled(false); // enabled once connected
   setTimeout(()=>{playBell(.38);doRingUI();lg('🔔 Bell on load','s');},600);
   // FIX 3: evaluate WA immediately when screen loads
   setTimeout(evalWa,800);
@@ -484,6 +552,13 @@ function acceptMirror(conn,dev){
   conn.on('data',d=>{
     // Mirror asking to ring all guests (host button on mirror device)
     if(d&&d.t==='RING_ALL'){ringAllGuests(dev);}
+    // Mirror relaying a chat from its guests or its own message
+    if(d&&d.t==='CHAT'){
+      onReceiveChat(d);
+      // Fan to all guests and other mirrors
+      Object.values(guestConns).forEach(g=>{if(g.conn.open)try{g.conn.send(d);}catch(e){}});
+      Object.entries(mirrorConns).forEach(([pid,mc])=>{if(pid!==conn.peer&&mc.open)try{mc.send(d);}catch(e){}});
+    }
   });
   conn.on('close',()=>{delete mirrorConns[conn.peer];lg(`Mirror left: ${dev}`,'s');updateHostStatus();});
   conn.on('error',()=>{delete mirrorConns[conn.peer];updateHostStatus();});
@@ -498,6 +573,7 @@ function acceptGuest(conn,dev){
     // FIX 2: push updated guest count to ALL mirrors immediately
     broadcastGC();
     hideWa();
+    setChatEnabled(true);
   });
   conn.on('data',d=>{
     if(d==='BELL'){
@@ -505,15 +581,24 @@ function acceptGuest(conn,dev){
       // Fan bell to all mirrors so they ring too
       broadcastToMirrors({t:'BELL',from:dev});
     }
+    if(d&&d.t==='CHAT'){
+      // Show on this host device
+      onReceiveChat(d);
+      // Fan to all other guests and mirrors
+      Object.values(guestConns).forEach(g=>{if(g.conn!==conn&&g.conn.open)try{g.conn.send(d);}catch(e){}});
+      broadcastToMirrors(d);
+    }
   });
   conn.on('close',()=>{
     delete guestConns[conn.peer];
     lg(`Guest left: ${dev}`,'s');
     updateHostStatus();broadcastGC();evalWa(); // FIX 3
+    if(Object.keys(guestConns).length===0)setChatEnabled(false);
   });
   conn.on('error',()=>{
     delete guestConns[conn.peer];
     updateHostStatus();broadcastGC();evalWa();
+    if(Object.keys(guestConns).length===0)setChatEnabled(false);
   });
 }
 
@@ -626,9 +711,11 @@ function linkToPrimary(){
       if(d.n>0){
         setSbar('ok',`${d.n} guest${d.n>1?'s':''} connected`);
         setBell(true,'tap to ring all guests');
+        setChatEnabled(true);
       } else {
         setSbar('wait','Waiting for guests…');
         setBell(false,'waiting for guests');
+        setChatEnabled(false);
       }
       renderPills();evalWa();
     }
@@ -636,6 +723,12 @@ function linkToPrimary(){
     if(d.t==='BELL') onReceiveBell(d.from||'Guest');
     // Host bell from primary (host rang back)
     if(d.t==='HOSTBELL') onReceiveBell('Host');
+    // Chat relayed from primary
+    if(d.t==='CHAT'){
+      onReceiveChat(d);
+      // Also forward to any guests directly connected to this mirror
+      Object.values(guestConns).forEach(g=>{if(g.conn.open)try{g.conn.send(d);}catch(e){}});
+    }
   });
 
   c.on('close',()=>{
@@ -646,6 +739,7 @@ function linkToPrimary(){
     setSbar('conn','Reconnecting to primary…');
     setBell(false,'reconnecting…');
     evalWa();
+    setChatEnabled(false);
     setTimeout(()=>{if(!dying)linkToPrimary();},3000);
   });
 
@@ -774,6 +868,7 @@ function doConnect(p){
     setBell(true,'tap to ring the host');
     renderPills();
     hideWa(); // FIX 3: immediately hide WA on connect
+    setChatEnabled(true);
     // Heartbeat — detect silent disconnects
     const hb=setInterval(()=>{
       if(!c.open){
@@ -785,7 +880,7 @@ function doConnect(p){
     },8000);
   });
 
-  c.on('data',d=>{if(d==='BELL')onReceiveBell('Host');});
+  c.on('data',d=>{if(d==='BELL')onReceiveBell('Host');if(d&&d.t==='CHAT')onReceiveChat(d);});
 
   c.on('close',()=>{
     clearTimeout(to);
@@ -795,6 +890,7 @@ function doConnect(p){
     setSbar('off','Host offline');
     setBell(false,'host offline');
     renderPills();evalWa();schedRetry();
+    setChatEnabled(false);
   });
 
   c.on('error',err=>{
@@ -910,9 +1006,101 @@ function pushNotif(title,body){
     .catch(()=>{try{new Notification(title,{body});}catch(e){}});
 }
 
-// Reconnect on tab focus
+/* ══════════════════════════════════════════════════
+   CHAT
+   ══════════════════════════════════════════════════ */
+let chatUnread=0;
+let chatVisible=true; // track if page is visible
+
+function setChatEnabled(on){
+  document.getElementById('chatSendBtn').disabled=!on;
+  document.getElementById('chatOffline').style.display=on?'none':'block';
+  document.getElementById('chatInputRow').style.display=on?'flex':'none';
+}
+
+function sendChat(){
+  const inp=document.getElementById('chatIn');
+  const txt=inp.value.trim();
+  if(!txt)return;
+  const pkg={t:'CHAT',msg:txt,from:myDev,ts:Date.now()};
+  let sent=false;
+  if(myRole==='host'){
+    // Primary: send to all guests + relay to mirrors
+    if(isPrimary){
+      Object.values(guestConns).forEach(g=>{if(g.conn.open)try{g.conn.send(pkg);}catch(e){}});
+      broadcastToMirrors(pkg);
+      sent=true;
+    } else {
+      // Mirror: send to local guests + tell primary to relay
+      Object.values(guestConns).forEach(g=>{if(g.conn.open)try{g.conn.send(pkg);}catch(e){}});
+      if(primaryConn&&primaryConn.open)try{primaryConn.send(pkg);}catch(e){}
+      sent=true;
+    }
+  } else {
+    if(hostConn&&hostConn.open){try{hostConn.send(pkg);}catch(e){}sent=true;}
+  }
+  if(!sent)return;
+  addChatMsg(txt,myDev,true);
+  inp.value='';
+}
+
+function onReceiveChat(pkg){
+  if(!pkg||!pkg.msg)return;
+  addChatMsg(pkg.msg,pkg.from||'?',false);
+  // If chat is offscreen or tab hidden, badge it
+  if(document.hidden){
+    chatUnread++;
+    document.getElementById('chatBadge').textContent=chatUnread>9?'9+':chatUnread;
+    document.getElementById('chatBadge').classList.add('on');
+    pushNotif('💬 '+pkg.from,pkg.msg);
+  }
+}
+
+function addChatMsg(text,from,isMe){
+  const box=document.getElementById('chatMsgs');
+  // Remove empty placeholder
+  const empty=document.getElementById('chatEmpty');
+  if(empty)empty.remove();
+
+  const wrap=document.createElement('div');
+  wrap.className='cmsg '+(isMe?'me':'them');
+
+  const now=new Date();
+  const ts=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const meta=document.createElement('div');
+  meta.className='cmsg-meta';
+  meta.textContent=isMe?ts:`${from} · ${ts}`;
+
+  const bub=document.createElement('div');
+  bub.className='cmsg-bub';
+  bub.textContent=text;
+
+  wrap.appendChild(meta);
+  wrap.appendChild(bub);
+  box.appendChild(wrap);
+
+  // Keep last 200 messages
+  while(box.children.length>200)box.removeChild(box.firstChild);
+  box.scrollTop=box.scrollHeight;
+}
+
+// Clear unread badge when user taps chat area
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('chatMsgs')?.addEventListener('click',()=>{
+    chatUnread=0;
+    document.getElementById('chatBadge').classList.remove('on');
+  });
+  document.getElementById('chatIn')?.addEventListener('focus',()=>{
+    chatUnread=0;
+    document.getElementById('chatBadge').classList.remove('on');
+  });
+});
+
+// ── Reconnect on tab focus
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible'&&myRoom&&!dying){
+    chatUnread=0;
+    document.getElementById('chatBadge').classList.remove('on');
     if(myRole==='guest'&&!gConnected){clearTimeout(gRetryTimer);doGuestAttempt();}
   }
 });
