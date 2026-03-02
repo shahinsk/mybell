@@ -10,434 +10,294 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
 <style>
-/* ─────────────────────────────────────────
-   BASE
-───────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#080810;
   --s1:#0f0f1a;
   --s2:#16162a;
-  --border:rgba(255,255,255,0.06);
-  --border2:rgba(255,255,255,0.13);
-  --muted:#3a3a52;
-  --soft:#7070a0;
-  --label:#c8c8e0;
-  --hint:#8888aa;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.18);
   --text:#e8e8f5;
+  --label:#d0c8ff;
+  --hint:#8888b0;
+  --muted:#3a3a55;
+  --soft:#7070a0;
   --gold:#f0a500;
-  --gold2:#c87800;
-  --glow:rgba(240,165,0,0.18);
+  --glow:rgba(240,165,0,0.15);
   --green:#2ecf72;
   --blue:#38c0e8;
   --red:#e04848;
   --wa:#25d366;
-  --r:12px;
+  --r:13px;
   --disp:'Bebas Neue',sans-serif;
   --mono:'IBM Plex Mono',monospace;
 }
 html,body{height:100%;overscroll-behavior:none}
 body{
-  font-family:var(--mono);
-  background:var(--bg);
-  color:var(--text);
-  min-height:100%;
-  display:flex;flex-direction:column;align-items:center;
-  overflow-x:hidden;
+  font-family:var(--mono);background:var(--bg);color:var(--text);
+  min-height:100%;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;
 }
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
-    radial-gradient(ellipse 80% 50% at 50% -10%,rgba(240,165,0,0.06),transparent),
+    radial-gradient(ellipse 80% 50% at 50% -10%,rgba(240,165,0,0.07),transparent),
     radial-gradient(ellipse 60% 40% at 100% 100%,rgba(56,192,232,0.04),transparent);
 }
 
-/* ─────────────────────────────────────────
-   SCREENS
-───────────────────────────────────────── */
-.scr{
-  display:none;position:relative;z-index:1;
-  width:100%;max-width:420px;
-  padding:28px 20px 50px;
-  flex-direction:column;gap:16px;
-}
+/* ── Screens ── */
+.scr{display:none;position:relative;z-index:1;width:100%;max-width:440px;padding:28px 20px 50px;flex-direction:column;gap:18px;}
 .scr.on{display:flex}
 
-/* ─────────────────────────────────────────
-   SETUP SCREEN
-───────────────────────────────────────── */
-.logo{
-  font-family:var(--disp);font-size:4rem;letter-spacing:4px;
-  color:var(--gold);text-align:center;line-height:1;
-  text-shadow:0 0 40px rgba(240,165,0,0.3);
+/* ── Setup ── */
+.logo{font-family:var(--disp);font-size:4rem;letter-spacing:4px;color:var(--gold);text-align:center;line-height:1;text-shadow:0 0 40px rgba(240,165,0,0.3);}
+.tagline{font-size:0.65rem;color:var(--hint);text-align:center;letter-spacing:3px;text-transform:uppercase;}
+
+.notice{background:rgba(62,207,110,0.07);border:1px solid rgba(62,207,110,0.2);border-radius:var(--r);padding:11px 14px;font-size:0.7rem;color:var(--green);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.notice button{background:none;border:none;color:var(--red);font-family:var(--mono);font-size:0.7rem;cursor:pointer;text-decoration:underline;white-space:nowrap}
+
+/* Field group */
+.field{display:flex;flex-direction:column;gap:8px}
+.lbl{
+  font-size:0.72rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--gold);font-weight:500;
 }
-.tagline{font-size:0.65rem;color:var(--hint);text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
-
-.notice{
-  background:rgba(62,207,110,0.06);border:1px solid rgba(62,207,110,0.15);
-  border-radius:var(--r);padding:10px 13px;
-  font-size:0.68rem;color:var(--green);
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
+.sub-lbl{
+  font-size:0.68rem;color:var(--hint);line-height:1.55;
 }
-.notice button{background:none;border:none;color:var(--red);font-family:var(--mono);font-size:0.68rem;cursor:pointer;text-decoration:underline;white-space:nowrap}
 
-.seg{display:flex;flex-direction:column;gap:9px}
-.seg+.seg{padding-top:4px}
-.lbl{font-size:0.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:500}
-
-/* Role picker */
-.roles{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+/* Role cards */
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .role{
   border:2px solid var(--border);border-radius:var(--r);
-  padding:16px 10px 13px;text-align:center;cursor:pointer;
-  transition:border-color .2s,background .2s;user-select:none;
+  padding:18px 10px 14px;text-align:center;cursor:pointer;
+  transition:border-color .18s,background .18s;user-select:none;
+  background:rgba(255,255,255,0.02);
 }
 .role:active{transform:scale(.97)}
-.role .ri{font-size:1.7rem;display:block;margin-bottom:5px}
-.role .rn{font-family:var(--disp);font-size:1.2rem;letter-spacing:1px}
-.role .rd{font-size:0.65rem;color:var(--hint);margin-top:2px}
-.role.ah{border-color:var(--gold);background:rgba(240,165,0,0.06)}
-.role.ag{border-color:var(--blue);background:rgba(56,192,232,0.06)}
+.role .ri{font-size:2rem;display:block;margin-bottom:6px}
+.role .rn{font-family:var(--disp);font-size:1.3rem;letter-spacing:1px;color:var(--text)}
+.role .rd{font-size:0.65rem;color:var(--hint);margin-top:3px}
+.role.ah{border-color:var(--gold);background:rgba(240,165,0,0.07)}
+.role.ag{border-color:var(--blue);background:rgba(56,192,232,0.07)}
 
 /* Inputs */
 input{
-  width:100%;background:rgba(255,255,255,0.03);
+  width:100%;background:rgba(255,255,255,0.04);
   border:1.5px solid var(--border);border-radius:var(--r);
-  padding:13px 14px;color:var(--text);
-  font-family:var(--mono);font-size:0.88rem;
-  outline:none;transition:border-color .18s;
+  padding:14px 15px;color:var(--text);
+  font-family:var(--mono);font-size:0.9rem;
+  outline:none;transition:border-color .18s,background .18s;
 }
-input.code{letter-spacing:5px;text-align:center;font-size:1.05rem}
-input:focus{border-color:var(--border2)}
+input.code{letter-spacing:5px;text-align:center;font-size:1.1rem}
+input:focus{border-color:rgba(240,165,0,0.5);background:rgba(240,165,0,0.03)}
 input::placeholder{color:var(--soft);letter-spacing:1px;font-size:0.78rem}
-.hint{font-size:0.68rem;color:var(--hint);padding:0 2px;line-height:1.6}
 
 /* Divider */
-.div{height:1px;background:rgba(255,255,255,0.1);margin:4px 0}
+.divline{height:1px;background:rgba(255,255,255,0.1)}
 
-/* Primary button */
-.go{
-  width:100%;padding:15px;border-radius:var(--r);border:none;
+/* Buttons */
+.btn-go{
+  width:100%;padding:16px;border-radius:var(--r);border:none;
   background:var(--gold);color:#000;
-  font-family:var(--disp);font-size:1.3rem;letter-spacing:2px;
-  cursor:pointer;transition:opacity .18s,transform .1s;
-  margin-top:4px;
+  font-family:var(--disp);font-size:1.4rem;letter-spacing:2px;
+  cursor:pointer;transition:opacity .18s,transform .1s;margin-top:4px;
 }
-.go:active{transform:scale(.97)}
-.go:disabled{opacity:.3;cursor:not-allowed}
+.btn-go:active{transform:scale(.97)}
+.btn-go:disabled{opacity:.3;cursor:not-allowed}
+.btn-ghost{background:none;border:none;color:var(--hint);font-family:var(--mono);font-size:0.65rem;text-align:center;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:4px;}
+.btn-ghost:hover{color:var(--red)}
 
-/* Ghost button */
-.ghost{
-  background:none;border:none;color:var(--soft);
-  font-family:var(--mono);font-size:0.62rem;
-  text-align:center;cursor:pointer;
-  text-decoration:underline;text-underline-offset:3px;padding:4px;
-}
-.ghost:hover{color:var(--red)}
-
-/* ─────────────────────────────────────────
-   MAIN SCREEN
-───────────────────────────────────────── */
+/* ── Main screen ── */
 #mainScr{min-height:100svh;justify-content:space-between;padding-top:20px;padding-bottom:36px}
-
-/* Topbar */
 .topbar{display:flex;align-items:center;gap:8px}
-.room-chip{
-  flex:1;font-size:0.6rem;letter-spacing:2.5px;text-transform:uppercase;
-  color:var(--muted);background:rgba(255,255,255,0.03);
-  border:1px solid var(--border);border-radius:20px;
-  padding:5px 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
+.room-chip{flex:1;font-size:0.62rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--hint);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:20px;padding:5px 13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .room-chip b{color:var(--text);letter-spacing:3.5px}
-.role-chip{
-  font-size:0.58rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;
-  border-radius:20px;padding:5px 11px;white-space:nowrap;flex-shrink:0;
-}
-.role-chip.h{background:rgba(240,165,0,0.1);color:var(--gold);border:1px solid rgba(240,165,0,0.22)}
-.role-chip.g{background:rgba(56,192,232,0.08);color:var(--blue);border:1px solid rgba(56,192,232,0.18)}
+.role-chip{font-size:0.6rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;border-radius:20px;padding:5px 12px;white-space:nowrap;flex-shrink:0;}
+.role-chip.h{background:rgba(240,165,0,0.12);color:var(--gold);border:1px solid rgba(240,165,0,0.25)}
+.role-chip.g{background:rgba(56,192,232,0.1);color:var(--blue);border:1px solid rgba(56,192,232,0.22)}
 
-/* Status bar */
-.sbar{
-  display:flex;align-items:center;gap:8px;padding:9px 13px;
-  border-radius:10px;font-size:0.7rem;transition:all .3s;flex-wrap:wrap;
-}
-.sbar.wait{background:rgba(240,165,0,0.06);color:var(--gold);border:1px solid rgba(240,165,0,0.15)}
-.sbar.ok{background:rgba(46,207,114,0.06);color:var(--green);border:1px solid rgba(46,207,114,0.15)}
-.sbar.conn{background:rgba(56,192,232,0.06);color:var(--blue);border:1px solid rgba(56,192,232,0.15)}
-.sbar.off{background:rgba(224,72,72,0.06);color:var(--red);border:1px solid rgba(224,72,72,0.15)}
-.dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
-.dot.p{animation:blink 1.4s infinite}
+/* Status */
+.sbar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;font-size:0.72rem;transition:all .3s;}
+.sbar.wait{background:rgba(240,165,0,0.07);color:var(--gold);border:1px solid rgba(240,165,0,0.18)}
+.sbar.ok{background:rgba(46,207,114,0.07);color:var(--green);border:1px solid rgba(46,207,114,0.18)}
+.sbar.conn{background:rgba(56,192,232,0.07);color:var(--blue);border:1px solid rgba(56,192,232,0.18)}
+.sbar.off{background:rgba(224,72,72,0.07);color:var(--red);border:1px solid rgba(224,72,72,0.18)}
+.sdot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+.sdot.p{animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
-.rbar{font-size:0.64rem;color:var(--blue);text-align:center;display:none}
+.rbar{font-size:0.66rem;color:var(--blue);text-align:center;display:none}
 .rbar.on{display:block}
 
-/* ─── THE BELL ─── */
-.bell-zone{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:20px;
-  padding:8px 0;
-}
+/* Bell zone */
+.bell-zone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:10px 0}
 .bell-wrap{position:relative;display:flex;align-items:center;justify-content:center}
-
-/* Animated rings */
-.ring1,.ring2,.ring3{
-  position:absolute;border-radius:50%;border:1px solid rgba(240,165,0,0.15);
-  pointer-events:none;opacity:0;
-}
-.ring1{width:260px;height:260px}
-.ring2{width:310px;height:310px}
-.ring3{width:360px;height:360px}
-.bell-wrap.ringing .ring1{animation:expand 1s ease-out forwards}
-.bell-wrap.ringing .ring2{animation:expand 1s ease-out .12s forwards}
-.bell-wrap.ringing .ring3{animation:expand 1s ease-out .24s forwards}
-@keyframes expand{0%{opacity:.8;transform:scale(.7)}100%{opacity:0;transform:scale(1)}}
-
-/* Bell glow */
-.bglow{
-  position:absolute;width:220px;height:220px;border-radius:50%;
-  background:radial-gradient(circle,rgba(240,165,0,0.16),transparent 70%);
-  pointer-events:none;opacity:0;transition:opacity .5s;
-}
+.ring1,.ring2,.ring3{position:absolute;border-radius:50%;border:1px solid rgba(240,165,0,0.14);pointer-events:none;opacity:0}
+.ring1{width:260px;height:260px}.ring2{width:315px;height:315px}.ring3{width:370px;height:370px}
+.bell-wrap.ringing .ring1{animation:expand .9s ease-out forwards}
+.bell-wrap.ringing .ring2{animation:expand .9s ease-out .11s forwards}
+.bell-wrap.ringing .ring3{animation:expand .9s ease-out .22s forwards}
+@keyframes expand{0%{opacity:.75;transform:scale(.65)}100%{opacity:0;transform:scale(1)}}
+.bglow{position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(240,165,0,0.18),transparent 70%);pointer-events:none;opacity:0;transition:opacity .5s}
 .bell-wrap.ringing .bglow{opacity:1}
-
-/* Bell button */
 .bell{
   position:relative;z-index:2;
-  width:195px;height:195px;border-radius:50%;border:none;
+  width:200px;height:200px;border-radius:50%;border:none;
   cursor:pointer;user-select:none;-webkit-user-select:none;
   background:radial-gradient(circle at 37% 33%,#ffd060,#b06800);
-  box-shadow:
-    0 20px 60px rgba(0,0,0,.7),
-    0 0 0 1px rgba(255,255,255,.06),
-    inset 0 2px 0 rgba(255,255,255,.22),
-    inset 0 -3px 0 rgba(0,0,0,.35);
-  font-size:4.8rem;
-  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06),inset 0 2px 0 rgba(255,255,255,.22),inset 0 -3px 0 rgba(0,0,0,.35);
+  font-size:4.8rem;display:flex;align-items:center;justify-content:center;
   transition:transform .1s,box-shadow .2s;
 }
-.bell:not(.off):active{
-  transform:scale(.88);
-  box-shadow:0 8px 24px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.12);
-}
-.bell.off{
-  background:radial-gradient(circle at 37% 33%,#282830,#141420);
-  box-shadow:0 10px 30px rgba(0,0,0,.5);cursor:not-allowed;
-}
+.bell:not(.off):active{transform:scale(.88);box-shadow:0 8px 24px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.12)}
+.bell.off{background:radial-gradient(circle at 37% 33%,#282830,#141420);box-shadow:0 10px 30px rgba(0,0,0,.5);cursor:not-allowed}
 .bell.swing{animation:swing .55s ease-in-out}
-@keyframes swing{
-  0%{transform:rotate(0) scale(1)}
-  12%{transform:rotate(-22deg) scale(1.07)}
-  28%{transform:rotate(22deg) scale(1.07)}
-  44%{transform:rotate(-14deg)}
-  60%{transform:rotate(14deg)}
-  76%{transform:rotate(-7deg)}
-  88%{transform:rotate(7deg)}
-  100%{transform:rotate(0) scale(1)}
-}
+@keyframes swing{0%{transform:rotate(0) scale(1)}12%{transform:rotate(-22deg) scale(1.07)}28%{transform:rotate(22deg) scale(1.07)}44%{transform:rotate(-14deg)}60%{transform:rotate(14deg)}76%{transform:rotate(-7deg)}88%{transform:rotate(7deg)}100%{transform:rotate(0) scale(1)}}
+.bell-cap{font-size:0.64rem;color:var(--hint);letter-spacing:2px;text-transform:uppercase;text-align:center}
 
-.bell-caption{
-  font-size:0.62rem;color:var(--muted);
-  letter-spacing:2px;text-transform:uppercase;text-align:center;
-}
+/* Device pills */
+.pills{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:20px}
+.pill{font-size:0.62rem;color:var(--soft);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:20px;padding:3px 10px;transition:all .2s}
+.pill.alive{color:var(--green);border-color:rgba(46,207,114,0.22);background:rgba(46,207,114,0.05)}
 
-/* Connected devices list (host sees active guests, guest sees active host devices) */
-.device-pills{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:20px}
-.dpill{
-  font-size:0.6rem;color:var(--soft);
-  background:rgba(255,255,255,0.04);border:1px solid var(--border);
-  border-radius:20px;padding:3px 10px;
-  transition:all .2s;
-}
-.dpill.alive{color:var(--green);border-color:rgba(46,207,114,0.2);background:rgba(46,207,114,0.05)}
-
-/* ─── WhatsApp fallback ─── */
+/* WhatsApp */
 .wa-wrap{display:flex;flex-direction:column;gap:8px}
-.wa-lbl{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--hint)}
-.wa-row{
-  display:flex;align-items:center;gap:10px;
-  background:rgba(37,211,102,0.06);
-  border:1px solid rgba(37,211,102,0.16);
-  border-radius:var(--r);padding:12px 14px;
-  cursor:pointer;transition:background .18s;
-}
+.wa-lbl{font-size:0.64rem;letter-spacing:2px;text-transform:uppercase;color:var(--hint)}
+.wa-row{display:flex;align-items:center;gap:10px;background:rgba(37,211,102,0.06);border:1px solid rgba(37,211,102,0.18);border-radius:var(--r);padding:12px 14px;cursor:pointer;transition:background .18s;}
 .wa-row:active{transform:scale(.98)}
-.wa-row-info{flex:1}
-.wa-row-name{font-size:0.8rem;color:var(--text)}
-.wa-row-num{font-size:0.62rem;color:var(--wa);margin-top:2px}
+.wa-name{flex:1;font-size:0.82rem;color:var(--text)}
+.wa-num{font-size:0.65rem;color:var(--wa);margin-top:2px}
 .wa-ico{font-size:1.15rem}
 
-/* ─── Details toggle ─── */
-.dt-row{
-  display:flex;align-items:center;gap:10px;cursor:pointer;
-  user-select:none;padding:2px 0;
-}
+/* Details toggle */
+.dt-row{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;padding:2px 0}
 .dt-row input{display:none}
-.trk{width:34px;height:18px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:9px;position:relative;transition:background .2s;flex-shrink:0}
-.trk::after{content:'';position:absolute;top:3px;left:3px;width:10px;height:10px;border-radius:50%;background:var(--muted);transition:transform .2s,background .2s}
-input:checked~.trk{background:rgba(240,165,0,0.2);border-color:rgba(240,165,0,0.35)}
+.trk{width:36px;height:20px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;position:relative;transition:background .2s;flex-shrink:0}
+.trk::after{content:'';position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:var(--soft);transition:transform .2s,background .2s}
+input:checked~.trk{background:rgba(240,165,0,0.2);border-color:rgba(240,165,0,0.4)}
 input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .dt-lbl{font-size:0.66rem;color:var(--label);letter-spacing:1.5px;text-transform:uppercase}
-.dtpanel{display:none;flex-direction:column;gap:11px}
+.dtpanel{display:none;flex-direction:column;gap:12px}
 .dtpanel.open{display:flex}
-.notif-bar{
-  background:rgba(56,192,232,0.06);border:1px solid rgba(56,192,232,0.16);
-  border-radius:10px;padding:10px 13px;
-  font-size:0.68rem;color:#7dd8e8;
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-}
-.notif-bar button{background:rgba(56,192,232,0.15);border:1px solid rgba(56,192,232,0.28);color:#7dd8e8;border-radius:8px;padding:4px 9px;font-size:0.64rem;cursor:pointer;font-family:var(--mono)}
+.notif-bar{background:rgba(56,192,232,0.07);border:1px solid rgba(56,192,232,0.18);border-radius:10px;padding:10px 14px;font-size:0.7rem;color:#7dd8e8;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.notif-bar button{background:rgba(56,192,232,0.18);border:1px solid rgba(56,192,232,0.3);color:#7dd8e8;border-radius:8px;padding:5px 10px;font-size:0.66rem;cursor:pointer;font-family:var(--mono)}
 .notif-bar.gone{display:none}
-.log-box{
-  background:rgba(255,255,255,0.02);border:1px solid var(--border);
-  border-radius:10px;padding:10px 12px;
-  min-height:46px;max-height:84px;overflow-y:auto;
-  display:flex;flex-direction:column;gap:3px;
-}
-.le{font-size:0.64rem;color:var(--muted)}
-.le.r{color:var(--gold)}
-.le.w{color:var(--wa)}
-.le.s{color:#1e1e2e}
+.log-box{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:10px;padding:10px 12px;min-height:48px;max-height:88px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;}
+.le{font-size:0.66rem;color:var(--soft)}.le.r{color:var(--gold)}.le.w{color:var(--wa)}.le.s{color:var(--muted)}
 
-/* ─────────────────────────────────────────
-   FLASH
-───────────────────────────────────────── */
-#flash{
-  position:fixed;inset:0;z-index:999;pointer-events:none;
-  opacity:0;transition:opacity .1s;
-  background:radial-gradient(circle at center,rgba(240,165,0,0.2),transparent 65%);
-}
+/* Flash */
+#flash{position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0;transition:opacity .1s;background:radial-gradient(circle at center,rgba(240,165,0,0.22),transparent 65%);}
 #flash.on{opacity:1}
-
-/* ─────────────────────────────────────────
-   SCROLLBAR
-───────────────────────────────────────── */
-::-webkit-scrollbar{width:3px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 </style>
 </head>
 <body>
 <div id="flash"></div>
 
-<!-- ═══════════════════════════════════
-     SETUP SCREEN
-═══════════════════════════════════ -->
+<!-- ═══════════════════ SETUP ═══════════════════ -->
 <div class="scr on" id="setupScr">
   <div style="height:8px"></div>
   <div class="logo">BELL</div>
   <div class="tagline">ring · connect · alert</div>
 
-  <!-- Saved notice -->
   <div class="notice" id="savedNotice" style="display:none">
     <span id="savedTxt"></span>
     <button onclick="hardReset()">Reset</button>
   </div>
 
   <!-- Role -->
-  <div class="seg">
-    <div class="lbl">I am the</div>
+  <div class="field">
+    <div class="lbl">My Role</div>
+    <div class="sub-lbl">Choose what this device does in the room</div>
     <div class="roles">
       <div class="role" id="rH" onclick="pickRole('host')">
         <span class="ri">⚓</span>
         <div class="rn">HOST</div>
-        <div class="rd">Receives rings</div>
+        <div class="rd">Receives rings from guests</div>
       </div>
       <div class="role" id="rG" onclick="pickRole('guest')">
         <span class="ri">📱</span>
         <div class="rn">GUEST</div>
-        <div class="rd">Sends rings</div>
+        <div class="rd">Rings the host bell</div>
       </div>
     </div>
   </div>
 
   <!-- Room code -->
-  <div class="seg">
-    <div class="lbl">Shared room code</div>
-    <input class="code" type="text" id="roomIn" maxlength="14" placeholder="e.g. MYBELL"
+  <div class="field">
+    <div class="lbl">Shared Room Code</div>
+    <div class="sub-lbl">All devices in your group use the same code. Different groups use different codes.</div>
+    <input class="code" type="text" id="roomIn" maxlength="14" placeholder="e.g.  MYBELL"
       oninput="this.value=this.value.toUpperCase().replace(/\s/g,'');chk()"
       onkeydown="if(event.key==='Enter')tryGo()">
-    <div class="hint">Everyone in your room uses the same code · Different families/offices use different codes</div>
   </div>
 
   <!-- Device name -->
-  <div class="seg">
-    <div class="lbl">This device's name</div>
-    <input type="text" id="devIn" maxlength="18" placeholder="e.g. Phone, Desktop, TV, Tablet…"
+  <div class="field">
+    <div class="lbl">This Device's Name</div>
+    <div class="sub-lbl">Helps identify which device is ringing. Multiple host devices use the same WhatsApp number but different names.</div>
+    <input type="text" id="devIn" maxlength="18" placeholder="e.g.  Phone, Desktop, TV, Tablet"
       oninput="chk()" onkeydown="if(event.key==='Enter')tryGo()">
-    <div class="hint">Multiple host devices share the same WhatsApp number but have different names</div>
   </div>
 
-  <!-- My WhatsApp number -->
-  <div class="seg">
-    <div class="lbl">My WhatsApp number</div>
+  <!-- My WA -->
+  <div class="field">
+    <div class="lbl">My WhatsApp Number</div>
+    <div class="sub-lbl">Your own number — shown to the other side as offline fallback.</div>
     <input type="tel" id="myWaIn" placeholder="+60123456789"
       oninput="chk()" onkeydown="if(event.key==='Enter')tryGo()">
-    <div class="hint">Your own number — used as fallback when you're offline</div>
   </div>
 
-  <div class="div"></div>
+  <div class="divline"></div>
 
-  <!-- Other side's WhatsApp -->
-  <div class="seg">
-    <div class="lbl" id="otherWaLbl">Other side's WhatsApp number</div>
+  <!-- Other side's WA -->
+  <div class="field">
+    <div class="lbl" id="otherWaLbl">Other Side's WhatsApp Number</div>
+    <div class="sub-lbl" id="otherWaHint">The number to message when the other side is completely offline.</div>
     <input type="tel" id="otherWaIn" placeholder="+60198765432"
       oninput="chk()" onkeydown="if(event.key==='Enter')tryGo()">
-    <div class="hint" id="otherWaHint">The WhatsApp number to message when they're offline</div>
   </div>
 
-  <button class="go" id="goBtn" onclick="tryGo()" disabled>START</button>
+  <button class="btn-go" id="goBtn" onclick="tryGo()" disabled>START</button>
 </div>
 
-<!-- ═══════════════════════════════════
-     MAIN SCREEN
-═══════════════════════════════════ -->
+<!-- ═══════════════════ MAIN ═══════════════════ -->
 <div class="scr" id="mainScr">
 
-  <!-- Top bar -->
   <div class="topbar">
     <div class="room-chip">ROOM &nbsp;<b id="roomDis"></b></div>
     <div class="role-chip h" id="roleDis">⚓ HOST</div>
   </div>
 
-  <!-- Status -->
   <div class="sbar wait" id="sbar">
-    <div class="dot p"></div><span id="sbarT">Connecting…</span>
+    <div class="sdot p"></div><span id="sbarT">Connecting…</span>
   </div>
   <div class="rbar" id="rbar"></div>
 
-  <!-- Bell zone -->
   <div class="bell-zone">
-
-    <!-- Connected device pills -->
-    <div class="device-pills" id="devicePills"></div>
-
-    <!-- Bell -->
+    <div class="pills" id="pills"></div>
     <div class="bell-wrap" id="bellWrap">
       <div class="bglow"></div>
       <div class="ring1"></div><div class="ring2"></div><div class="ring3"></div>
       <button class="bell off" id="bellBtn" onclick="sendRing()">🔔</button>
     </div>
-    <div class="bell-caption" id="bellCap">waiting…</div>
-
+    <div class="bell-cap" id="bellCap">waiting…</div>
   </div>
 
-  <!-- WhatsApp offline fallback -->
   <div class="wa-wrap" id="waWrap" style="display:none">
-    <div class="wa-lbl" id="waWrapLbl">offline — send whatsapp</div>
+    <div class="wa-lbl" id="waLbl">offline — send whatsapp</div>
     <div class="wa-row" onclick="openWa()">
       <div class="wa-ico">💬</div>
-      <div class="wa-row-info">
-        <div class="wa-row-name" id="waTargetName">—</div>
-        <div class="wa-row-num" id="waTargetNum">—</div>
+      <div>
+        <div class="wa-name" id="waName">—</div>
+        <div class="wa-num" id="waNum">—</div>
       </div>
     </div>
   </div>
 
-  <!-- Details toggle -->
   <label class="dt-row">
     <input type="checkbox" id="dtToggle" onchange="toggleDt(this.checked)">
     <div class="trk"></div>
-    <span class="dt-lbl">Show details</span>
+    <span class="dt-lbl">Show Details</span>
   </label>
 
   <div class="dtpanel" id="dtPanel">
@@ -446,72 +306,104 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
       <button onclick="askNotif()">Allow</button>
     </div>
     <div class="log-box" id="log"><div class="le s">— log —</div></div>
-    <button class="ghost" onclick="hardReset()">Change room / reset setup</button>
+    <button class="btn-ghost" onclick="hardReset()">Change room / reset setup</button>
   </div>
 
 </div>
 
 <script>
-/* ══════════════════════════════════════════════
-   STORAGE
-══════════════════════════════════════════════ */
+/* ══════════════════════════════════════
+   ARCHITECTURE (simple & reliable)
+   ──────────────────────────────────────
+   HOST devices all share one fixed peer ID: "BELL-{ROOM}-HOST"
+   But only ONE device can hold that ID at a time.
+
+   Solution: Use a simple LOBBY pattern.
+   • Primary host   → claims "BELL-{ROOM}-HOST"
+   • Extra host devs → claim "BELL-{ROOM}-HOST-{rand}" and ALSO
+                       connect to primary as a "mirror"
+   • Guests         → ALWAYS connect to "BELL-{ROOM}-HOST"
+   • Primary relays BELL signal to all mirrors + rings itself
+   • Mirrors relay BELL signal back to primary for guest fanout
+
+   This means guests only ever need to know ONE peer ID.
+   ══════════════════════════════════════ */
+
 const K={ROLE:'b_role',ROOM:'b_room',DEV:'b_dev',MWA:'b_mwa',OWA:'b_owa',DT:'b_dt'};
 const ls=k=>localStorage.getItem(k);
 const wr=(k,v)=>localStorage.setItem(k,v);
 const rm=k=>localStorage.removeItem(k);
 
-/* ══════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════ */
-let myRole=null,myRoom=null,myDev=null,myWa=null,otherWa=null;
-let selRole=null;
-
-// peer = this device's PeerJS instance
+let myRole=null,myRoom=null,myDev=null,myWa=null,otherWa=null,selRole=null;
 let peer=null;
-// For HOST: map of guestPeerId -> conn  (connections from guest devices)
-let guestConns={};
-// For GUEST: map of hostPeerId -> {conn, devName, online}
-let hostConns={};
-// Reconnect
-let rtimers={};
-let rattempt=0;
-let hbTimer=null;
 let dying=false;
 
-const DELAYS=[2000,3000,5000,8000,12000];
+// Host state
+let isPrimary=false;
+let mirrorConns={};   // primary: mirror device connections {peerId: conn}
+let guestConns={};    // primary: guest connections {peerId: conn}
+let primaryConn=null; // mirror: connection back to primary
 
-/* ══════════════════════════════════════════════
-   AUDIO
-══════════════════════════════════════════════ */
+// Guest state
+let hostConn=null;    // guest: connection to primary host
+let guestRetryTimer=null;
+let guestRetryCount=0;
+const RETRY_DELAYS=[2000,3000,5000,8000,12000];
+
+// ── Audio ──────────────────────────────────────
 let ctx;
-function ac(){
+function getCtx(){
   if(!ctx) ctx=new(window.AudioContext||window.webkitAudioContext)();
   if(ctx.state==='suspended') ctx.resume();
   return ctx;
 }
-function playBell(v=1){
-  const c=ac();
-  [[900,450,2.2,v],[1800,900,1.4,v*.1],[2700,1350,1,v*.06]].forEach(([f,f2,d,vol])=>{
+function playBell(vol=1){
+  const c=getCtx();
+  [[900,450,2.2,vol],[1800,900,1.4,vol*.1],[2700,1350,1,vol*.06]].forEach(([f,f2,d,v])=>{
     const o=c.createOscillator(),g=c.createGain();
     o.connect(g);g.connect(c.destination);
     o.type='sine';
     o.frequency.setValueAtTime(f,c.currentTime);
     o.frequency.exponentialRampToValueAtTime(f2,c.currentTime+d);
-    g.gain.setValueAtTime(vol,c.currentTime);
+    g.gain.setValueAtTime(v,c.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+d);
     o.start();o.stop(c.currentTime+d);
   });
 }
-['touchstart','click'].forEach(e=>document.addEventListener(e,()=>ac(),{once:true}));
+['touchstart','click'].forEach(ev=>document.addEventListener(ev,()=>getCtx(),{once:true}));
 
-/* ══════════════════════════════════════════════
-   SERVICE WORKER
-══════════════════════════════════════════════ */
+// ── Service worker ─────────────────────────────
 if('serviceWorker'in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 
-/* ══════════════════════════════════════════════
-   BOOT
-══════════════════════════════════════════════ */
+// ── Peer config ────────────────────────────────
+function pcfg(){
+  return{
+    host:'0.peerjs.com',port:443,secure:true,
+    debug:0,
+    config:{iceServers:[
+      {urls:'stun:stun.l.google.com:19302'},
+      {urls:'stun:stun1.l.google.com:19302'},
+      {urls:'stun:stun2.l.google.com:19302'},
+    ]}
+  };
+}
+
+// ── Peer ID helpers ────────────────────────────
+function clean(s){return s.toUpperCase().replace(/[^A-Z0-9]/g,'')}
+function primaryId(room){return 'BELL-'+clean(room)+'-HOST'}
+function mirrorId(room,dev){
+  // deterministic per-device id based on device name
+  let h=0; for(let i=0;i<dev.length;i++) h=(h*31+dev.charCodeAt(i))&0xffffff;
+  return 'BELL-'+clean(room)+'-M-'+h.toString(36).toUpperCase();
+}
+function guestIdFn(room,dev){
+  let h=0; for(let i=0;i<dev.length;i++) h=(h*31+dev.charCodeAt(i))&0xffffff;
+  return 'BELL-'+clean(room)+'-G-'+h.toString(36).toUpperCase();
+}
+
+// ══════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded',()=>{
   if(ls(K.DT)==='1'){
     document.getElementById('dtToggle').checked=true;
@@ -519,8 +411,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   const role=ls(K.ROLE),room=ls(K.ROOM),dev=ls(K.DEV),mwa=ls(K.MWA),owa=ls(K.OWA);
   if(role&&room&&dev){
-    selRole=role;
-    markRole(role);
+    selRole=role; markRole(role);
     document.getElementById('roomIn').value=room;
     document.getElementById('devIn').value=dev;
     document.getElementById('myWaIn').value=mwa||'';
@@ -528,35 +419,35 @@ window.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('savedTxt').textContent=
       `${role==='host'?'⚓ Host':'📱 Guest'} · ${dev} · Room: ${room}`;
     document.getElementById('savedNotice').style.display='flex';
+    updateOtherWaLabels(role);
     chk();
     setTimeout(tryGo,700);
   }
 });
 
-/* ══════════════════════════════════════════════
-   SETUP HELPERS
-══════════════════════════════════════════════ */
+// ── Setup helpers ──────────────────────────────
 function pickRole(r){
-  selRole=r; markRole(r);
-  document.getElementById('otherWaLbl').textContent=
-    r==='host' ? "Guest's WhatsApp number" : "Host's WhatsApp number";
-  document.getElementById('otherWaHint').textContent=
-    r==='host'
-      ? "Message this number when the guest is offline"
-      : "Message this number when all host devices are offline";
-  chk();
+  selRole=r; markRole(r); updateOtherWaLabels(r); chk();
 }
 function markRole(r){
   document.getElementById('rH').className='role'+(r==='host'?' ah':'');
   document.getElementById('rG').className='role'+(r==='guest'?' ag':'');
 }
+function updateOtherWaLabels(r){
+  document.getElementById('otherWaLbl').textContent=
+    r==='host'?"Guest's WhatsApp Number":"Host's WhatsApp Number";
+  document.getElementById('otherWaHint').textContent=
+    r==='host'
+      ? "Message this when the guest is offline."
+      : "Message this when all host devices are offline.";
+}
 function chk(){
   const ok=selRole
     &&document.getElementById('roomIn').value.trim().length>=2
     &&document.getElementById('devIn').value.trim().length>=1;
-  document.getElementById('goBtn').disabled=!ok;
-  document.getElementById('goBtn').textContent=
-    selRole==='host'?'⚓ START AS HOST':'📱 START AS GUEST';
+  const btn=document.getElementById('goBtn');
+  btn.disabled=!ok;
+  btn.textContent=!selRole?'START':(selRole==='host'?'⚓ START AS HOST':'📱 START AS GUEST');
 }
 function tryGo(){
   const room=document.getElementById('roomIn').value.trim().toUpperCase();
@@ -568,433 +459,403 @@ function tryGo(){
   wr(K.ROLE,myRole); wr(K.ROOM,myRoom); wr(K.DEV,myDev);
   if(myWa) wr(K.MWA,myWa); else rm(K.MWA);
   if(otherWa) wr(K.OWA,otherWa); else rm(K.OWA);
-  show('mainScr');
-  initMain();
-  if(myRole==='host') bootHost();
-  else bootGuest();
+  showMain();
+  if(myRole==='host') startHost();
+  else startGuest();
 }
 function hardReset(){
   dying=true;
-  clearTimeout(hbTimer);
-  Object.values(hostConns).forEach(h=>{ if(h.conn) try{h.conn.close();}catch(e){} });
-  Object.values(guestConns).forEach(c=>{ try{c.close();}catch(e){} });
+  clearTimeout(guestRetryTimer);
   if(peer) try{peer.destroy();}catch(e){}
   Object.keys(K).forEach(k=>rm(K[k]));
   location.reload();
 }
 
-/* ══════════════════════════════════════════════
-   MAIN SCREEN INIT
-══════════════════════════════════════════════ */
-function initMain(){
+// ══════════════════════════════════════════════
+// SHOW MAIN SCREEN
+// ══════════════════════════════════════════════
+function showMain(){
+  show('mainScr');
   document.getElementById('roomDis').textContent=myRoom;
   const rc=document.getElementById('roleDis');
   rc.textContent=(myRole==='host'?'⚓ ':'📱 ')+myDev;
   rc.className='role-chip '+(myRole==='host'?'h':'g');
   checkNotif();
-  // Bell rings on page load
-  setTimeout(()=>{ playBell(.4); doRingUI(); log('🔔 Bell on load','s'); },600);
+  setTimeout(()=>{ playBell(.38); doRingUI(); addLog('🔔 Bell on load','s'); },600);
 }
 
-/* ══════════════════════════════════════════════
-   PEER ID HELPERS
-   Host slot ID:  BR-{ROOM}-H  (shared by all host devices — first one claims it)
-   Host overflow: BR-{ROOM}-H-{DEVHASH} for extra host devices
-   Guest slot ID: BR-{ROOM}-G-{DEVHASH}
-══════════════════════════════════════════════ */
-function clean(s){ return s.toUpperCase().replace(/[^A-Z0-9]/g,'') }
-function hashDev(s){
-  // short deterministic hash so same device reconnects with same ID
-  let h=0;
-  for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))&0xffffff;
-  return h.toString(36).toUpperCase().padStart(4,'0');
-}
-function hostPrimaryId(room){ return 'BR-'+clean(room)+'-H' }
-function hostSecId(room,dev){ return 'BR-'+clean(room)+'-H-'+hashDev(dev) }
-function guestId(room,dev){ return 'BR-'+clean(room)+'-G-'+hashDev(dev) }
-function pcfg(){ return {host:'0.peerjs.com',port:443,secure:true,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]}} }
-
-/* ══════════════════════════════════════════════
-   HOST BOOT
-   Strategy:
-   1. Try to claim the primary host slot BR-{ROOM}-H
-   2. If taken, claim a secondary slot BR-{ROOM}-H-{devhash}
-      AND connect to the primary as a sub-host
-   All host devices accept connections from guests.
-   Sub-hosts also relay BELL messages to/from guests via primary.
-══════════════════════════════════════════════ */
-let isPrimaryHost=false;
-let primaryConn=null; // sub-host → primary host connection
-
-function bootHost(){
-  setSbar('wait','Starting…');
-  claimHostSlot(hostPrimaryId(myRoom), true);
-}
-
-function claimHostSlot(pid, isPrimary){
-  if(peer){ try{peer.destroy();}catch(e){} peer=null; }
+// ══════════════════════════════════════════════
+// HOST — PRIMARY
+// Claims the one fixed peer ID for the room.
+// ══════════════════════════════════════════════
+function startHost(){
+  const pid=primaryId(myRoom);
+  addLog(`Trying primary slot: ${pid}`,'s');
+  setSbar('conn','Starting host…');
+  destroyPeer();
   peer=new Peer(pid, pcfg());
 
-  peer.on('open',()=>{
-    isPrimaryHost=isPrimary;
-    log(`Host peer ready [${isPrimary?'primary':'sub'}] as ${myDev}`,'s');
+  peer.on('open', id=>{
+    isPrimary=true;
+    addLog(`Primary host online: ${id}`,'s');
     setSbar('wait','Waiting for guests to connect…');
-    setBell(false,'waiting for guest');
-    if(!isPrimary){
-      // Sub-host: also connect to primary for mesh relay
-      connectSubToPrimary();
-    }
+    setBell(false,'waiting for guests');
+    renderPills();
   });
 
-  // Accept connections from guests (and sub-hosts if primary)
-  peer.on('connection',inc=>{
+  peer.on('connection', inc=>{
+    // Could be a guest OR a mirror host device
     const meta=inc.metadata||{};
-    if(meta.type==='subhost'){
-      setupSubHostConn(inc);
+    if(meta.isMirror){
+      handleMirrorConn(inc, meta.dev||'Mirror');
     } else {
-      // Guest connection
-      setupGuestConn(inc, meta.dev||'Guest');
+      handleGuestConn(inc, meta.dev||'Guest');
     }
   });
 
-  peer.on('error',err=>{
+  peer.on('error', err=>{
+    if(dying) return;
+    addLog('Host peer error: '+err.type,'s');
     if(err.type==='unavailable-id'){
-      if(isPrimary){
-        // Primary taken — become sub-host
-        log('Primary slot taken, joining as sub-host','s');
-        peer.destroy(); peer=null;
-        claimHostSlot(hostSecId(myRoom,myDev), false);
-      } else {
-        // Secondary taken too — add random suffix
-        peer.destroy(); peer=null;
-        const id=hostSecId(myRoom,myDev)+'-'+Math.random().toString(36).substr(2,3).toUpperCase();
-        claimSecondary(id);
-      }
-    } else { log('Peer err: '+err.type,'s'); schedHostRetry(); }
-  });
-
-  peer.on('disconnected',()=>{
-    if(dying)return;
-    try{peer.reconnect();}catch(e){ schedHostRetry(); }
-  });
-}
-
-function claimSecondary(id){
-  if(peer){ try{peer.destroy();}catch(e){} peer=null; }
-  peer=new Peer(id, pcfg());
-  peer.on('open',()=>{
-    isPrimaryHost=false;
-    log(`Sub-host peer ready as ${myDev}`,'s');
-    setSbar('wait','Waiting…');
-    setBell(false,'waiting for guest');
-    connectSubToPrimary();
-  });
-  peer.on('connection',inc=>{
-    const meta=inc.metadata||{};
-    setupGuestConn(inc, meta.dev||'Guest');
-  });
-  peer.on('error',err=>{ log('Peer err: '+err.type,'s'); schedHostRetry(); });
-  peer.on('disconnected',()=>{ if(!dying)try{peer.reconnect();}catch(e){ schedHostRetry(); } });
-}
-
-// Sub-host connects to primary so they stay in sync
-function connectSubToPrimary(){
-  const pid=hostPrimaryId(myRoom);
-  primaryConn=peer.connect(pid,{reliable:true,metadata:{type:'subhost',dev:myDev}});
-  primaryConn.on('open',()=>{ log('Linked to primary host','s'); });
-  primaryConn.on('data',d=>{
-    // Primary relays BELL from guest to sub-hosts
-    if(d.t==='BELL') onReceiveBell(d.from);
-    if(d.t==='RINGBACK') onReceiveBell('Host');
-  });
-  primaryConn.on('close',()=>{ primaryConn=null; log('Primary host went offline','s'); });
-  primaryConn.on('error',()=>{ primaryConn=null; });
-}
-
-// Sub-host connection (primary receives this)
-let subHostConns={};
-function setupSubHostConn(conn){
-  const meta=conn.metadata||{};
-  const dev=meta.dev||'SubHost';
-  subHostConns[dev]=conn;
-  conn.on('open',()=>log(`Sub-host connected: ${dev}`,'s'));
-  conn.on('data',d=>{
-    // Sub-host relayed a BELL from its guest — fan out to all
-    if(d.t==='BELL'){ broadcastToAllHosts(d); onReceiveBell(d.from||'Guest'); }
-    if(d.t==='RINGBACK'){ broadcastToAllGuests(d); }
-  });
-  conn.on('close',()=>{ delete subHostConns[dev]; });
-}
-
-function schedHostRetry(){
-  setTimeout(()=>{ if(!dying) bootHost(); },4000);
-}
-
-/* ── Guest connection (received by any host device) ── */
-function setupGuestConn(conn, devName){
-  const id=conn.peer;
-  guestConns[id]=conn;
-  conn.on('open',()=>{
-    log(`Guest connected: ${devName}`,'s');
-    updateHostUI();
-  });
-  conn.on('data',d=>{
-    if(d==='BELL'||d==='ping') {}
-    if(d==='BELL'){
-      // Fan out BELL to all host devices
-      const pkg={t:'BELL',from:devName};
-      broadcastToAllHosts(pkg);
-      onReceiveBell(devName);
+      // Primary slot already taken — become a mirror instead
+      addLog('Primary slot taken — joining as mirror','s');
+      startMirror();
+    } else {
+      // Network error — retry after delay
+      setSbar('off','Connection error — retrying…');
+      setTimeout(()=>{ if(!dying) startHost(); }, 4000);
     }
+  });
+
+  peer.on('disconnected', ()=>{
+    if(dying) return;
+    addLog('Peer disconnected — reconnecting…','s');
+    setSbar('conn','Reconnecting…');
+    try{ peer.reconnect(); }
+    catch(e){ setTimeout(()=>{ if(!dying) startHost(); }, 3000); }
+  });
+}
+
+// ══════════════════════════════════════════════
+// HOST — MIRROR (extra host devices)
+// Claims its own unique ID, then connects
+// back to the primary as a "mirror".
+// ══════════════════════════════════════════════
+function startMirror(){
+  const mid=mirrorId(myRoom, myDev);
+  addLog(`Starting as mirror: ${mid}`,'s');
+  destroyPeer();
+  peer=new Peer(mid, pcfg());
+
+  peer.on('open', id=>{
+    isPrimary=false;
+    addLog(`Mirror peer online: ${id}`,'s');
+    setSbar('conn','Linking to primary host…');
+    // Connect back to primary
+    connectMirrorToPrimary();
+    // Also accept direct connections (fallback if primary goes down)
+    peer.on('connection', inc=>{
+      const meta=inc.metadata||{};
+      if(!meta.isMirror) handleGuestConn(inc, meta.dev||'Guest');
+    });
+  });
+
+  peer.on('error', err=>{
+    if(dying) return;
+    addLog('Mirror peer error: '+err.type,'s');
+    if(err.type==='unavailable-id'){
+      // Mirror ID also taken — add random suffix and retry
+      const fallback='BELL-'+clean(myRoom)+'-M-'+Math.random().toString(36).substr(2,5).toUpperCase();
+      setTimeout(()=>{ if(!dying) startMirrorWithId(fallback); }, 1000);
+    } else {
+      setTimeout(()=>{ if(!dying) startMirror(); }, 4000);
+    }
+  });
+
+  peer.on('disconnected', ()=>{
+    if(dying) return;
+    try{ peer.reconnect(); }
+    catch(e){ setTimeout(()=>{ if(!dying) startMirror(); }, 3000); }
+  });
+}
+
+function startMirrorWithId(id){
+  destroyPeer();
+  peer=new Peer(id, pcfg());
+  peer.on('open', ()=>{ isPrimary=false; connectMirrorToPrimary(); });
+  peer.on('error', err=>{ addLog('Mirror err: '+err.type,'s'); setTimeout(()=>{ if(!dying) startMirror(); },4000); });
+  peer.on('disconnected', ()=>{ if(!dying) try{peer.reconnect();}catch(e){ startMirror(); } });
+  peer.on('connection', inc=>{ const m=inc.metadata||{}; if(!m.isMirror) handleGuestConn(inc,m.dev||'Guest'); });
+}
+
+function connectMirrorToPrimary(){
+  const pid=primaryId(myRoom);
+  addLog(`Connecting mirror to primary: ${pid}`,'s');
+  const c=peer.connect(pid,{reliable:true, metadata:{isMirror:true, dev:myDev}});
+
+  c.on('open',()=>{
+    primaryConn=c;
+    addLog('Mirror linked to primary ✓','s');
+    setSbar('wait','Waiting for guests…');
+    setBell(false,'waiting for guests');
+    renderPills();
+    // Heartbeat
+    const hb=setInterval(()=>{ if(c.open) try{c.send({t:'ping'});}catch(e){} else clearInterval(hb); },10000);
+  });
+
+  c.on('data', d=>{
+    // Primary forwarding a BELL from a guest → ring this device
+    if(d&&d.t==='BELL') onReceiveBell(d.from||'Guest');
+    // Primary forwarding a ring-all from host → also ring
+    if(d&&d.t==='HOSTBELL') onReceiveBell('Host');
+  });
+
+  c.on('close', ()=>{
+    primaryConn=null;
+    addLog('Lost link to primary — retrying…','s');
+    setSbar('off','Lost host link — retrying…');
+    setTimeout(()=>{ if(!dying) connectMirrorToPrimary(); }, 3000);
+  });
+
+  c.on('error', ()=>{
+    primaryConn=null;
+    setTimeout(()=>{ if(!dying) connectMirrorToPrimary(); }, 3000);
+  });
+}
+
+// ── Primary: handle mirror connection ──
+function handleMirrorConn(conn, devName){
+  mirrorConns[conn.peer]=conn;
+  conn.on('open',()=>{
+    addLog(`Mirror device linked: ${devName}`,'s');
+    setSbar('ok',`${Object.keys(mirrorConns).length} mirror(s) + guests online`);
+    renderPills();
+  });
+  conn.on('data',d=>{
+    // Mirror forwarding BELL from one of its guests
+    if(d&&d.t==='BELL') fanoutBell(d.from||devName);
   });
   conn.on('close',()=>{
-    delete guestConns[id];
-    log(`Guest left: ${devName}`,'s');
-    updateHostUI();
+    delete mirrorConns[conn.peer];
+    addLog(`Mirror left: ${devName}`,'s');
+    updateHostStatus();
+    renderPills();
   });
-  conn.on('error',()=>{ delete guestConns[id]; updateHostUI(); });
+  conn.on('error',()=>{ delete mirrorConns[conn.peer]; updateHostStatus(); renderPills(); });
 }
 
-function broadcastToAllHosts(pkg){
-  // Send to all sub-hosts (primary → subs)
-  Object.values(subHostConns).forEach(c=>{ if(c.open) try{c.send(pkg);}catch(e){} });
-}
-
-function broadcastToAllGuests(pkg){
-  Object.values(guestConns).forEach(c=>{ if(c.open) try{c.send('BELL');}catch(e){} });
-}
-
-function updateHostUI(){
-  const count=Object.keys(guestConns).length;
-  if(count>0){
-    setSbar('ok',`${count} guest device${count>1?'s':''} connected`);
-    setBell(true,'tap to ring all guests');
+// ── Primary + Mirror: handle guest connection ──
+function handleGuestConn(conn, devName){
+  guestConns[conn.peer]=conn;
+  conn.on('open',()=>{
+    addLog(`Guest connected: ${devName}`,'s');
+    updateHostStatus();
+    renderPills();
     hideWa();
+  });
+  conn.on('data',d=>{
+    if(d==='BELL'){
+      // Ring on this device + fan out to all mirrors + all other guests
+      fanoutBell(devName);
+      onReceiveBell(devName);
+    }
+    // ignore ping
+  });
+  conn.on('close',()=>{
+    delete guestConns[conn.peer];
+    addLog(`Guest left: ${devName}`,'s');
+    updateHostStatus();
+    renderPills();
+    if(Object.keys(guestConns).length===0) maybeShowWa();
+  });
+  conn.on('error',()=>{
+    delete guestConns[conn.peer];
+    updateHostStatus();
+    renderPills();
+    if(Object.keys(guestConns).length===0) maybeShowWa();
+  });
+}
+
+// Fan out BELL to all mirrors (so their screens ring too)
+function fanoutBell(fromDev){
+  const pkg={t:'BELL', from:fromDev};
+  Object.values(mirrorConns).forEach(c=>{ if(c.open) try{c.send(pkg);}catch(e){} });
+}
+
+// Host rings all guests (and fan out to mirrors)
+function sendRing(){
+  if(myRole==='host'){
+    const guests=Object.values(guestConns).filter(c=>c.open);
+    if(guests.length===0 && !primaryConn) return;
+    // Primary: send to all guests
+    if(isPrimary){
+      guests.forEach(c=>{ try{c.send('BELL');}catch(e){} });
+      // Also tell mirrors to ring
+      Object.values(mirrorConns).forEach(c=>{ if(c.open) try{c.send({t:'HOSTBELL'});}catch(e){} });
+    } else {
+      // Mirror: send to local guests + tell primary to fan out
+      Object.values(guestConns).forEach(c=>{ if(c.open) try{c.send('BELL');}catch(e){} });
+      if(primaryConn&&primaryConn.open) try{primaryConn.send({t:'HOSTBELL'});}catch(e){}
+    }
+    doRingUI();
+    addLog('🔔 You rang all guests','');
+  } else {
+    // Guest sends to host
+    if(!hostConn||!hostConn.open) return;
+    try{ hostConn.send('BELL'); }catch(e){ return; }
+    doRingUI();
+    addLog('🔔 You rang the host','');
+  }
+}
+
+function updateHostStatus(){
+  const g=Object.keys(guestConns).length;
+  const m=Object.keys(mirrorConns).length;
+  if(g>0){
+    setSbar('ok',`${g} guest${g>1?'s':''} connected${m>0?' · '+m+' extra host device(s)':''}`);
+    setBell(true,'tap to ring all guests');
   } else {
     setSbar('wait','Waiting for guests…');
-    setBell(false,'waiting for guest');
-    maybeShowWa();
+    setBell(false,'waiting for guests');
   }
-  renderPills();
 }
 
+// ══════════════════════════════════════════════
+// GUEST
+// Connects directly to the ONE fixed primary ID.
+// Auto-retries until connected.
+// ══════════════════════════════════════════════
+function startGuest(){
+  const gid=guestIdFn(myRoom,myDev);
+  addLog(`Starting guest peer: ${gid}`,'s');
+  setSbar('conn','Starting…');
+  destroyPeer();
+  peer=new Peer(gid, pcfg());
+
+  peer.on('open', id=>{
+    addLog(`Guest peer online: ${id}`,'s');
+    connectToHost();
+  });
+
+  peer.on('error', err=>{
+    if(dying) return;
+    addLog('Guest peer error: '+err.type,'s');
+    if(err.type==='unavailable-id'){
+      // ID collision — try with random suffix
+      const fallback=guestIdFn(myRoom,myDev)+Math.random().toString(36).substr(2,3).toUpperCase();
+      setTimeout(()=>{ if(!dying) startGuestWithId(fallback); }, 500);
+    } else {
+      setSbar('off','Connection error — retrying…');
+      setTimeout(()=>{ if(!dying) startGuest(); }, 4000);
+    }
+  });
+
+  peer.on('disconnected', ()=>{
+    if(dying) return;
+    addLog('Guest peer disconnected — reconnecting…','s');
+    try{ peer.reconnect(); }
+    catch(e){ setTimeout(()=>{ if(!dying) startGuest(); }, 3000); }
+  });
+}
+
+function startGuestWithId(id){
+  destroyPeer();
+  peer=new Peer(id, pcfg());
+  peer.on('open', ()=>{ addLog('Guest peer (alt) online','s'); connectToHost(); });
+  peer.on('error', err=>{ addLog('Guest peer err: '+err.type,'s'); setTimeout(()=>{ if(!dying) startGuest(); },4000); });
+  peer.on('disconnected', ()=>{ if(!dying) try{peer.reconnect();}catch(e){ startGuest(); } });
+}
+
+function connectToHost(){
+  const pid=primaryId(myRoom);
+  addLog(`Connecting to host: ${pid}`,'s');
+  setSbar('conn',`Connecting to host…`);
+  setBell(false,'connecting…');
+  clearTimeout(guestRetryTimer);
+
+  const c=peer.connect(pid,{reliable:true, metadata:{dev:myDev, isMirror:false}});
+
+  // PeerJS doesn't always fire 'error' for failed connections — add a timeout
+  const connTimeout=setTimeout(()=>{
+    if(!hostConn||!hostConn.open){
+      addLog('Connection timed out — retrying…','s');
+      try{c.close();}catch(e){}
+      scheduleGuestRetry();
+    }
+  }, 12000);
+
+  c.on('open',()=>{
+    clearTimeout(connTimeout);
+    hostConn=c;
+    guestRetryCount=0;
+    addLog('Connected to host ✓','s');
+    setSbar('ok','Host connected 🎉');
+    setBell(true,'tap to ring the host');
+    renderPills();
+    hideWa();
+    // Heartbeat
+    const hb=setInterval(()=>{ if(c.open) try{c.send('ping');}catch(e){} else clearInterval(hb); },10000);
+  });
+
+  c.on('data', d=>{
+    if(d==='BELL') onReceiveBell('Host');
+    // ping silently ignored
+  });
+
+  c.on('close',()=>{
+    clearTimeout(connTimeout);
+    hostConn=null;
+    addLog('Host disconnected','s');
+    setSbar('off','Host offline');
+    setBell(false,'host offline');
+    renderPills();
+    maybeShowWa();
+    scheduleGuestRetry();
+  });
+
+  c.on('error',()=>{
+    clearTimeout(connTimeout);
+    hostConn=null;
+    addLog('Host connection error — retrying…','s');
+    setBell(false,'retrying…');
+    renderPills();
+    maybeShowWa();
+    scheduleGuestRetry();
+  });
+}
+
+function scheduleGuestRetry(){
+  if(dying) return;
+  clearTimeout(guestRetryTimer);
+  const delay=RETRY_DELAYS[Math.min(guestRetryCount, RETRY_DELAYS.length-1)];
+  guestRetryCount++;
+  let t=Math.round(delay/1000);
+  setSbar('conn',`Host offline — retry in ${t}s…`);
+  showRBar(`Attempt ${guestRetryCount} in ${t}s`);
+  const cd=setInterval(()=>{ t--; if(t>0) showRBar(`Attempt ${guestRetryCount} in ${t}s`); else clearInterval(cd); },1000);
+  guestRetryTimer=setTimeout(()=>{
+    clearInterval(cd); hideRBar();
+    if(!dying) connectToHost();
+  }, delay);
+}
+
+// ══════════════════════════════════════════════
+// RECEIVE BELL
+// ══════════════════════════════════════════════
 function onReceiveBell(from){
   playBell(); doRingUI(); flashFn();
   if(navigator.vibrate) navigator.vibrate([200,80,200,80,400]);
-  log(`🔔 ${from} rang!`,'r');
+  addLog(`🔔 ${from} rang!`,'r');
   pushNotif('🔔 Bell',`${from} rang your bell!`);
 }
 
-// Host sends ring to ALL guests
-function sendRing(){
-  const conns=Object.values(guestConns).filter(c=>c.open);
-  if(conns.length===0) return;
-  conns.forEach(c=>{ try{c.send('BELL');}catch(e){} });
-  // Also relay to sub-hosts so their guests hear it
-  broadcastToAllHosts({t:'RINGBACK',from:myDev});
-  doRingUI();
-  log('🔔 You rang all guests','');
-}
-
-/* ══════════════════════════════════════════════
-   GUEST BOOT
-   Guest connects to ALL known host slots:
-   - Primary:    BR-{ROOM}-H
-   - It also listens for host peer IDs by trying secondary slots
-   Strategy: connect to primary. If primary offline, try secondaries.
-   Keep retrying until at least one host is connected.
-══════════════════════════════════════════════ */
-// Known host peer IDs to try
-const HOST_SLOTS_TO_TRY=8; // try up to 8 host slot variants
-
-function bootGuest(){
-  const myId=guestId(myRoom,myDev);
-  if(peer){ try{peer.destroy();}catch(e){} peer=null; }
-  peer=new Peer(myId, pcfg());
-  peer.on('open',()=>{
-    log('Guest peer ready','s');
-    setSbar('conn','Connecting to host…');
-    connectGuestToHost(hostPrimaryId(myRoom));
-  });
-  peer.on('error',err=>{
-    if(err.type==='unavailable-id'){
-      // Guest ID collision — add random suffix
-      bootGuestWithId(myId+'-'+Math.random().toString(36).substr(2,3).toUpperCase());
-    } else { log('Peer err: '+err.type,'s'); schedGuestRetry(); }
-  });
-  peer.on('disconnected',()=>{ if(!dying)try{peer.reconnect();}catch(e){ schedGuestRetry(); } });
-}
-
-function bootGuestWithId(id){
-  if(peer){ try{peer.destroy();}catch(e){} peer=null; }
-  peer=new Peer(id, pcfg());
-  peer.on('open',()=>{ log('Guest peer ready (alt id)','s'); connectGuestToHost(hostPrimaryId(myRoom)); });
-  peer.on('error',err=>{ log('Peer err: '+err.type,'s'); schedGuestRetry(); });
-  peer.on('disconnected',()=>{ if(!dying)try{peer.reconnect();}catch(e){ schedGuestRetry(); } });
-}
-
-function connectGuestToHost(hid){
-  if(hostConns[hid] && hostConns[hid].online) return;
-  const c=peer.connect(hid,{reliable:true,metadata:{dev:myDev,type:'guest'}});
-  hostConns[hid]={conn:c,online:false,devName:hid};
-  setupGuestHostConn(c, hid);
-}
-
-function setupGuestHostConn(conn, hid){
-  clearTimeout(rtimers[hid]);
-  conn.on('open',()=>{
-    hostConns[hid].online=true;
-    rattempt=0;
-    log(`Connected to host [${hid}]`,'s');
-    updateGuestUI();
-    hideRBar();
-    startHB(conn, hid);
-    maybeShowWa(); // re-evaluate
-  });
-  conn.on('data',d=>{
-    if(d==='BELL') onGuestReceiveBell();
-    // ping silently ignored
-  });
-  conn.on('close',()=>{
-    hostConns[hid].online=false;
-    log('Host disconnected — retrying…','s');
-    clearHB(hid);
-    updateGuestUI();
-    schedGuestHostRetry(hid);
-  });
-  conn.on('error',()=>{
-    hostConns[hid].online=false;
-    clearHB(hid);
-    updateGuestUI();
-    schedGuestHostRetry(hid);
-  });
-}
-
-function schedGuestHostRetry(hid){
-  if(dying) return;
-  clearTimeout(rtimers[hid]);
-  const delay=DELAYS[Math.min(rattempt,DELAYS.length-1)];
-  rattempt++;
-  let t=Math.round(delay/1000);
-  showRBar(`Reconnecting in ${t}s…`);
-  const cd=setInterval(()=>{ t--; if(t>0) showRBar(`Reconnecting in ${t}s…`); else clearInterval(cd); },1000);
-  rtimers[hid]=setTimeout(()=>{
-    clearInterval(cd); hideRBar();
-    if(dying) return;
-    const c=peer.connect(hid,{reliable:true,metadata:{dev:myDev,type:'guest'}});
-    hostConns[hid]={conn:c,online:false,devName:hid};
-    setupGuestHostConn(c,hid);
-  },delay);
-}
-
-function schedGuestRetry(){
-  setTimeout(()=>{ if(!dying) bootGuest(); },4000);
-}
-
-function onGuestReceiveBell(){
-  playBell(); doRingUI(); flashFn();
-  if(navigator.vibrate) navigator.vibrate([200,80,200,80,400]);
-  log('🔔 Host rang your bell!','r');
-  pushNotif('🔔 Bell','Host rang your bell!');
-}
-
-// Guest rings ALL connected host devices
-function sendRing(){
-  const alive=Object.values(hostConns).filter(h=>h.online&&h.conn&&h.conn.open);
-  if(alive.length===0) return;
-  alive.forEach(h=>{ try{h.conn.send('BELL');}catch(e){} });
-  doRingUI();
-  log('🔔 You rang the host','');
-}
-
-function updateGuestUI(){
-  const alive=Object.values(hostConns).filter(h=>h.online);
-  if(alive.length>0){
-    setSbar('ok',`Host connected (${alive.length} device${alive.length>1?'s':''})`);
-    setBell(true,'tap to ring the host');
-    hideWa();
-  } else {
-    setSbar('off','Host offline');
-    setBell(false,'host offline');
-    maybeShowWa();
-  }
-  renderPills();
-}
-
-/* ══════════════════════════════════════════════
-   HEARTBEAT
-══════════════════════════════════════════════ */
-let hbTimers={};
-function startHB(conn, key){
-  clearHB(key);
-  hbTimers[key]=setInterval(()=>{ if(conn.open) try{conn.send('ping');}catch(e){} },10000);
-}
-function clearHB(key){
-  if(key && hbTimers[key]){ clearInterval(hbTimers[key]); delete hbTimers[key]; }
-}
-
-/* ══════════════════════════════════════════════
-   WHATSAPP
-══════════════════════════════════════════════ */
-function maybeShowWa(){
-  if(!otherWa) return;
-  // Show WA when the other side is offline
-  const show_ = myRole==='host'
-    ? Object.keys(guestConns).length===0
-    : Object.values(hostConns).every(h=>!h.online);
-  if(show_){
-    document.getElementById('waWrapLbl').textContent=
-      myRole==='host' ? 'guest offline — send whatsapp' : 'host offline — send whatsapp';
-    document.getElementById('waTargetName').textContent=
-      myRole==='host' ? 'Message Guest' : 'Message Host';
-    document.getElementById('waTargetNum').textContent=otherWa;
-    document.getElementById('waWrap').style.display='flex';
-  } else {
-    hideWa();
-  }
-}
-function hideWa(){ document.getElementById('waWrap').style.display='none'; }
-function openWa(){
-  if(!otherWa){ alert('No WhatsApp number saved. Reset and set it up.'); return; }
-  const num=otherWa.replace(/[^\d]/g,'');
-  const msg=encodeURIComponent('COME SHARP');
-  window.open(`https://wa.me/${num}?text=${msg}`,'_blank');
-  log('📲 WhatsApp sent','w');
-}
-
-/* ══════════════════════════════════════════════
-   DEVICE PILLS  (shows who's connected)
-══════════════════════════════════════════════ */
-function renderPills(){
-  const el=document.getElementById('devicePills');
-  el.innerHTML='';
-  if(myRole==='host'){
-    const keys=Object.keys(guestConns);
-    if(keys.length===0){ el.innerHTML='<span class="dpill">no guests yet</span>'; return; }
-    keys.forEach(id=>{
-      const p=document.createElement('span');
-      p.className='dpill alive'; p.textContent='📱 Guest';
-      el.appendChild(p);
-    });
-  } else {
-    const entries=Object.values(hostConns);
-    if(entries.length===0){ el.innerHTML='<span class="dpill">searching for host…</span>'; return; }
-    entries.forEach(h=>{
-      const p=document.createElement('span');
-      p.className='dpill'+(h.online?' alive':'');
-      p.textContent='⚓ Host'+(h.online?' ●':' ○');
-      el.appendChild(p);
-    });
-  }
-}
-
-/* ══════════════════════════════════════════════
-   BELL UI
-══════════════════════════════════════════════ */
-function setBell(enabled, caption){
+// ══════════════════════════════════════════════
+// BELL UI
+// ══════════════════════════════════════════════
+function setBell(on, caption){
   const b=document.getElementById('bellBtn');
   const c=document.getElementById('bellCap');
-  if(enabled) b.classList.remove('off'); else b.classList.add('off');
+  if(on) b.classList.remove('off'); else b.classList.add('off');
   if(caption) c.textContent=caption;
 }
 function doRingUI(){
@@ -1002,20 +863,65 @@ function doRingUI(){
   const w=document.getElementById('bellWrap');
   b.classList.remove('swing'); void b.offsetWidth; b.classList.add('swing');
   w.classList.remove('ringing'); void w.offsetWidth; w.classList.add('ringing');
-  setTimeout(()=>{ b.classList.remove('swing'); w.classList.remove('ringing'); },800);
+  setTimeout(()=>{ b.classList.remove('swing'); w.classList.remove('ringing'); },900);
 }
 function flashFn(){
   const f=document.getElementById('flash');
   f.classList.add('on'); setTimeout(()=>f.classList.remove('on'),180);
 }
 
-/* ══════════════════════════════════════════════
-   DETAILS / NOTIFICATIONS / LOG
-══════════════════════════════════════════════ */
-function toggleDt(on){
-  document.getElementById('dtPanel').classList.toggle('open',on);
-  wr(K.DT,on?'1':'0');
+// ══════════════════════════════════════════════
+// PILLS (who's connected)
+// ══════════════════════════════════════════════
+function renderPills(){
+  const el=document.getElementById('pills');
+  el.innerHTML='';
+  if(myRole==='host'){
+    const gCount=Object.keys(guestConns).length;
+    const mCount=Object.keys(mirrorConns).length;
+    if(gCount===0&&mCount===0){ el.innerHTML='<span class="pill">no devices yet</span>'; return; }
+    for(let i=0;i<gCount;i++){const p=mkPill('📱 Guest',true); el.appendChild(p);}
+    for(let i=0;i<mCount;i++){const p=mkPill('⚓ Host device',true); el.appendChild(p);}
+  } else {
+    const p=mkPill('⚓ Host', hostConn&&hostConn.open);
+    el.appendChild(p);
+  }
 }
+function mkPill(label, online){
+  const p=document.createElement('span');
+  p.className='pill'+(online?' alive':'');
+  p.textContent=label+(online?' ●':' ○');
+  return p;
+}
+
+// ══════════════════════════════════════════════
+// WHATSAPP
+// ══════════════════════════════════════════════
+function maybeShowWa(){
+  if(!otherWa) return;
+  const offline=myRole==='host'
+    ? Object.keys(guestConns).length===0
+    : !hostConn||!hostConn.open;
+  if(!offline){ hideWa(); return; }
+  document.getElementById('waLbl').textContent=
+    myRole==='host' ? 'guest offline — send whatsapp' : 'host offline — send whatsapp';
+  document.getElementById('waName').textContent=
+    myRole==='host' ? 'Message Guest' : 'Message Host';
+  document.getElementById('waNum').textContent=otherWa;
+  document.getElementById('waWrap').style.display='flex';
+}
+function hideWa(){ document.getElementById('waWrap').style.display='none'; }
+function openWa(){
+  if(!otherWa) return;
+  const num=otherWa.replace(/[^\d]/g,'');
+  window.open(`https://wa.me/${num}?text=${encodeURIComponent('COME SHARP')}`, '_blank');
+  addLog('📲 WhatsApp sent','w');
+}
+
+// ══════════════════════════════════════════════
+// DETAILS / NOTIF / LOG
+// ══════════════════════════════════════════════
+function toggleDt(on){ document.getElementById('dtPanel').classList.toggle('open',on); wr(K.DT,on?'1':'0'); }
 function checkNotif(){
   if(!('Notification'in window)||Notification.permission==='granted')
     document.getElementById('notifBar').classList.add('gone');
@@ -1036,29 +942,30 @@ function setSbar(type,msg){
   const el=document.getElementById('sbar');
   el.className='sbar '+type;
   const p=(type==='wait'||type==='conn')?' p':'';
-  el.innerHTML=`<div class="dot${p}"></div><span>${msg}</span>`;
+  el.innerHTML=`<div class="sdot${p}"></div><span>${msg}</span>`;
 }
 function showRBar(m){ const b=document.getElementById('rbar'); b.textContent='↻ '+m; b.classList.add('on'); }
 function hideRBar(){ document.getElementById('rbar').classList.remove('on'); }
-function log(msg,type){
+function addLog(msg,type){
   const box=document.getElementById('log');
   const ph=box.querySelector('.s'); if(ph&&box.children.length===1) ph.remove();
-  const e=document.createElement('div');
-  e.className='le '+(type||'');
+  const e=document.createElement('div'); e.className='le '+(type||'');
   const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   e.textContent=`[${t}] ${msg}`;
   box.appendChild(e);
-  while(box.children.length>50) box.removeChild(box.firstChild);
+  while(box.children.length>60) box.removeChild(box.firstChild);
   box.scrollTop=box.scrollHeight;
 }
 function show(id){ document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on')); document.getElementById(id).classList.add('on'); }
+function destroyPeer(){ if(peer){ try{peer.destroy();}catch(e){} peer=null; } }
 
 // Reconnect on tab focus
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible'&&myRoom&&!dying){
-    if(myRole==='guest'){
-      const hid=hostPrimaryId(myRoom);
-      if(!hostConns[hid]||!hostConns[hid].online) connectGuestToHost(hid);
+    if(myRole==='guest'&&(!hostConn||!hostConn.open)){
+      clearTimeout(guestRetryTimer);
+      addLog('Tab active — reconnecting…','s');
+      connectToHost();
     }
   }
 });
