@@ -22,6 +22,8 @@
   --border2:rgba(255,255,255,0.13);
   --muted:#3a3a52;
   --soft:#7070a0;
+  --label:#c8c8e0;
+  --hint:#8888aa;
   --text:#e8e8f5;
   --gold:#f0a500;
   --gold2:#c87800;
@@ -69,7 +71,7 @@ body::before{
   color:var(--gold);text-align:center;line-height:1;
   text-shadow:0 0 40px rgba(240,165,0,0.3);
 }
-.tagline{font-size:0.58rem;color:var(--muted);text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
+.tagline{font-size:0.65rem;color:var(--hint);text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
 
 .notice{
   background:rgba(62,207,110,0.06);border:1px solid rgba(62,207,110,0.15);
@@ -79,8 +81,9 @@ body::before{
 }
 .notice button{background:none;border:none;color:var(--red);font-family:var(--mono);font-size:0.68rem;cursor:pointer;text-decoration:underline;white-space:nowrap}
 
-.seg{display:flex;flex-direction:column;gap:8px}
-.lbl{font-size:0.58rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted)}
+.seg{display:flex;flex-direction:column;gap:9px}
+.seg+.seg{padding-top:4px}
+.lbl{font-size:0.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:500}
 
 /* Role picker */
 .roles{display:grid;grid-template-columns:1fr 1fr;gap:9px}
@@ -92,7 +95,7 @@ body::before{
 .role:active{transform:scale(.97)}
 .role .ri{font-size:1.7rem;display:block;margin-bottom:5px}
 .role .rn{font-family:var(--disp);font-size:1.2rem;letter-spacing:1px}
-.role .rd{font-size:0.58rem;color:var(--muted);margin-top:2px}
+.role .rd{font-size:0.65rem;color:var(--hint);margin-top:2px}
 .role.ah{border-color:var(--gold);background:rgba(240,165,0,0.06)}
 .role.ag{border-color:var(--blue);background:rgba(56,192,232,0.06)}
 
@@ -106,11 +109,11 @@ input{
 }
 input.code{letter-spacing:5px;text-align:center;font-size:1.05rem}
 input:focus{border-color:var(--border2)}
-input::placeholder{color:var(--muted);letter-spacing:1px;font-size:0.75rem}
-.hint{font-size:0.6rem;color:var(--muted);padding:0 2px;line-height:1.5}
+input::placeholder{color:var(--soft);letter-spacing:1px;font-size:0.78rem}
+.hint{font-size:0.68rem;color:var(--hint);padding:0 2px;line-height:1.6}
 
 /* Divider */
-.div{height:1px;background:var(--border)}
+.div{height:1px;background:rgba(255,255,255,0.1);margin:4px 0}
 
 /* Primary button */
 .go{
@@ -249,7 +252,7 @@ input::placeholder{color:var(--muted);letter-spacing:1px;font-size:0.75rem}
 
 /* ─── WhatsApp fallback ─── */
 .wa-wrap{display:flex;flex-direction:column;gap:8px}
-.wa-lbl{font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.wa-lbl{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--hint)}
 .wa-row{
   display:flex;align-items:center;gap:10px;
   background:rgba(37,211,102,0.06);
@@ -273,7 +276,7 @@ input::placeholder{color:var(--muted);letter-spacing:1px;font-size:0.75rem}
 .trk::after{content:'';position:absolute;top:3px;left:3px;width:10px;height:10px;border-radius:50%;background:var(--muted);transition:transform .2s,background .2s}
 input:checked~.trk{background:rgba(240,165,0,0.2);border-color:rgba(240,165,0,0.35)}
 input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
-.dt-lbl{font-size:0.6rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.dt-lbl{font-size:0.66rem;color:var(--label);letter-spacing:1.5px;text-transform:uppercase}
 .dtpanel{display:none;flex-direction:column;gap:11px}
 .dtpanel.open{display:flex}
 .notif-bar{
