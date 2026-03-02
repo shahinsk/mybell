@@ -3,614 +3,636 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#1a1a2e">
+<meta name="theme-color" content="#0a0a0f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>🔔 Bell Trigger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    font-family:system-ui,sans-serif;
-    background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
-    min-height:100vh;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;color:#fff;padding:20px;
-  }
-  h1{font-size:2rem;margin-bottom:4px;text-align:center}
-  .sub{color:#a0aec0;font-size:0.9rem;margin-bottom:32px;text-align:center}
-
-  .card{
-    background:rgba(255,255,255,0.07);
-    border:1px solid rgba(255,255,255,0.12);
-    border-radius:24px;padding:32px 24px;
-    width:100%;max-width:380px;
-    display:flex;flex-direction:column;gap:20px;
-  }
-
-  /* JOIN SCREEN */
-  #joinScreen{display:flex;flex-direction:column;gap:14px;align-items:center}
-  #joinScreen h2{font-size:1.05rem;color:#63b3ed;text-align:center;line-height:1.6}
-  .saved-pill{
-    display:flex;align-items:center;gap:10px;
-    background:rgba(104,211,145,0.1);border:1px solid rgba(104,211,145,0.25);
-    border-radius:12px;padding:10px 14px;width:100%;
-  }
-  .saved-pill span{flex:1;font-size:0.82rem;color:#68d391}
-  .saved-pill strong{letter-spacing:3px;font-size:1rem}
-  .clear-btn{
-    background:rgba(252,129,129,0.15);border:1px solid rgba(252,129,129,0.3);
-    color:#fc8181;border-radius:8px;padding:5px 10px;
-    font-size:0.75rem;cursor:pointer;white-space:nowrap;
-  }
-  #roomInput{
-    width:100%;background:rgba(0,0,0,0.35);
-    border:2px solid rgba(255,255,255,0.15);border-radius:14px;
-    padding:16px;color:#fff;font-size:1.5rem;
-    letter-spacing:6px;text-align:center;outline:none;
-    transition:border-color 0.2s;
-  }
-  #roomInput:focus{border-color:#63b3ed}
-  #roomInput::placeholder{letter-spacing:2px;font-size:0.9rem;color:#4a5568}
-  .join-btn{
-    width:100%;padding:16px;border-radius:14px;border:none;
-    background:linear-gradient(135deg,#3182ce,#2b6cb0);
-    color:#fff;font-size:1.1rem;font-weight:700;cursor:pointer;
-    transition:transform 0.1s,opacity 0.2s;
-  }
-  .join-btn:active{transform:scale(0.97)}
-  .join-btn:disabled{opacity:0.4;cursor:not-allowed}
-
-  /* MAIN SCREEN */
-  #mainScreen{display:none;flex-direction:column;gap:20px}
-  .room-label{
-    text-align:center;padding:10px 16px;
-    background:rgba(0,0,0,0.25);border-radius:12px;
-    font-size:0.85rem;color:#a0aec0;
-    display:flex;align-items:center;justify-content:center;gap:10px;
-  }
-  .room-label strong{color:#68d391;letter-spacing:3px;font-size:1rem}
-  .change-room-btn{
-    background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);
-    color:#a0aec0;border-radius:8px;padding:4px 10px;
-    font-size:0.72rem;cursor:pointer;white-space:nowrap;
-  }
-  .change-room-btn:hover{background:rgba(255,255,255,0.12);color:#fff}
-
-  /* Role badge */
-  .role-badge{
-    text-align:center;font-size:0.75rem;padding:5px 12px;
-    border-radius:20px;display:inline-flex;align-items:center;
-    gap:6px;margin:0 auto;
-  }
-  .role-badge.host{background:rgba(159,122,234,0.15);color:#b794f4;border:1px solid rgba(159,122,234,0.25)}
-  .role-badge.guest{background:rgba(99,179,237,0.15);color:#63b3ed;border:1px solid rgba(99,179,237,0.25)}
-
-  .status-badge{
-    display:flex;align-items:center;justify-content:center;gap:8px;
-    padding:10px 14px;border-radius:20px;font-size:0.85rem;font-weight:500;
-    transition:all 0.3s;text-align:center;
-  }
-  .status-badge.waiting{background:rgba(237,137,54,0.12);color:#f6ad55;border:1px solid rgba(237,137,54,0.25)}
-  .status-badge.connected{background:rgba(104,211,145,0.12);color:#68d391;border:1px solid rgba(104,211,145,0.25)}
-  .status-badge.reconnecting{background:rgba(99,179,237,0.1);color:#63b3ed;border:1px solid rgba(99,179,237,0.2)}
-  .status-badge.disconnected{background:rgba(229,62,62,0.1);color:#fc8181;border:1px solid rgba(229,62,62,0.2)}
-  .dot{width:9px;height:9px;border-radius:50%;background:currentColor;flex-shrink:0}
-  .dot.pulse{animation:pulse 1.4s infinite}
-  .dot.spin{animation:spin 1s linear infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.2}}
-  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-
-  /* Bell */
-  .bell-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
-  .bell-btn{
-    width:160px;height:160px;border-radius:50%;border:none;cursor:pointer;
-    background:radial-gradient(circle at 35% 35%,#f6ad55,#dd6b20);
-    box-shadow:0 0 0 0 rgba(246,173,85,0.5),0 12px 40px rgba(0,0,0,0.4);
-    font-size:4rem;transition:transform 0.12s;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .bell-btn:not(:disabled):active{transform:scale(0.92)}
-  .bell-btn:disabled{filter:grayscale(0.6);cursor:not-allowed;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
-  .bell-btn.pulse-ring{animation:ring 0.55s ease-in-out,ripple 0.55s ease-out}
-  @keyframes ring{
-    0%{transform:rotate(0) scale(1)}
-    15%{transform:rotate(-18deg) scale(1.08)}
-    30%{transform:rotate(18deg) scale(1.08)}
-    45%{transform:rotate(-12deg)}60%{transform:rotate(12deg)}
-    75%{transform:rotate(-6deg)}90%{transform:rotate(6deg)}
-    100%{transform:rotate(0) scale(1)}
-  }
-  @keyframes ripple{
-    0%{box-shadow:0 0 0 0 rgba(246,173,85,0.6),0 12px 40px rgba(0,0,0,0.4)}
-    100%{box-shadow:0 0 0 70px rgba(246,173,85,0),0 12px 40px rgba(0,0,0,0.4)}
-  }
-  .bell-hint{font-size:0.8rem;color:#718096;text-align:center;line-height:1.5}
-
-  /* Reconnect countdown */
-  .reconnect-info{
-    font-size:0.78rem;color:#63b3ed;text-align:center;
-    background:rgba(99,179,237,0.07);border-radius:10px;
-    padding:8px 12px;display:none;
-  }
-  .reconnect-info.visible{display:block}
-
-  .flash-overlay{
-    position:fixed;inset:0;
-    background:radial-gradient(circle,rgba(246,173,85,0.35),transparent 70%);
-    pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:99;
-  }
-  .flash-overlay.show{opacity:1}
-
-  .divider{height:1px;background:rgba(255,255,255,0.08)}
-
-  .log{
-    background:rgba(0,0,0,0.25);border-radius:12px;padding:12px 14px;
-    font-size:0.78rem;min-height:48px;max-height:90px;overflow-y:auto;
-    display:flex;flex-direction:column;gap:4px;
-  }
-  .log-entry{color:#a0aec0}
-  .log-entry.recv{color:#f6ad55}
-  .log-entry.sys{color:#718096;font-style:italic}
-
-  #notifBanner{
-    background:rgba(99,179,237,0.1);border:1px solid rgba(99,179,237,0.25);
-    border-radius:12px;padding:10px 14px;
-    font-size:0.8rem;color:#90cdf4;
-    display:flex;align-items:center;justify-content:space-between;gap:10px;
-  }
-  #notifBanner button{
-    background:#3182ce;border:none;color:#fff;
-    border-radius:8px;padding:5px 10px;font-size:0.78rem;cursor:pointer;white-space:nowrap;
-  }
-  #notifBanner.hidden{display:none}
+:root {
+  --bg: #0a0a0f;
+  --surface: #13131a;
+  --surface2: #1c1c28;
+  --border: rgba(255,255,255,0.08);
+  --border-bright: rgba(255,255,255,0.18);
+  --text: #f0f0f5;
+  --muted: #6b6b80;
+  --accent-host: #f5a623;
+  --accent-guest: #4fc3f7;
+  --accent-wa: #25d366;
+  --danger: #ff5c5c;
+  --connected: #5dde8a;
+  --font: 'Syne', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:20px;
+  position:relative;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%,rgba(245,166,35,0.07) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 90%,rgba(79,195,247,0.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.wrap{
+  position:relative;z-index:1;
+  width:100%;max-width:400px;
+  display:flex;flex-direction:column;
+  align-items:center;
+}
+.header{text-align:center;margin-bottom:28px}
+.header-icon{
+  font-size:2.8rem;display:block;margin-bottom:8px;
+  filter:drop-shadow(0 0 20px rgba(245,166,35,0.5));
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.header h1{font-size:1.6rem;font-weight:800;letter-spacing:-0.5px}
+.header p{font-size:0.82rem;color:var(--muted);margin-top:4px;font-family:var(--mono)}
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:28px 22px;
+  width:100%;
+  display:flex;flex-direction:column;gap:18px;
+  box-shadow:0 24px 80px rgba(0,0,0,0.5);
+}
+.screen{display:none;flex-direction:column;gap:18px}
+.screen.active{display:flex}
+.label{font-size:0.68rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--muted);font-family:var(--mono);margin-bottom:6px}
+.role-picker{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.role-card{
+  border:2px solid var(--border);border-radius:16px;
+  padding:16px 12px;text-align:center;cursor:pointer;
+  transition:all 0.2s;background:transparent;color:var(--text);
+}
+.role-card:hover{border-color:var(--border-bright);background:var(--surface2)}
+.role-card.sel-host{border-color:var(--accent-host);background:rgba(245,166,35,0.08)}
+.role-card.sel-guest{border-color:var(--accent-guest);background:rgba(79,195,247,0.08)}
+.role-card .icon{font-size:1.8rem;display:block;margin-bottom:6px}
+.role-card .rname{font-weight:700;font-size:0.95rem}
+.role-card .rdesc{font-size:0.72rem;color:var(--muted);margin-top:3px;font-family:var(--mono)}
+.field{display:flex;flex-direction:column;gap:8px}
+input[type=text],input[type=tel]{
+  width:100%;background:var(--surface2);
+  border:1.5px solid var(--border);border-radius:12px;
+  padding:14px 16px;color:var(--text);
+  font-family:var(--mono);font-size:1rem;
+  outline:none;transition:border-color 0.2s;
+}
+input[type=text]{letter-spacing:4px;text-align:center;font-size:1.2rem}
+input:focus{border-color:var(--border-bright)}
+input::placeholder{color:var(--muted);letter-spacing:1px;font-size:0.85rem}
+.phone-hint{font-size:0.72rem;color:var(--muted);font-family:var(--mono);padding:0 4px}
+.btn{
+  width:100%;padding:15px;border-radius:12px;border:none;
+  font-family:var(--font);font-size:1rem;font-weight:700;
+  cursor:pointer;transition:transform 0.1s,opacity 0.2s,box-shadow 0.2s;
+}
+.btn:active{transform:scale(0.97)}
+.btn:disabled{opacity:0.35;cursor:not-allowed}
+.btn-primary{
+  background:linear-gradient(135deg,#f5a623,#e08e0b);
+  color:#000;box-shadow:0 4px 20px rgba(245,166,35,0.25);
+}
+.btn-primary:not(:disabled):hover{box-shadow:0 6px 28px rgba(245,166,35,0.4)}
+.btn-ghost{
+  background:transparent;border:1.5px solid var(--border);
+  color:var(--muted);font-size:0.82rem;padding:10px;
+}
+.btn-ghost:hover{border-color:var(--border-bright);color:var(--text)}
+.divider{height:1px;background:var(--border)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.room-pill{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:30px;padding:6px 14px;
+  font-family:var(--mono);font-size:0.78rem;color:var(--muted);flex:1;
+}
+.room-pill strong{color:var(--text);letter-spacing:3px;font-size:0.9rem}
+.role-pill{
+  display:flex;align-items:center;gap:5px;
+  border-radius:30px;padding:6px 12px;
+  font-size:0.72rem;font-weight:700;letter-spacing:1px;white-space:nowrap;
+}
+.role-pill.host{background:rgba(245,166,35,0.15);color:var(--accent-host);border:1px solid rgba(245,166,35,0.3)}
+.role-pill.guest{background:rgba(79,195,247,0.12);color:var(--accent-guest);border:1px solid rgba(79,195,247,0.25)}
+.status-row{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;border-radius:12px;
+  font-size:0.85rem;font-weight:600;transition:all 0.3s;
+}
+.status-row.waiting{background:rgba(245,166,35,0.08);color:#f5a623;border:1px solid rgba(245,166,35,0.2)}
+.status-row.connected{background:rgba(93,222,138,0.08);color:var(--connected);border:1px solid rgba(93,222,138,0.2)}
+.status-row.reconnecting{background:rgba(79,195,247,0.08);color:var(--accent-guest);border:1px solid rgba(79,195,247,0.2)}
+.status-row.offline{background:rgba(255,92,92,0.08);color:var(--danger);border:1px solid rgba(255,92,92,0.2)}
+.sdot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}
+.sdot.pulse{animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.15}}
+.bell-center{display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 0}
+.bell-outer{position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center}
+.bell-ripple{
+  position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,166,35,0.18),transparent 70%);
+  opacity:0;transform:scale(0.8);
+}
+.bell-ripple.fire{animation:ripout 0.6s ease-out forwards}
+@keyframes ripout{0%{opacity:1;transform:scale(0.8)}100%{opacity:0;transform:scale(1.85)}}
+.bell-btn{
+  width:130px;height:130px;border-radius:50%;border:none;cursor:pointer;
+  background:radial-gradient(circle at 38% 32%,#f9c45a,#c97b0a);
+  box-shadow:0 8px 32px rgba(245,166,35,0.35),inset 0 1px 0 rgba(255,255,255,0.2);
+  font-size:3.5rem;display:flex;align-items:center;justify-content:center;
+  transition:transform 0.12s,box-shadow 0.2s;position:relative;z-index:1;
+}
+.bell-btn:not(:disabled):active{transform:scale(0.91)}
+.bell-btn:disabled{filter:grayscale(0.7) brightness(0.7);cursor:not-allowed;box-shadow:0 4px 16px rgba(0,0,0,0.3)}
+.bell-btn.ring{animation:ring 0.55s ease-in-out}
+@keyframes ring{
+  0%{transform:rotate(0) scale(1)}
+  15%{transform:rotate(-20deg) scale(1.1)}
+  30%{transform:rotate(20deg) scale(1.1)}
+  45%{transform:rotate(-13deg)}60%{transform:rotate(13deg)}
+  75%{transform:rotate(-7deg)}90%{transform:rotate(7deg)}
+  100%{transform:rotate(0) scale(1)}
+}
+.bell-label{font-size:0.78rem;color:var(--muted);text-align:center;font-family:var(--mono);line-height:1.5}
+.wa-btn{
+  width:100%;padding:14px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,#25d366,#1aad54);
+  color:#fff;font-family:var(--font);font-size:0.95rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 4px 20px rgba(37,211,102,0.25);
+  transition:transform 0.1s,box-shadow 0.2s;
+  animation:fadein 0.3s ease;
+}
+.wa-btn:active{transform:scale(0.97)}
+.wa-btn:hover{box-shadow:0 6px 28px rgba(37,211,102,0.4)}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.notif-banner{
+  background:rgba(79,195,247,0.07);border:1px solid rgba(79,195,247,0.2);
+  border-radius:10px;padding:10px 14px;
+  font-size:0.78rem;color:#90cdf4;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-family:var(--mono);
+}
+.notif-banner button{
+  background:rgba(79,195,247,0.2);border:1px solid rgba(79,195,247,0.3);
+  color:#90cdf4;border-radius:8px;padding:5px 10px;
+  font-size:0.75rem;cursor:pointer;white-space:nowrap;
+  font-family:var(--font);font-weight:600;
+}
+.notif-banner.hidden{display:none}
+.log{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:10px 12px;
+  min-height:52px;max-height:88px;overflow-y:auto;
+  display:flex;flex-direction:column;gap:3px;
+}
+.log-entry{font-size:0.73rem;color:var(--muted);font-family:var(--mono)}
+.log-entry.recv{color:var(--accent-host)}
+.log-entry.wa{color:var(--accent-wa)}
+.log-entry.sys{color:#333344}
+.saved-strip{
+  background:rgba(93,222,138,0.06);border:1px solid rgba(93,222,138,0.15);
+  border-radius:10px;padding:8px 14px;
+  font-size:0.75rem;color:#5dde8a;font-family:var(--mono);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.saved-strip button{
+  background:none;border:none;color:var(--danger);
+  font-size:0.75rem;cursor:pointer;font-family:var(--mono);
+  text-decoration:underline;white-space:nowrap;
+}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wa-num-dis{font-family:var(--mono);font-size:0.78rem;color:var(--muted);flex:1}
+.wa-num-dis span{color:var(--accent-wa)}
+.edit-wa-btn{
+  background:none;border:1px solid var(--border);border-radius:8px;
+  color:var(--muted);padding:5px 10px;font-size:0.72rem;cursor:pointer;
+  font-family:var(--mono);white-space:nowrap;
+}
+.edit-wa-btn:hover{border-color:var(--border-bright);color:var(--text)}
+.flash{
+  position:fixed;inset:0;z-index:999;pointer-events:none;
+  opacity:0;transition:opacity 0.12s;
+  background:radial-gradient(circle,rgba(245,166,35,0.2),transparent 65%);
+}
+.flash.show{opacity:1}
+.reconnect-bar{font-size:0.75rem;color:var(--accent-guest);text-align:center;font-family:var(--mono);display:none}
+.reconnect-bar.visible{display:block}
 </style>
 </head>
 <body>
-
-<div class="flash-overlay" id="flashOverlay"></div>
-<h1>🔔 Bell Trigger</h1>
-<p class="sub">Ring a bell on another device</p>
-
-<div class="card">
-
-  <!-- JOIN SCREEN -->
-  <div id="joinScreen">
-    <h2>Enter a shared room code<br>
-      <small style="color:#718096;font-size:0.8rem">Both devices use the same code</small>
-    </h2>
-    <div class="saved-pill" id="savedPill" style="display:none">
-      <span>Last room: <strong id="savedCodeLabel"></strong></span>
-      <button class="clear-btn" onclick="clearSaved()">✕ Clear</button>
-    </div>
-    <input type="text" id="roomInput" maxlength="12" placeholder="e.g.  MYBELL"
-      oninput="this.value=this.value.toUpperCase()"
-      onkeydown="if(event.key==='Enter')joinRoom()">
-    <button class="join-btn" id="joinBtn" onclick="joinRoom()">Join Room</button>
+<div class="flash" id="flash"></div>
+<div class="wrap">
+  <div class="header">
+    <span class="header-icon">🔔</span>
+    <h1>Bell Trigger</h1>
+    <p>instant ring · whatsapp fallback</p>
   </div>
+  <div class="card">
 
-  <!-- MAIN SCREEN -->
-  <div id="mainScreen">
-    <div class="room-label">
-      Room: <strong id="roomDisplay"></strong>
-      <button class="change-room-btn" onclick="changeRoom()">Change</button>
+    <!-- SETUP SCREEN -->
+    <div class="screen active" id="setupScreen">
+      <div class="saved-strip" id="savedStrip" style="display:none">
+        <span id="savedSummary"></span>
+        <button onclick="clearSetup()">Reset setup</button>
+      </div>
+      <div>
+        <div class="label">I am the…</div>
+        <div class="role-picker">
+          <div class="role-card" id="rcHost" onclick="selectRole('host')">
+            <span class="icon">⚓</span>
+            <div class="rname">Host</div>
+            <div class="rdesc">Always listening</div>
+          </div>
+          <div class="role-card" id="rcGuest" onclick="selectRole('guest')">
+            <span class="icon">📱</span>
+            <div class="rname">Guest</div>
+            <div class="rdesc">Rings the bell</div>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <div class="label">Shared Room Code</div>
+        <input type="text" id="roomInput" maxlength="12" placeholder="e.g. MYBELL"
+          oninput="this.value=this.value.toUpperCase();updateJoinBtn()"
+          onkeydown="if(event.key==='Enter')tryJoin()">
+      </div>
+      <div class="field">
+        <div class="label" id="waLabel">Other Device's WhatsApp Number</div>
+        <input type="tel" id="waInput" placeholder="+60123456789" oninput="updateJoinBtn()">
+        <div class="phone-hint">Include country code · e.g. +60 for Malaysia, +1 for US</div>
+      </div>
+      <button class="btn btn-primary" id="joinBtn" onclick="tryJoin()" disabled>Start</button>
     </div>
 
-    <div id="roleBadge" class="role-badge host">⚓ Host — always listening</div>
-
-    <div id="notifBanner">
-      <span>Enable notifications for background alerts</span>
-      <button onclick="requestNotifPerm()">Enable</button>
+    <!-- MAIN SCREEN -->
+    <div class="screen" id="mainScreen">
+      <div class="topbar">
+        <div class="room-pill">
+          <span>Room</span><strong id="roomDisplay"></strong>
+        </div>
+        <div class="role-pill host" id="rolePill">⚓ HOST</div>
+      </div>
+      <div class="notif-banner" id="notifBanner">
+        <span>Allow notifications for background alerts</span>
+        <button onclick="requestNotifPerm()">Allow</button>
+      </div>
+      <div class="status-row waiting" id="statusRow">
+        <div class="sdot pulse"></div><span id="statusText">Waiting…</span>
+      </div>
+      <div class="reconnect-bar" id="reconnectBar"></div>
+      <div class="bell-center">
+        <div class="bell-outer">
+          <div class="bell-ripple" id="bellRipple"></div>
+          <button class="bell-btn" id="bellBtn" onclick="sendBell()" disabled>🔔</button>
+        </div>
+        <div class="bell-label" id="bellLabel">Waiting for connection…</div>
+      </div>
+      <button class="wa-btn" id="waFallbackBtn" onclick="openWhatsApp()" style="display:none">
+        <span>💬</span><span id="waFallbackText">Send WhatsApp to Host</span>
+      </button>
+      <div class="divider"></div>
+      <div class="settings-row">
+        <div class="wa-num-dis" id="waNumDis"></div>
+        <button class="edit-wa-btn" onclick="showEditWa()">Edit number</button>
+      </div>
+      <div class="log" id="log"><div class="log-entry sys">— activity log —</div></div>
+      <button class="btn btn-ghost" onclick="changeRoom()">Change Room / Reset</button>
     </div>
 
-    <div id="statusBadge" class="status-badge waiting">
-      <div class="dot pulse"></div>
-      <span id="statusText">Waiting for other device…</span>
+    <!-- EDIT WA SCREEN -->
+    <div class="screen" id="editWaScreen">
+      <div class="label" id="editWaLabel">Update WhatsApp Number</div>
+      <input type="tel" id="editWaInput" placeholder="+60123456789">
+      <div class="phone-hint">Include country code · e.g. +60 for Malaysia</div>
+      <button class="btn btn-primary" onclick="saveEditWa()">Save Number</button>
+      <button class="btn btn-ghost" onclick="cancelEditWa()">Cancel</button>
     </div>
 
-    <div class="reconnect-info" id="reconnectInfo"></div>
-
-    <div class="bell-wrap">
-      <button class="bell-btn" id="bellBtn" onclick="sendBell()" disabled>🔔</button>
-      <div class="bell-hint" id="bellHint">Waiting for other device to connect…</div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="log" id="log">
-      <div class="log-entry sys">Activity will appear here…</div>
-    </div>
   </div>
-
 </div>
 
 <script>
-// ─── Constants ────────────────────────────────────────────────────
-const STORAGE_KEY   = 'bell_trigger_room_code';
-const PEER_HOST     = '0.peerjs.com';
-const RECONNECT_DELAYS = [2000, 3000, 5000, 8000, 10000]; // escalating retry delays
+const S={ROLE:'bt_role',ROOM:'bt_room',WA:'bt_wa'};
+let peer=null,conn=null,myRole=null,myRoom=null,myWa=null;
+let selectedRole=null,isChangingRoom=false;
+let reconnectTimer=null,reconnectAttempt=0,heartbeatTimer=null;
+const DELAYS=[2000,3000,5000,8000,10000];
 
-// ─── State ────────────────────────────────────────────────────────
-let peer         = null;
-let conn         = null;
-let myRoom       = null;
-let myRole       = null;   // 'host' | 'guest'
-let reconnectTimer   = null;
-let reconnectAttempt = 0;
-let isChangingRoom   = false;
-let heartbeatTimer   = null;
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+function unlockAudio(){if(AC.state==='suspended')AC.resume();}
+document.addEventListener('touchstart',unlockAudio,{once:true});
+document.addEventListener('click',unlockAudio,{once:true});
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 
-// ─── Audio ────────────────────────────────────────────────────────
-const AC = new (window.AudioContext || window.webkitAudioContext)();
-function unlockAudio(){ if(AC.state === 'suspended') AC.resume(); }
-
-function playBell(volume = 1){
-  unlockAudio();
-  const osc = AC.createOscillator(), gain = AC.createGain();
-  osc.connect(gain); gain.connect(AC.destination);
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(900, AC.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(450, AC.currentTime + 2);
-  gain.gain.setValueAtTime(volume, AC.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 2);
-  osc.start(); osc.stop(AC.currentTime + 2);
-  [1800, 2700].forEach((f, i) => {
-    const o = AC.createOscillator(), g = AC.createGain();
-    o.connect(g); g.connect(AC.destination);
-    o.type = 'sine'; o.frequency.value = f;
-    g.gain.setValueAtTime(volume * 0.15, AC.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 1.2 - i * 0.3);
-    o.start(); o.stop(AC.currentTime + 1.2 - i * 0.3);
-  });
-}
-
-// ─── Service Worker & Notifications ──────────────────────────────
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
-function checkNotifBanner(){
-  if(!('Notification' in window) || Notification.permission === 'granted')
-    document.getElementById('notifBanner').classList.add('hidden');
-}
-function requestNotifPerm(){
-  Notification.requestPermission().then(p => {
-    if(p === 'granted') document.getElementById('notifBanner').classList.add('hidden');
-    addLog('Notifications ' + (p === 'granted' ? 'enabled ✓' : 'not enabled'), 'sys');
-  });
-}
-function sendNotification(title, body){
-  if(!('Notification' in window) || Notification.permission !== 'granted') return;
-  navigator.serviceWorker.ready.then(reg => {
-    reg.showNotification(title, {
-      body, vibrate:[200,100,200,100,200],
-      tag:'bell-trigger', renotify:true,
-      icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔔</text></svg>',
-    });
-  }).catch(() => { try{ new Notification(title,{body}); }catch(e){} });
-}
-
-// ─── Saved room code ──────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if(saved){
-    document.getElementById('savedCodeLabel').textContent = saved;
-    document.getElementById('savedPill').style.display = 'flex';
-    document.getElementById('roomInput').value = saved;
-    document.getElementById('joinBtn').textContent = `Rejoin "${saved}"`;
-    setTimeout(() => joinRoom(), 700);
+window.addEventListener('DOMContentLoaded',()=>{
+  const role=ls(S.ROLE),room=ls(S.ROOM),wa=ls(S.WA);
+  if(role&&room){
+    selectedRole=role;
+    document.getElementById('savedSummary').textContent=
+      `${role==='host'?'⚓ Host':'📱 Guest'} · Room: ${room} · WA: ${wa||'not set'}`;
+    document.getElementById('savedStrip').style.display='flex';
+    document.getElementById('roomInput').value=room;
+    document.getElementById('waInput').value=wa||'';
+    updateJoinBtn();
+    setTimeout(()=>tryJoin(),700);
   }
 });
 
-function clearSaved(){
-  localStorage.removeItem(STORAGE_KEY);
-  document.getElementById('savedPill').style.display = 'none';
-  document.getElementById('roomInput').value = '';
-  document.getElementById('joinBtn').textContent = 'Join Room';
+function ls(k){return localStorage.getItem(k);}
+function lsSet(k,v){localStorage.setItem(k,v);}
+function lsDel(k){localStorage.removeItem(k);}
+
+function selectRole(r){
+  selectedRole=r;
+  document.getElementById('rcHost').className='role-card'+(r==='host'?' sel-host':'');
+  document.getElementById('rcGuest').className='role-card'+(r==='guest'?' sel-guest':'');
+  document.getElementById('waLabel').textContent=r==='host'?"Guest's WhatsApp Number":"Host's WhatsApp Number";
+  updateJoinBtn();
 }
 
+function updateJoinBtn(){
+  const room=document.getElementById('roomInput').value.trim();
+  const ok=selectedRole&&room.length>=2;
+  const btn=document.getElementById('joinBtn');
+  btn.disabled=!ok;
+  btn.textContent=ok?(selectedRole==='host'?'⚓ Start as Host':'📱 Start as Guest'):'Start';
+}
+
+function tryJoin(){
+  const room=document.getElementById('roomInput').value.trim().toUpperCase();
+  const wa=document.getElementById('waInput').value.trim();
+  if(!selectedRole||room.length<2)return;
+  myRole=selectedRole;myRoom=room;myWa=wa||null;
+  lsSet(S.ROLE,myRole);lsSet(S.ROOM,myRoom);
+  if(myWa)lsSet(S.WA,myWa);else lsDel(S.WA);
+  reconnectAttempt=0;
+  showMain();
+  if(myRole==='host')initAsHost(myRoom);
+  else initAsGuest(myRoom);
+}
+
+function clearSetup(){[S.ROLE,S.ROOM,S.WA].forEach(lsDel);location.reload();}
 function changeRoom(){
-  isChangingRoom = true;
-  stopReconnect();
-  if(conn){ try{ conn.close(); }catch(e){} conn = null; }
-  if(peer){ try{ peer.destroy(); }catch(e){} peer = null; }
-  localStorage.removeItem(STORAGE_KEY);
-  isChangingRoom = false;
-  document.getElementById('mainScreen').style.display = 'none';
-  document.getElementById('joinScreen').style.display = 'flex';
-  document.getElementById('savedPill').style.display = 'none';
-  document.getElementById('roomInput').value = '';
-  document.getElementById('joinBtn').textContent = 'Join Room';
-  document.getElementById('joinBtn').disabled = false;
+  isChangingRoom=true;stopReconnect();clearHB();
+  if(conn){try{conn.close();}catch(e){}conn=null;}
+  if(peer){try{peer.destroy();}catch(e){}peer=null;}
+  [S.ROLE,S.ROOM,S.WA].forEach(lsDel);location.reload();
 }
 
-// ─── Join & init ──────────────────────────────────────────────────
-function joinRoom(){
-  const code = document.getElementById('roomInput').value.trim().toUpperCase();
-  if(code.length < 2){ alert('Please enter a room code (at least 2 characters)'); return; }
-  document.getElementById('joinBtn').disabled = true;
-  document.getElementById('joinBtn').textContent = 'Joining…';
-  myRoom = code;
-  localStorage.setItem(STORAGE_KEY, code);
-  reconnectAttempt = 0;
-  tryBecomeHost(code);
+function showMain(){
+  switchScreen('mainScreen');
+  document.getElementById('roomDisplay').textContent=myRoom;
+  const rp=document.getElementById('rolePill');
+  if(myRole==='host'){rp.className='role-pill host';rp.textContent='⚓ HOST';}
+  else{rp.className='role-pill guest';rp.textContent='📱 GUEST';}
+  updateWaDisplay();
+  document.getElementById('editWaLabel').textContent=
+    myRole==='host'?"Update Guest's WhatsApp Number":"Update Host's WhatsApp Number";
+  checkNotifBanner();
+  setTimeout(()=>{playBell(0.45);ringUI();addLog('🔔 Bell rang on page load','sys');},500);
 }
 
-// ─── Core: try to claim host slot ────────────────────────────────
-function tryBecomeHost(roomCode){
-  const hostId = 'BELLROOM-HOST-' + roomCode;
-  if(peer){ try{ peer.destroy(); }catch(e){} peer = null; }
+function updateWaDisplay(){
+  const t=myRole==='host'?"Guest's WA":"Host's WA";
+  document.getElementById('waNumDis').innerHTML=myWa
+    ?`${t}: <span>${myWa}</span>`
+    :`<span style="color:var(--muted)">${t}: not set</span>`;
+}
 
-  peer = new Peer(hostId, peerConfig());
+function switchScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
-  peer.on('open', id => {
-    myRole = 'host';
-    reconnectAttempt = 0;
-    showMainScreen(roomCode, 'host');
-    addLog('You are the Host — listening for connections…', 'sys');
-    setStatus('waiting', 'Waiting for other device to join…');
+function showEditWa(){document.getElementById('editWaInput').value=myWa||'';switchScreen('editWaScreen');}
+function saveEditWa(){
+  const v=document.getElementById('editWaInput').value.trim();
+  myWa=v||null;
+  if(myWa)lsSet(S.WA,myWa);else lsDel(S.WA);
+  updateWaDisplay();
+  addLog(`WA number updated: ${myWa||'cleared'}`,'wa');
+  switchScreen('mainScreen');
+}
+function cancelEditWa(){switchScreen('mainScreen');}
+
+function pCfg(){return{host:'0.peerjs.com',port:443,secure:true,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]}};}
+
+function initAsHost(room){
+  const hid='BELLROOM-HOST-'+room;
+  if(peer){try{peer.destroy();}catch(e){}peer=null;}
+  peer=new Peer(hid,pCfg());
+  peer.on('open',()=>{
+    reconnectAttempt=0;
+    setStatus('waiting','Waiting for guest to join…');
+    addLog('Listening as Host…','sys');
   });
+  peer.on('connection',inc=>{
+    if(conn){try{conn.close();}catch(e){}}
+    conn=inc;setupConn();
+  });
+  peer.on('error',err=>{
+    if(err.type==='unavailable-id'){
+      peer.destroy();peer=null;
+      addLog('Host slot busy, retrying…','sys');
+      scheduleReconnect(room);
+    }else handlePeerErr(err,room);
+  });
+  peer.on('disconnected',()=>{
+    if(isChangingRoom)return;
+    try{peer.reconnect();}catch(e){scheduleReconnect(room);}
+  });
+}
 
-  // Host receives incoming connections
-  peer.on('connection', incoming => {
-    // Close any existing stale connection
-    if(conn){ try{ conn.close(); }catch(e){} }
-    conn = incoming;
+function initAsGuest(room){
+  const hid='BELLROOM-HOST-'+room;
+  const gid='BELLROOM-GUEST-'+room+'-'+Math.random().toString(36).substr(2,5).toUpperCase();
+  if(peer){try{peer.destroy();}catch(e){}peer=null;}
+  peer=new Peer(gid,pCfg());
+  peer.on('open',()=>{
+    reconnectAttempt=0;
+    setStatus('reconnecting','Connecting to host…');
+    addLog('Connecting to host…','sys');
+    conn=peer.connect(hid,{reliable:true});
     setupConn();
   });
-
-  peer.on('error', err => {
-    if(err.type === 'unavailable-id'){
-      // Host slot taken — become guest instead
-      peer.destroy(); peer = null;
-      tryBecomeGuest(roomCode);
-    } else {
-      handlePeerError(err, roomCode);
-    }
-  });
-
-  peer.on('disconnected', () => {
-    if(isChangingRoom) return;
-    addLog('Peer server disconnected. Reconnecting…', 'sys');
-    // Try to reconnect to peer server (keeps same ID)
-    try{ peer.reconnect(); }catch(e){ scheduleReconnect(roomCode); }
+  peer.on('error',err=>handlePeerErr(err,room));
+  peer.on('disconnected',()=>{
+    if(isChangingRoom)return;
+    try{peer.reconnect();}catch(e){scheduleReconnect(room);}
   });
 }
 
-// ─── Core: become guest and connect to host ───────────────────────
-function tryBecomeGuest(roomCode){
-  const hostId   = 'BELLROOM-HOST-' + roomCode;
-  const guestId  = 'BELLROOM-GUEST-' + roomCode + '-' + Math.random().toString(36).substr(2,5).toUpperCase();
-  if(peer){ try{ peer.destroy(); }catch(e){} peer = null; }
-
-  peer = new Peer(guestId, peerConfig());
-
-  peer.on('open', () => {
-    myRole = 'guest';
-    reconnectAttempt = 0;
-    showMainScreen(roomCode, 'guest');
-    addLog('Connecting to host…', 'sys');
-    setStatus('reconnecting', 'Connecting to host…');
-    conn = peer.connect(hostId, { reliable: true });
-    setupConn();
-  });
-
-  peer.on('error', err => handlePeerError(err, roomCode));
-
-  peer.on('disconnected', () => {
-    if(isChangingRoom) return;
-    try{ peer.reconnect(); }catch(e){ scheduleReconnect(roomCode); }
-  });
-}
-
-// ─── Connection setup (shared for host & guest) ───────────────────
 function setupConn(){
-  clearHeartbeat();
-
-  conn.on('open', () => {
-    stopReconnect();
-    reconnectAttempt = 0;
-    const role = myRole === 'host' ? 'Other device connected!' : 'Connected to host!';
-    setStatus('connected', role + ' 🎉');
-    document.getElementById('bellBtn').disabled = false;
-    document.getElementById('bellHint').textContent = 'Tap to ring the other device';
-    addLog('✅ Connected — ready to ring!', 'sys');
-    hideReconnectInfo();
-    startHeartbeat();
+  clearHB();
+  conn.on('open',()=>{
+    stopReconnect();reconnectAttempt=0;
+    const msg=myRole==='host'?'Guest connected! 🎉':'Connected to host! 🎉';
+    setStatus('connected',msg);
+    document.getElementById('bellBtn').disabled=false;
+    document.getElementById('bellLabel').textContent='Tap to ring the other device';
+    hideWaBtn();addLog('✅ Connected','sys');hideRBar();startHB();
   });
-
-  conn.on('data', data => {
-    if(data === 'BELL') receiveBell();
-    // heartbeat pings are silently ignored
+  conn.on('data',data=>{if(data==='BELL')receiveBell();});
+  conn.on('close',()=>{
+    if(isChangingRoom)return;
+    clearHB();
+    setStatus('offline','Other device disconnected');
+    document.getElementById('bellBtn').disabled=true;
+    document.getElementById('bellLabel').textContent='Other device is offline';
+    addLog('Other device disconnected.','sys');
+    conn=null;
+    if(myRole==='guest'&&myWa)showWaBtn();
+    if(myRole==='guest')scheduleReconnect(myRoom);
+    else setStatus('waiting','Waiting for guest to rejoin…');
   });
-
-  conn.on('close', () => {
-    if(isChangingRoom) return;
-    clearHeartbeat();
-    setStatus('disconnected', 'Other device disconnected');
-    document.getElementById('bellBtn').disabled = true;
-    document.getElementById('bellHint').textContent = 'Waiting to reconnect…';
-    addLog('Other device disconnected.', 'sys');
-    conn = null;
-    // Host just waits — guest tries to reconnect
-    if(myRole === 'guest') scheduleReconnect(myRoom);
-    else setStatus('waiting', 'Waiting for other device to rejoin…');
-  });
-
-  conn.on('error', err => {
-    if(isChangingRoom) return;
-    clearHeartbeat();
-    addLog('Connection error. Retrying…', 'sys');
-    conn = null;
+  conn.on('error',()=>{
+    if(isChangingRoom)return;
+    clearHB();conn=null;
+    if(myRole==='guest'&&myWa)showWaBtn();
     scheduleReconnect(myRoom);
   });
 }
 
-// ─── Heartbeat (keeps connection alive) ──────────────────────────
-function startHeartbeat(){
-  clearHeartbeat();
-  heartbeatTimer = setInterval(() => {
-    if(conn && conn.open){
-      try{ conn.send('ping'); }catch(e){}
-    }
-  }, 10000); // every 10 seconds
+function startHB(){
+  clearHB();
+  heartbeatTimer=setInterval(()=>{if(conn&&conn.open){try{conn.send('ping');}catch(e){}}},10000);
 }
-function clearHeartbeat(){
-  if(heartbeatTimer){ clearInterval(heartbeatTimer); heartbeatTimer = null; }
-}
+function clearHB(){if(heartbeatTimer){clearInterval(heartbeatTimer);heartbeatTimer=null;}}
 
-// ─── Auto-reconnect logic ─────────────────────────────────────────
-function scheduleReconnect(roomCode){
-  if(isChangingRoom) return;
+function scheduleReconnect(room){
+  if(isChangingRoom)return;
   stopReconnect();
-  const delay = RECONNECT_DELAYS[Math.min(reconnectAttempt, RECONNECT_DELAYS.length - 1)];
+  const delay=DELAYS[Math.min(reconnectAttempt,DELAYS.length-1)];
   reconnectAttempt++;
-  let countdown = Math.round(delay / 1000);
-  setStatus('reconnecting', `Reconnecting in ${countdown}s… (attempt ${reconnectAttempt})`);
-  showReconnectInfo(`Retrying in ${countdown}s…`);
+  let t=Math.round(delay/1000);
+  setStatus('reconnecting',`Reconnecting in ${t}s…`);
+  showRBar(`Attempt ${reconnectAttempt} in ${t}s`);
+  const cd=setInterval(()=>{t--;if(t>0)showRBar(`Attempt ${reconnectAttempt} in ${t}s`);else clearInterval(cd);},1000);
+  reconnectTimer=setTimeout(()=>{
+    clearInterval(cd);hideRBar();
+    if(isChangingRoom)return;
+    addLog(`Reconnect attempt ${reconnectAttempt}…`,'sys');
+    if(myRole==='host')initAsHost(room);else initAsGuest(room);
+  },delay);
+}
+function stopReconnect(){if(reconnectTimer){clearTimeout(reconnectTimer);reconnectTimer=null;}}
+function handlePeerErr(err,room){if(isChangingRoom)return;addLog('Network error: '+err.type,'sys');scheduleReconnect(room);}
 
-  // Live countdown
-  const countTimer = setInterval(() => {
-    countdown--;
-    if(countdown > 0){
-      setStatus('reconnecting', `Reconnecting in ${countdown}s… (attempt ${reconnectAttempt})`);
-      showReconnectInfo(`Retrying in ${countdown}s…`);
-    } else {
-      clearInterval(countTimer);
-    }
-  }, 1000);
-
-  reconnectTimer = setTimeout(() => {
-    clearInterval(countTimer);
-    if(isChangingRoom) return;
-    addLog(`Reconnect attempt ${reconnectAttempt}…`, 'sys');
-    hideReconnectInfo();
-    // Always try host first, fall back to guest
-    tryBecomeHost(roomCode);
-  }, delay);
+function showWaBtn(){
+  document.getElementById('waFallbackText').textContent=
+    myRole==='host'?'Send WhatsApp to Guest':'Send WhatsApp to Host';
+  document.getElementById('waFallbackBtn').style.display='flex';
+}
+function hideWaBtn(){document.getElementById('waFallbackBtn').style.display='none';}
+function openWhatsApp(){
+  if(!myWa){alert('No WhatsApp number saved. Tap "Edit number" to add one.');return;}
+  const num=myWa.replace(/[^\d]/g,'');
+  const msg=encodeURIComponent('🔔 Hey! I\'m trying to ring your Bell Trigger — please open the app!');
+  window.open(`https://wa.me/${num}?text=${msg}`,'_blank');
+  addLog(`📲 Opened WhatsApp to ${myWa}`,'wa');
 }
 
-function stopReconnect(){
-  if(reconnectTimer){ clearTimeout(reconnectTimer); reconnectTimer = null; }
-}
-
-function handlePeerError(err, roomCode){
-  if(isChangingRoom) return;
-  addLog('Network error: ' + err.type + '. Retrying…', 'sys');
-  scheduleReconnect(roomCode);
-}
-
-// ─── Bell send / receive ──────────────────────────────────────────
 function sendBell(){
-  if(!conn || !conn.open) return;
-  conn.send('BELL');
-  animateBell();
-  addLog('🔔 You rang the bell!', 'send');
+  if(!conn||!conn.open)return;
+  conn.send('BELL');ringUI();
+  addLog('🔔 You rang the bell!','');
 }
-
 function receiveBell(){
-  playBell();
-  animateBell();
-  flashScreen();
-  if(navigator.vibrate) navigator.vibrate([200, 80, 200, 80, 400]);
-  addLog('🔔 Bell received!', 'recv');
-  sendNotification('🔔 Bell Trigger', 'Someone rang your bell!');
+  playBell();ringUI();flashScreen();
+  if(navigator.vibrate)navigator.vibrate([200,80,200,80,400]);
+  addLog('🔔 Bell received!','recv');
+  sendNotif('🔔 Bell Trigger','Someone rang your bell!');
 }
-
-function animateBell(){
-  const btn = document.getElementById('bellBtn');
-  btn.classList.remove('pulse-ring');
-  void btn.offsetWidth;
-  btn.classList.add('pulse-ring');
-  setTimeout(() => btn.classList.remove('pulse-ring'), 600);
+function ringUI(){
+  const b=document.getElementById('bellBtn'),r=document.getElementById('bellRipple');
+  b.classList.remove('ring');r.classList.remove('fire');void b.offsetWidth;
+  b.classList.add('ring');r.classList.add('fire');
+  setTimeout(()=>{b.classList.remove('ring');r.classList.remove('fire');},650);
 }
-
 function flashScreen(){
-  const o = document.getElementById('flashOverlay');
-  o.classList.add('show');
-  setTimeout(() => o.classList.remove('show'), 250);
+  const f=document.getElementById('flash');
+  f.classList.add('show');setTimeout(()=>f.classList.remove('show'),220);
 }
 
-// ─── UI helpers ───────────────────────────────────────────────────
-function showMainScreen(roomCode, role){
-  document.getElementById('joinScreen').style.display = 'none';
-  const ms = document.getElementById('mainScreen');
-  ms.style.display = 'flex';
-  document.getElementById('roomDisplay').textContent = roomCode;
-
-  const rb = document.getElementById('roleBadge');
-  if(role === 'host'){
-    rb.className = 'role-badge host';
-    rb.textContent = '⚓ Host — always listening';
-  } else {
-    rb.className = 'role-badge guest';
-    rb.textContent = '📱 Guest — connected to host';
-  }
-
-  checkNotifBanner();
-
-  // Ring bell on page load
-  setTimeout(() => {
-    playBell(0.45);
-    animateBell();
-    addLog('🔔 Bell rang on page load', 'sys');
-  }, 500);
+function playBell(vol=1){
+  unlockAudio();
+  const o=AC.createOscillator(),g=AC.createGain();
+  o.connect(g);g.connect(AC.destination);
+  o.type='sine';
+  o.frequency.setValueAtTime(900,AC.currentTime);
+  o.frequency.exponentialRampToValueAtTime(450,AC.currentTime+2);
+  g.gain.setValueAtTime(vol,AC.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+2);
+  o.start();o.stop(AC.currentTime+2);
+  [[1800,0],[2700,0.3]].forEach(([f,d])=>{
+    const o2=AC.createOscillator(),g2=AC.createGain();
+    o2.connect(g2);g2.connect(AC.destination);
+    o2.type='sine';o2.frequency.value=f;
+    g2.gain.setValueAtTime(vol*0.13,AC.currentTime);
+    g2.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+1.2-d);
+    o2.start();o2.stop(AC.currentTime+1.2-d);
+  });
 }
 
-function setStatus(type, msg){
-  const b = document.getElementById('statusBadge');
-  b.className = 'status-badge ' + type;
-  let dotClass = 'dot';
-  if(type === 'waiting') dotClass += ' pulse';
-  if(type === 'reconnecting') dotClass += ' pulse';
-  b.innerHTML = `<div class="${dotClass}"></div><span>${msg}</span>`;
+function checkNotifBanner(){
+  if(!('Notification'in window)||Notification.permission==='granted')
+    document.getElementById('notifBanner').classList.add('hidden');
+}
+function requestNotifPerm(){
+  Notification.requestPermission().then(p=>{
+    if(p==='granted')document.getElementById('notifBanner').classList.add('hidden');
+    addLog('Notifications: '+p,'sys');
+  });
+}
+function sendNotif(title,body){
+  if(!('Notification'in window)||Notification.permission!=='granted')return;
+  navigator.serviceWorker.ready.then(reg=>{
+    reg.showNotification(title,{body,vibrate:[200,100,200,100,200],tag:'bell-trigger',renotify:true,
+      icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔔</text></svg>'});
+  }).catch(()=>{try{new Notification(title,{body});}catch(e){}});
 }
 
-function showReconnectInfo(msg){
-  const el = document.getElementById('reconnectInfo');
-  el.textContent = '🔄 ' + msg;
-  el.classList.add('visible');
+function setStatus(type,msg){
+  const r=document.getElementById('statusRow');
+  r.className='status-row '+type;
+  const dot=(type==='waiting'||type==='reconnecting')?' pulse':'';
+  r.innerHTML=`<div class="sdot${dot}"></div><span>${msg}</span>`;
 }
-function hideReconnectInfo(){
-  document.getElementById('reconnectInfo').classList.remove('visible');
-}
-
-function addLog(msg, type){
-  const log = document.getElementById('log');
-  // Remove initial placeholder
-  const ph = log.querySelector('.sys');
-  if(ph && log.children.length === 1) ph.remove();
-  const entry = document.createElement('div');
-  entry.className = 'log-entry ' + (type || '');
-  const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-  entry.textContent = `[${time}] ${msg}`;
-  log.appendChild(entry);
-  // Keep max 30 entries
-  while(log.children.length > 30) log.removeChild(log.firstChild);
-  log.scrollTop = log.scrollHeight;
+function showRBar(msg){const b=document.getElementById('reconnectBar');b.textContent='🔄 '+msg;b.classList.add('visible');}
+function hideRBar(){document.getElementById('reconnectBar').classList.remove('visible');}
+function addLog(msg,type){
+  const log=document.getElementById('log');
+  const ph=log.querySelector('.sys');
+  if(ph&&log.children.length===1)ph.remove();
+  const e=document.createElement('div');
+  e.className='log-entry '+(type||'');
+  const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  e.textContent=`[${t}] ${msg}`;
+  log.appendChild(e);
+  while(log.children.length>30)log.removeChild(log.firstChild);
+  log.scrollTop=log.scrollHeight;
 }
 
-function peerConfig(){
-  return {
-    host: PEER_HOST, port: 443, secure: true,
-    config: { iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
-    ]}
-  };
-}
-
-// Unlock audio on first interaction (iOS)
-document.addEventListener('touchstart', unlockAudio, { once: true });
-document.addEventListener('click', unlockAudio, { once: true });
-
-// Reconnect when tab becomes visible again (e.g. user switches back)
-document.addEventListener('visibilitychange', () => {
-  if(document.visibilityState === 'visible' && myRoom){
-    if(!conn || !conn.open){
-      if(!reconnectTimer){
-        addLog('Tab refocused — checking connection…', 'sys');
-        scheduleReconnect(myRoom);
-      }
-    }
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&myRoom&&!reconnectTimer){
+    if(!conn||!conn.open){addLog('Tab refocused — reconnecting…','sys');scheduleReconnect(myRoom);}
   }
 });
 </script>
