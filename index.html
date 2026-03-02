@@ -27,9 +27,24 @@
     display:flex;flex-direction:column;gap:20px;
   }
 
-  /* Room join screen */
-  #joinScreen{display:flex;flex-direction:column;gap:16px;align-items:center}
-  #joinScreen h2{font-size:1.1rem;color:#63b3ed;text-align:center}
+  /* JOIN SCREEN */
+  #joinScreen{display:flex;flex-direction:column;gap:14px;align-items:center}
+  #joinScreen h2{font-size:1.05rem;color:#63b3ed;text-align:center;line-height:1.6}
+
+  .saved-pill{
+    display:flex;align-items:center;gap:10px;
+    background:rgba(104,211,145,0.1);border:1px solid rgba(104,211,145,0.25);
+    border-radius:12px;padding:10px 14px;width:100%;
+  }
+  .saved-pill span{flex:1;font-size:0.82rem;color:#68d391}
+  .saved-pill strong{letter-spacing:3px;font-size:1rem}
+  .clear-btn{
+    background:rgba(252,129,129,0.15);border:1px solid rgba(252,129,129,0.3);
+    color:#fc8181;border-radius:8px;padding:5px 10px;
+    font-size:0.75rem;cursor:pointer;white-space:nowrap;
+  }
+  .clear-btn:hover{background:rgba(252,129,129,0.25)}
+
   #roomInput{
     width:100%;background:rgba(0,0,0,0.35);
     border:2px solid rgba(255,255,255,0.15);border-radius:14px;
@@ -39,6 +54,7 @@
   }
   #roomInput:focus{border-color:#63b3ed}
   #roomInput::placeholder{letter-spacing:2px;font-size:0.9rem;color:#4a5568}
+
   .join-btn{
     width:100%;padding:16px;border-radius:14px;border:none;
     background:linear-gradient(135deg,#3182ce,#2b6cb0);
@@ -48,15 +64,22 @@
   .join-btn:active{transform:scale(0.97)}
   .join-btn:disabled{opacity:0.4;cursor:not-allowed}
 
-  /* Main screen */
+  /* MAIN SCREEN */
   #mainScreen{display:none;flex-direction:column;gap:20px}
 
   .room-label{
     text-align:center;padding:10px 16px;
     background:rgba(0,0,0,0.25);border-radius:12px;
     font-size:0.85rem;color:#a0aec0;
+    display:flex;align-items:center;justify-content:center;gap:10px;
   }
   .room-label strong{color:#68d391;letter-spacing:3px;font-size:1rem}
+  .change-room-btn{
+    background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);
+    color:#a0aec0;border-radius:8px;padding:4px 10px;
+    font-size:0.72rem;cursor:pointer;white-space:nowrap;
+  }
+  .change-room-btn:hover{background:rgba(255,255,255,0.12);color:#fff}
 
   .status-badge{
     display:flex;align-items:center;justify-content:center;gap:8px;
@@ -70,31 +93,26 @@
   .dot.pulse{animation:pulse 1.4s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.25}}
 
-  /* Bell button */
   .bell-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
   .bell-btn{
     width:160px;height:160px;border-radius:50%;border:none;cursor:pointer;
-    background:radial-gradient(circle at 35% 35%, #f6ad55, #dd6b20);
+    background:radial-gradient(circle at 35% 35%,#f6ad55,#dd6b20);
     box-shadow:0 0 0 0 rgba(246,173,85,0.5),0 12px 40px rgba(0,0,0,0.4);
     font-size:4rem;transition:transform 0.12s;
     display:flex;align-items:center;justify-content:center;
-    animation:none;
   }
   .bell-btn:not(:disabled):active{transform:scale(0.92)}
   .bell-btn:disabled{filter:grayscale(0.7);cursor:not-allowed;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
-  .bell-btn.ringing{animation:ring 0.5s ease-in-out}
+  .bell-btn.pulse-ring{animation:ring 0.55s ease-in-out,ripple 0.55s ease-out}
   @keyframes ring{
-    0%{transform:rotate(0deg) scale(1)}
+    0%{transform:rotate(0) scale(1)}
     15%{transform:rotate(-18deg) scale(1.08)}
     30%{transform:rotate(18deg) scale(1.08)}
     45%{transform:rotate(-12deg)}
     60%{transform:rotate(12deg)}
     75%{transform:rotate(-6deg)}
     90%{transform:rotate(6deg)}
-    100%{transform:rotate(0deg) scale(1)}
-  }
-  .bell-btn.pulse-ring{
-    animation:ring 0.5s ease-in-out,ripple 0.5s ease-out;
+    100%{transform:rotate(0) scale(1)}
   }
   @keyframes ripple{
     0%{box-shadow:0 0 0 0 rgba(246,173,85,0.6),0 12px 40px rgba(0,0,0,0.4)}
@@ -102,7 +120,6 @@
   }
   .bell-hint{font-size:0.8rem;color:#718096;text-align:center}
 
-  /* Received flash */
   .flash-overlay{
     position:fixed;inset:0;
     background:radial-gradient(circle,rgba(246,173,85,0.35),transparent 70%);
@@ -110,10 +127,9 @@
   }
   .flash-overlay.show{opacity:1}
 
-  /* Log */
   .log{
     background:rgba(0,0,0,0.25);border-radius:12px;padding:12px 14px;
-    font-size:0.78rem;color:#718096;min-height:48px;max-height:80px;overflow-y:auto;
+    font-size:0.78rem;color:#718096;min-height:48px;max-height:90px;overflow-y:auto;
     display:flex;flex-direction:column;gap:4px;
   }
   .log-entry{color:#a0aec0}
@@ -121,7 +137,6 @@
 
   .divider{height:1px;background:rgba(255,255,255,0.08)}
 
-  /* Notif permission banner */
   #notifBanner{
     background:rgba(99,179,237,0.1);border:1px solid rgba(99,179,237,0.25);
     border-radius:12px;padding:10px 14px;
@@ -147,6 +162,13 @@
   <!-- JOIN SCREEN -->
   <div id="joinScreen">
     <h2>Enter a shared room code<br><small style="color:#718096;font-size:0.8rem">Both devices use the same code</small></h2>
+
+    <!-- Saved room pill (shown if a saved code exists) -->
+    <div class="saved-pill" id="savedPill" style="display:none">
+      <span>Last room: <strong id="savedCodeLabel"></strong></span>
+      <button class="clear-btn" onclick="clearSaved()">✕ Clear</button>
+    </div>
+
     <input type="text" id="roomInput" maxlength="12" placeholder="e.g.  MYBELL"
       oninput="this.value=this.value.toUpperCase()"
       onkeydown="if(event.key==='Enter')joinRoom()">
@@ -155,7 +177,10 @@
 
   <!-- MAIN SCREEN -->
   <div id="mainScreen">
-    <div class="room-label">Room: <strong id="roomDisplay"></strong></div>
+    <div class="room-label">
+      Room: <strong id="roomDisplay"></strong>
+      <button class="change-room-btn" onclick="changeRoom()">Change Room</button>
+    </div>
 
     <div id="notifBanner">
       <span>Enable notifications to ring when browser is closed</span>
@@ -182,13 +207,49 @@
 </div>
 
 <script>
-// ─── Audio Context ────────────────────────────────────────────────
+// ─── Storage key ─────────────────────────────────────────────────
+const STORAGE_KEY = 'bell_trigger_room_code';
+
+// ─── On load: check for saved room code ──────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if(saved){
+    // Show saved pill and pre-fill input
+    document.getElementById('savedCodeLabel').textContent = saved;
+    document.getElementById('savedPill').style.display = 'flex';
+    document.getElementById('roomInput').value = saved;
+    document.getElementById('joinBtn').textContent = `Rejoin "${saved}"`;
+    // Auto-join after a brief moment so user can see it
+    setTimeout(() => joinRoom(), 800);
+  }
+});
+
+function clearSaved(){
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById('savedPill').style.display = 'none';
+  document.getElementById('roomInput').value = '';
+  document.getElementById('joinBtn').textContent = 'Join Room';
+}
+
+function changeRoom(){
+  // Disconnect cleanly and go back to join screen
+  if(conn){ try{ conn.close(); }catch(e){} conn = null; }
+  if(peer){ try{ peer.destroy(); }catch(e){} peer = null; }
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById('mainScreen').style.display = 'none';
+  document.getElementById('joinScreen').style.display = 'flex';
+  document.getElementById('savedPill').style.display = 'none';
+  document.getElementById('roomInput').value = '';
+  document.getElementById('joinBtn').textContent = 'Join Room';
+  document.getElementById('joinBtn').disabled = false;
+}
+
+// ─── Audio ───────────────────────────────────────────────────────
 const AC = new (window.AudioContext || window.webkitAudioContext)();
 function unlockAudio(){ if(AC.state==='suspended') AC.resume(); }
 
 function playBell(volume=1){
   unlockAudio();
-  // Main bell tone
   const osc = AC.createOscillator();
   const gain = AC.createGain();
   osc.connect(gain); gain.connect(AC.destination);
@@ -198,11 +259,8 @@ function playBell(volume=1){
   gain.gain.setValueAtTime(volume, AC.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + 2);
   osc.start(); osc.stop(AC.currentTime + 2);
-
-  // Harmonics for richness
   [1800, 2700].forEach((f, i) => {
-    const o2 = AC.createOscillator();
-    const g2 = AC.createGain();
+    const o2 = AC.createOscillator(), g2 = AC.createGain();
     o2.connect(g2); g2.connect(AC.destination);
     o2.type = 'sine'; o2.frequency.value = f;
     g2.gain.setValueAtTime(volume * 0.15, AC.currentTime);
@@ -216,7 +274,6 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
 
-// ─── Notification permission ──────────────────────────────────────
 function checkNotifBanner(){
   if(!('Notification' in window) || Notification.permission === 'granted'){
     document.getElementById('notifBanner').classList.add('hidden');
@@ -228,23 +285,15 @@ function requestNotifPerm(){
     addLog('Notifications: ' + p, false);
   });
 }
-
 function sendNotification(title, body){
-  if(!('Notification' in window)) return;
-  if(Notification.permission !== 'granted') return;
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
   navigator.serviceWorker.ready.then(reg => {
     reg.showNotification(title, {
-      body,
-      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔔</text></svg>',
-      badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔔</text></svg>',
-      vibrate: [200, 100, 200, 100, 200],
-      tag: 'bell-trigger',
-      renotify: true,
+      body, vibrate:[200,100,200,100,200],
+      tag:'bell-trigger', renotify:true,
+      icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔔</text></svg>',
     });
-  }).catch(() => {
-    // fallback if SW not ready
-    new Notification(title, { body });
-  });
+  }).catch(() => { try{ new Notification(title,{body}); }catch(e){} });
 }
 
 // ─── PeerJS / Room logic ──────────────────────────────────────────
@@ -256,29 +305,26 @@ function joinRoom(){
   document.getElementById('joinBtn').disabled = true;
   document.getElementById('joinBtn').textContent = 'Joining…';
   myRoom = code;
+
+  // ✅ Save the code to localStorage
+  localStorage.setItem(STORAGE_KEY, code);
+
   initPeer(code);
 }
 
 function initPeer(roomCode){
-  // We use a deterministic ID scheme:
-  // Device A always tries to be HOST-<roomCode>
-  // Device B connects to HOST-<roomCode>
-  // If HOST is taken, become GUEST and connect to HOST
-
   const hostId = 'BELLROOM-HOST-' + roomCode;
   const guestId = 'BELLROOM-GUEST-' + roomCode + '-' + Math.random().toString(36).substr(2,4);
 
-  // Try to claim the host ID first
   peer = new Peer(hostId, {
-    host: '0.peerjs.com', port: 443, secure: true,
-    config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] }
+    host:'0.peerjs.com', port:443, secure:true,
+    config:{ iceServers:[{ urls:'stun:stun.l.google.com:19302' }] }
   });
 
-  peer.on('open', id => {
-    // We are the HOST
+  peer.on('open', () => {
     showMainScreen(roomCode);
     addLog('You joined as Host. Waiting for other device…', false);
-    setStatus('waiting', 'Waiting for other device…');
+    setStatus('waiting','Waiting for other device…');
   });
 
   peer.on('connection', incoming => {
@@ -288,12 +334,11 @@ function initPeer(roomCode){
 
   peer.on('error', err => {
     if(err.type === 'unavailable-id'){
-      // Host slot taken — become guest
       peer.destroy();
       becomeGuest(hostId, guestId, roomCode);
     } else {
       addLog('Connection error: ' + err.message, false);
-      setStatus('disconnected', 'Error — try reloading');
+      setStatus('disconnected','Error — try reloading');
       document.getElementById('joinBtn').disabled = false;
       document.getElementById('joinBtn').textContent = 'Join Room';
     }
@@ -302,55 +347,43 @@ function initPeer(roomCode){
 
 function becomeGuest(hostId, guestId, roomCode){
   peer = new Peer(guestId, {
-    host: '0.peerjs.com', port: 443, secure: true,
-    config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] }
+    host:'0.peerjs.com', port:443, secure:true,
+    config:{ iceServers:[{ urls:'stun:stun.l.google.com:19302' }] }
   });
-
   peer.on('open', () => {
     showMainScreen(roomCode);
     addLog('You joined as Guest. Connecting to host…', false);
-    setStatus('waiting', 'Connecting to host…');
+    setStatus('waiting','Connecting to host…');
     conn = peer.connect(hostId);
     setupConn('guest');
   });
-
   peer.on('error', err => {
     addLog('Error: ' + err.message, false);
-    setStatus('disconnected', 'Could not connect — reload and retry');
+    setStatus('disconnected','Could not connect — reload and retry');
   });
 }
 
 function setupConn(role){
   conn.on('open', () => {
-    setStatus('connected', role === 'host' ? 'Guest connected! 🎉' : 'Connected to host! 🎉');
+    setStatus('connected', role==='host' ? 'Guest connected! 🎉' : 'Connected to host! 🎉');
     document.getElementById('bellBtn').disabled = false;
     document.getElementById('bellHint').textContent = 'Tap to ring on the other device';
     addLog('Connected! Both devices ready.', false);
   });
-
-  conn.on('data', data => {
-    if(data === 'BELL'){
-      receiveBell();
-    }
-  });
-
+  conn.on('data', data => { if(data==='BELL') receiveBell(); });
   conn.on('close', () => {
-    setStatus('disconnected', 'Other device disconnected');
+    setStatus('disconnected','Other device disconnected');
     document.getElementById('bellBtn').disabled = true;
     document.getElementById('bellHint').textContent = 'Waiting for other device to reconnect…';
     addLog('Other device left the room.', false);
     conn = null;
   });
-
-  conn.on('error', err => {
-    addLog('Connection error: ' + err.message, false);
-  });
+  conn.on('error', err => addLog('Connection error: ' + err.message, false));
 }
 
 function sendBell(){
   if(!conn || !conn.open) return;
   conn.send('BELL');
-  // animate sender button too
   animateBell();
   addLog('🔔 You rang the bell!', false);
 }
@@ -361,13 +394,13 @@ function receiveBell(){
   flashScreen();
   if(navigator.vibrate) navigator.vibrate([200,80,200,80,400]);
   addLog('🔔 Bell received!', true);
-  sendNotification('🔔 Bell Trigger', 'Someone rang your bell!');
+  sendNotification('🔔 Bell Trigger','Someone rang your bell!');
 }
 
 function animateBell(){
   const btn = document.getElementById('bellBtn');
   btn.classList.remove('pulse-ring');
-  void btn.offsetWidth; // reflow
+  void btn.offsetWidth;
   btn.classList.add('pulse-ring');
   setTimeout(() => btn.classList.remove('pulse-ring'), 600);
 }
@@ -378,13 +411,11 @@ function flashScreen(){
   setTimeout(() => o.classList.remove('show'), 250);
 }
 
-// ─── UI helpers ───────────────────────────────────────────────────
 function showMainScreen(roomCode){
   document.getElementById('joinScreen').style.display = 'none';
   document.getElementById('mainScreen').style.display = 'flex';
   document.getElementById('roomDisplay').textContent = roomCode;
   checkNotifBanner();
-  // Ring bell on page load
   setTimeout(() => {
     playBell(0.5);
     animateBell();
@@ -400,20 +431,18 @@ function setStatus(type, msg){
 
 function addLog(msg, isReceive){
   const log = document.getElementById('log');
-  // remove placeholder
   const placeholder = log.querySelector('[style]');
   if(placeholder) placeholder.remove();
   const entry = document.createElement('div');
   entry.className = 'log-entry' + (isReceive ? ' recv' : '');
-  const time = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const time = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   entry.textContent = `[${time}] ${msg}`;
   log.appendChild(entry);
   log.scrollTop = log.scrollHeight;
 }
 
-// Unlock audio on first tap (iOS requirement)
-document.addEventListener('touchstart', unlockAudio, { once: true });
-document.addEventListener('click', unlockAudio, { once: true });
+document.addEventListener('touchstart', unlockAudio, { once:true });
+document.addEventListener('click', unlockAudio, { once:true });
 </script>
 </body>
 </html>
