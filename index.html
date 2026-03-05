@@ -197,13 +197,34 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .t-notif-hint button{background:rgba(240,165,0,0.2);border:1px solid rgba(240,165,0,0.35);color:var(--gold);border-radius:7px;padding:5px 12px;font-size:0.66rem;cursor:pointer;font-family:var(--mono);white-space:nowrap;}
 
 /* Alarm overlay */
-.t-alarm-active{display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px;border-radius:var(--r);background:rgba(224,72,72,0.1);border:2px solid rgba(224,72,72,0.35);width:100%;animation:alarmPulse 1s ease-in-out infinite;}
-@keyframes alarmPulse{0%,100%{box-shadow:0 0 0 rgba(224,72,72,0.2)}50%{box-shadow:0 0 32px rgba(224,72,72,0.4)}}
-.t-alarm-icon{font-size:3rem;animation:alarmShake .5s ease-in-out infinite;}
-@keyframes alarmShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-15deg)}75%{transform:rotate(15deg)}}
-.t-alarm-txt{font-family:var(--disp);font-size:2.8rem;letter-spacing:6px;color:var(--red);text-shadow:0 0 30px rgba(224,72,72,0.5);}
-.t-alarm-stop{width:100%;padding:16px;border-radius:var(--r);border:2px solid var(--red);background:rgba(224,72,72,0.15);color:var(--red);font-family:var(--disp);font-size:1.5rem;letter-spacing:3px;cursor:pointer;transition:background .18s;}
-.t-alarm-stop:active{background:rgba(224,72,72,0.3);}
+.t-alarm-active{
+  position:fixed;inset:0;z-index:999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
+  padding:40px 28px;
+  background:rgba(6,0,0,0.96);
+  backdrop-filter:blur(8px);
+  animation:alarmBg 1s ease-in-out infinite;
+}
+@keyframes alarmBg{0%,100%{background:rgba(6,0,0,0.96)}50%{background:rgba(40,4,4,0.98)}}
+.t-alarm-icon{font-size:5rem;animation:alarmShake .45s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(224,72,72,0.8));}
+@keyframes alarmShake{0%,100%{transform:rotate(0) scale(1)}25%{transform:rotate(-18deg) scale(1.1)}75%{transform:rotate(18deg) scale(1.1)}}
+.t-alarm-txt{font-family:var(--disp);font-size:3.6rem;letter-spacing:8px;color:var(--red);text-shadow:0 0 40px rgba(224,72,72,0.7);text-align:center;}
+.t-alarm-sub{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:rgba(224,72,72,0.5);text-align:center;}
+.t-alarm-stop{
+  width:100%;max-width:320px;
+  padding:20px;
+  border-radius:var(--r);
+  border:2px solid var(--red);
+  background:rgba(224,72,72,0.18);
+  color:#fff;
+  font-family:var(--disp);font-size:1.8rem;letter-spacing:4px;
+  cursor:pointer;
+  transition:background .18s,transform .1s;
+  box-shadow:0 0 30px rgba(224,72,72,0.3);
+  animation:stopPulse 1s ease-in-out infinite;
+}
+@keyframes stopPulse{0%,100%{box-shadow:0 0 20px rgba(224,72,72,0.2)}50%{box-shadow:0 0 40px rgba(224,72,72,0.6)}}
+.t-alarm-stop:active{background:rgba(224,72,72,0.45);transform:scale(.96);}
 
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 </style>
@@ -388,7 +409,8 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
   <div class="t-alarm-active" id="tAlarmActive" style="display:none">
     <div class="t-alarm-icon">⏰</div>
     <div class="t-alarm-txt">TIME'S UP!</div>
-    <button class="t-alarm-stop" onclick="stopAlarm()">STOP ALARM</button>
+    <div class="t-alarm-sub">Your timer has finished</div>
+    <button class="t-alarm-stop" id="tAlarmStopBtn">■ STOP ALARM</button>
   </div>
 </div>
 
@@ -1241,6 +1263,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     e.stopPropagation();
     if(!bellTouchActive) sendRing(); // touchend already handled it on mobile
   });
+
+  // Alarm stop button — instant response on touch
+  const stopBtn=document.getElementById('tAlarmStopBtn');
+  stopBtn.addEventListener('touchend',e=>{e.preventDefault();stopAlarm();},{passive:false});
+  stopBtn.addEventListener('click',stopAlarm);
 
   document.getElementById('chatMsgs')?.addEventListener('click',()=>{
     chatUnread=0;
