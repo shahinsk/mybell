@@ -241,11 +241,17 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .sl-hdr{text-align:center;padding:4px 0 2px;}
 .sl-page-title{font-family:var(--disp);font-size:3.2rem;letter-spacing:6px;color:var(--gold);line-height:1;text-shadow:0 0 40px rgba(240,165,0,0.25);}
 .sl-page-sub{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--hint);margin-top:2px;}
+.sl-hijri{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;padding:7px 18px;background:rgba(240,165,0,0.05);border:1px solid rgba(240,165,0,0.15);border-radius:20px;width:fit-content;align-self:center;margin-left:auto;margin-right:auto;}
+.sl-hijri-ar{font-size:1rem;color:var(--gold);direction:rtl;letter-spacing:1px;}
+.sl-hijri-sep{font-size:0.6rem;color:var(--muted);}
+.sl-hijri-en{font-family:var(--mono);font-size:0.72rem;color:var(--hint);letter-spacing:1px;}
 
 /* Ramadan Sehri/Iftar card */
 .rmd-card{width:100%;background:linear-gradient(135deg,#0d0d22 0%,#0a1020 100%);border:1.5px solid rgba(56,192,232,0.22);border-radius:16px;padding:14px 16px 12px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;}
 .rmd-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(56,192,232,0.07),transparent);pointer-events:none;}
-.rmd-label{font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:rgba(56,192,232,0.6);text-align:center;}
+.rmd-label-row{display:flex;align-items:center;justify-content:space-between;}
+.rmd-label{font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:rgba(56,192,232,0.7);}
+.rmd-source{font-size:0.54rem;letter-spacing:1px;color:rgba(56,192,232,0.35);font-family:var(--mono);}
 .rmd-times{display:flex;align-items:center;gap:0;}
 .rmd-block{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;}
 .rmd-block.active-rmd{background:rgba(56,192,232,0.06);border-radius:10px;}
@@ -266,6 +272,10 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .sl-row.is-next .sl-row-name{color:var(--gold);}
 .sl-row-arabic{font-size:0.95rem;color:var(--muted);direction:rtl;margin-top:1px;}
 .sl-row-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.sl-time-range{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:0.82rem;}
+.sl-time-start{color:var(--text);}
+.sl-time-arrow{color:var(--muted);font-size:0.7rem;}
+.sl-time-end{color:var(--muted);}
 .sl-time-in{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:0.92rem;padding:6px 9px;width:88px;text-align:center;outline:none;-webkit-appearance:none;transition:border-color .18s;}
 .sl-time-in:focus{border-color:rgba(240,165,0,0.5);background:rgba(240,165,0,0.05);}
 .sl-remind-row{display:flex;align-items:center;gap:5px;}
@@ -273,6 +283,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .sl-remind-in{background:rgba(240,165,0,0.07);border:1px solid rgba(240,165,0,0.2);border-radius:6px;color:var(--gold);font-family:var(--mono);font-size:0.82rem;padding:4px 7px;width:44px;text-align:center;outline:none;}
 .sl-remind-in:focus{border-color:rgba(240,165,0,0.5);}
 .sl-remind-unit{font-size:0.56rem;color:var(--muted);}
+.sl-api-badge{font-size:0.52rem;background:rgba(56,192,232,0.1);color:rgba(56,192,232,0.6);border:1px solid rgba(56,192,232,0.2);border-radius:4px;padding:1px 6px;letter-spacing:1px;}
 .sl-next-tag{font-size:0.58rem;background:rgba(240,165,0,0.14);color:var(--gold);border:1px solid rgba(240,165,0,0.3);border-radius:20px;padding:2px 9px;white-space:nowrap;}
 .sl-friday-tag{display:inline-block;font-size:0.52rem;font-family:var(--mono);letter-spacing:1.5px;background:rgba(46,207,114,0.12);color:var(--green);border:1px solid rgba(46,207,114,0.3);border-radius:20px;padding:1px 7px;margin-left:7px;vertical-align:middle;}
 
@@ -536,11 +547,19 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
   <div class="sl-hdr">
     <div class="sl-page-title">SALAH</div>
     <div class="sl-page-sub">prayer reminders</div>
+    <div class="sl-hijri" id="slHijri">
+      <span class="sl-hijri-ar" id="slHijriAr">—</span>
+      <span class="sl-hijri-sep">·</span>
+      <span class="sl-hijri-en" id="slHijriEn">—</span>
+    </div>
   </div>
 
   <!-- ─── Sehri / Iftar Card ─── -->
   <div class="rmd-card" id="rmdCard">
-    <div class="rmd-label">RAMADAN</div>
+    <div class="rmd-label-row">
+      <div class="rmd-label">SEHRI &amp; IFTAR</div>
+      <div class="rmd-source" id="rmdSource">loading…</div>
+    </div>
     <div class="rmd-times">
       <div class="rmd-block" id="rmdSehri">
         <div class="rmd-icon">🌙</div>
@@ -1979,44 +1998,143 @@ if('serviceWorker'in navigator){
 /* ══════════════════════════════════════════════════════
    SALAH — Prayer Time Reminders
    ══════════════════════════════════════════════════════ */
-const SL_KEY='bell_prayers_v1';
-const SL_DEFAULTS=[
-  {id:'fajr',   en:'Fajr',   ar:'الفجر',  time:'05:30', remind:15},
-  {id:'dhuhr',  en:'Dhuhr',  ar:'الظهر',  time:'13:00', remind:15},
-  {id:'asr',    en:'Asr',    ar:'العصر',  time:'16:30', remind:15},
-  {id:'maghrib',en:'Maghrib',ar:'المغرب', time:'19:15', remind:10},
-  {id:'isha',   en:'Isha',   ar:'العشاء', time:'20:45', remind:15},
+const SL_KEY='bell_prayers_v2';
+const SL_REMIND_KEY='bell_remind_v1';
+const SL_API_CACHE_KEY='bell_api_cache_v1';
+const SL_JUMUAH={en:"Jumu'ah", ar:'الجمعة', defaultTime:'12:00'};
+
+// Prayer order and Arabic names (API returns English keys)
+const SL_PRAYERS=[
+  {id:'fajr',   en:'Fajr',   ar:'الفجر',  apiKey:'Fajr',    endKey:'Sunrise'},
+  {id:'dhuhr',  en:'Dhuhr',  ar:'الظهر',  apiKey:'Dhuhr',   endKey:'Asr'},
+  {id:'asr',    en:'Asr',    ar:'العصر',  apiKey:'Asr',     endKey:'Maghrib'},
+  {id:'maghrib',en:'Maghrib',ar:'المغرب', apiKey:'Maghrib', endKey:'Isha'},
+  {id:'isha',   en:'Isha',   ar:'العشاء', apiKey:'Isha',    endKey:'Midnight'},
 ];
-const SL_JUMUAH={en:"Jumu'ah", ar:'الجمعة', time:'12:00'}; // Friday replaces Dhuhr
-let slData=[];
+
+let slData=[];      // merged: API times + user reminders + jumuah override
 let slTimers=[];
+let slApiTimes={}; // raw times from API: {Fajr:'05:03', Dhuhr:'12:10', ...}
+
+// Load saved reminder prefs separately from API times
+function slLoadRemind(){
+  try{return JSON.parse(localStorage.getItem(SL_REMIND_KEY)||'{}');}catch(e){return{};}
+}
+function slSaveRemind(){
+  const prefs={};
+  slData.forEach(p=>{prefs[p.id]={remind:p.remind,jumuahTime:p.jumuahTime};});
+  localStorage.setItem(SL_REMIND_KEY,JSON.stringify(prefs));
+}
+
+// Default reminder minutes
+const SL_DEFAULT_REMIND={fajr:15,dhuhr:15,asr:15,maghrib:10,isha:15};
 
 function slInit(){
-  try{
-    const raw=localStorage.getItem(SL_KEY);
-    const saved=raw?JSON.parse(raw):null;
-    slData=SL_DEFAULTS.map((d,i)=>{
-      const s=saved&&saved[i]||{};
-      return{id:d.id,en:d.en,ar:d.ar,
-        time:s.time||d.time,
-        remind:s.remind!=null?Number(s.remind):d.remind,
-        jumuahTime:s.jumuahTime||SL_JUMUAH.time}; // store jumu'ah time separately
-    });
-  }catch(e){slData=SL_DEFAULTS.map(d=>({...d,jumuahTime:SL_JUMUAH.time}));}
-  slRender();
+  // Show cached data immediately if available, then refresh
+  const cached=slLoadCache();
+  if(cached){
+    slApiTimes=cached.timings;
+    if(cached.hijri)slRenderHijri(cached.hijri);
+    slBuildData();
+    slRender();
+  }
+  slFetchTimes(); // always fetch fresh for today
   slScheduleAll();
 }
 
-function slSave(){
-  localStorage.setItem(SL_KEY,JSON.stringify(slData.map(d=>({
-    time:d.time, remind:d.remind, jumuahTime:d.jumuahTime
-  }))));
-  slScheduleAll();
+// ── AlAdhan API fetch ──
+function slDateStr(){
+  const d=new Date();
+  const dd=String(d.getDate()).padStart(2,'0');
+  const mm=String(d.getMonth()+1).padStart(2,'0');
+  const yyyy=d.getFullYear();
+  return dd+'-'+mm+'-'+yyyy;
+}
+
+function slLoadCache(){
+  try{
+    const c=JSON.parse(localStorage.getItem(SL_API_CACHE_KEY)||'null');
+    if(c&&c.date===slDateStr())return c;
+  }catch(e){}
+  return null;
+}
+
+function slSaveCache(timings, hijri){
+  localStorage.setItem(SL_API_CACHE_KEY,JSON.stringify({date:slDateStr(),timings,hijri}));
+}
+
+async function slFetchTimes(){
+  const src=document.getElementById('rmdSource');
+  if(src)src.textContent='fetching…';
+  try{
+    const dateStr=slDateStr();
+    // method=1 = University of Islamic Sciences Karachi (used in Bangladesh)
+    const url=`https://api.aladhan.com/v1/timingsByCity/${dateStr}?city=Dhaka&country=Bangladesh&method=1`;
+    const res=await fetch(url);
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const json=await res.json();
+    if(json.code!==200)throw new Error('API error');
+    const t=json.data.timings;
+    // Strip timezone offset if present (e.g. "05:03 (+06)")
+    const clean={};
+    Object.keys(t).forEach(k=>{clean[k]=t[k].split(' ')[0];});
+    slApiTimes=clean;
+    // Extract Hijri date
+    const h=json.data.date.hijri;
+    const hijri={day:h.day, monthAr:h.month.ar, monthEn:h.month.en, year:h.year};
+    slSaveCache(clean, hijri);
+    slRenderHijri(hijri);
+    slBuildData();
+    slRender();
+    if(src)src.textContent='Dhaka · today';
+  }catch(e){
+    if(src)src.textContent='offline · saved';
+    // Try showing cached hijri
+    try{
+      const c=JSON.parse(localStorage.getItem(SL_API_CACHE_KEY)||'null');
+      if(c&&c.hijri)slRenderHijri(c.hijri);
+    }catch(_){}
+    // Fall back to cached or defaults
+    if(!Object.keys(slApiTimes).length){
+      slApiTimes={Fajr:'05:03',Sunrise:'06:18',Dhuhr:'12:10',Asr:'15:32',Maghrib:'18:03',Isha:'19:18',Midnight:'00:10'};
+    }
+    slBuildData();
+    slRender();
+  }
+}
+
+function slRenderHijri(h){
+  const arEl=document.getElementById('slHijriAr');
+  const enEl=document.getElementById('slHijriEn');
+  if(!arEl||!enEl)return;
+  arEl.textContent=h.day+' '+h.monthAr+' '+h.year+'هـ';
+  enEl.textContent=h.day+' '+h.monthEn+' '+h.year+' AH';
+}
+
+function slBuildData(){
+  const remind=slLoadRemind();
+  slData=SL_PRAYERS.map(p=>{
+    const pr=remind[p.id]||{};
+    return{
+      ...p,
+      time:slApiTimes[p.apiKey]||'—',
+      endTime:slApiTimes[p.endKey]||'—',
+      remind:pr.remind!=null?Number(pr.remind):(SL_DEFAULT_REMIND[p.id]||15),
+      jumuahTime:pr.jumuahTime||SL_JUMUAH.defaultTime,
+    };
+  });
+}
+
+function fmt12(t){
+  if(!t||t==='—')return '—';
+  const [h,m]=t.split(':').map(Number);
+  const ap=h>=12?'PM':'AM';
+  return (h%12||12)+':'+(m<10?'0'+m:m)+ap;
 }
 
 function slRender(){
   const wrap=document.getElementById('slPrayers');
-  if(!wrap)return;
+  if(!wrap||!slData.length)return;
   wrap.innerHTML='';
 
   const now=new Date();
@@ -2028,7 +2146,7 @@ function slRender(){
     if(p.id==='dhuhr'&&isFriday){
       return{...p,
         en:SL_JUMUAH.en, ar:SL_JUMUAH.ar,
-        time:p.jumuahTime||SL_JUMUAH.time,
+        time:p.jumuahTime,
         isFriday:true};
     }
     return{...p,isFriday:false};
@@ -2037,6 +2155,7 @@ function slRender(){
   // Find next prayer
   let nextIdx=-1, nextDiff=Infinity;
   display.forEach((p,i)=>{
+    if(p.time==='—')return;
     const [h,m]=p.time.split(':').map(Number);
     let d=(h*60+m)-nowMin; if(d<=0)d+=1440;
     if(d<nextDiff){nextDiff=d;nextIdx=i;}
@@ -2046,15 +2165,19 @@ function slRender(){
     const isNext=i===nextIdx;
     const div=document.createElement('div');
     div.className='sl-row'+(isNext?' is-next':'');
-    const fridayBadge=p.isFriday?`<div class="sl-friday-tag">FRIDAY</div>`:'';
+    const fridayBadge=p.isFriday?`<span class="sl-friday-tag">FRIDAY</span>`:'';
+    const endDisplay=p.endTime&&p.endTime!=='—'?
+      `<span class="sl-time-arrow">→</span><span class="sl-time-end">${fmt12(p.endTime)}</span>`:'';
     div.innerHTML=`
       <div>
-        <div class="sl-row-name">${p.en}${fridayBadge}</div>
+        <div class="sl-row-name">${p.en} ${fridayBadge}</div>
         <div class="sl-row-arabic">${p.ar}</div>
       </div>
       <div class="sl-row-right">
-        <input class="sl-time-in" type="time" value="${p.time}"
-          onchange="slSetTime(${i},this.value,${p.isFriday})">
+        <div class="sl-time-range">
+          <span class="sl-time-start">${fmt12(p.time)}</span>
+          ${endDisplay}
+        </div>
         <div class="sl-remind-row">
           <span class="sl-remind-lbl">remind</span>
           <input class="sl-remind-in" type="number" min="0" max="120"
@@ -2064,64 +2187,61 @@ function slRender(){
         </div>
         ${isNext?`<div class="sl-next-tag">NEXT · ${nextDiff<60?nextDiff+'m':Math.floor(nextDiff/60)+'h'}</div>`:''}
       </div>`;
+    // On Friday, let Jumu'ah time be tappable to override
+    if(p.isFriday){
+      const timeEl=div.querySelector('.sl-time-start');
+      timeEl.style.cssText='cursor:pointer;border-bottom:1px dashed rgba(240,165,0,0.4);color:var(--gold);';
+      timeEl.title='Tap to set Jumu\'ah time';
+      timeEl.onclick=()=>slEditJumuah(i,p);
+    }
     wrap.appendChild(div);
   });
 
-  // Update Sehri/Iftar card whenever prayer list updates
+  // Update Sehri/Iftar card
   rmdUpdate();
 }
 
-function slSetTime(i,v,isFriday){
-  if(isFriday){
-    slData[i].jumuahTime=v; // save jumu'ah time separately, don't overwrite dhuhr
-  } else {
-    slData[i].time=v;
+function slEditJumuah(i,p){
+  // Inline time picker popup
+  const t=prompt("Set Jumu'ah time (HH:MM 24h):",p.time);
+  if(t&&/^\d{1,2}:\d{2}$/.test(t)){
+    slData[i].jumuahTime=t.padStart(5,'0');
+    slSaveRemind();slRender();slScheduleAll();
   }
-  slSave();slRender();
 }
+
 function slSetRemind(i,v){
   const n=parseInt(v,10);
   slData[i].remind=isNaN(n)?0:Math.max(0,n);
-  slSave();
+  slSaveRemind();
+  slScheduleAll();
 }
 
 /* ── Sehri / Iftar live card ── */
 let rmdInterval=null;
 
 function rmdUpdate(){
-  const card=document.getElementById('rmdCard');
-  if(!card||!slData.length)return;
+  if(!slData.length)return;
 
   // Sehri ends at Fajr time, Iftar starts at Maghrib time
   const fajr=slData.find(p=>p.id==='fajr');
   const maghrib=slData.find(p=>p.id==='maghrib');
-  if(!fajr||!maghrib)return;
+  if(!fajr||!maghrib||fajr.time==='—'||maghrib.time==='—')return;
 
-  const sehriTime=fajr.time;    // e.g. "05:30"
-  const iftarTime=maghrib.time; // e.g. "19:15"
+  const sehriTime=fajr.time;
+  const iftarTime=maghrib.time;
 
-  // Display times
-  function fmt24to12(t){
-    const [h,m]=t.split(':').map(Number);
-    const ap=h>=12?'PM':'AM';
-    const h12=h%12||12;
-    return h12+':'+(m<10?'0'+m:m)+' '+ap;
-  }
-  document.getElementById('rmdSehriTime').textContent=fmt24to12(sehriTime);
-  document.getElementById('rmdIftarTime').textContent=fmt24to12(iftarTime);
+  document.getElementById('rmdSehriTime').textContent=fmt12(sehriTime);
+  document.getElementById('rmdIftarTime').textContent=fmt12(iftarTime);
 
-  // Countdown to next — Sehri (Fajr) or Iftar (Maghrib)
+  // Live countdown
   const now=new Date();
   const nowMs=now.getHours()*3600000+now.getMinutes()*60000+now.getSeconds()*1000;
 
-  function timeToMs(t){
-    const [h,m]=t.split(':').map(Number);
-    return h*3600000+m*60000;
-  }
-  const sehriMs=timeToMs(sehriTime);
-  const iftarMs=timeToMs(iftarTime);
+  function toMs(t){const[h,m]=t.split(':').map(Number);return h*3600000+m*60000;}
+  const sehriMs=toMs(sehriTime);
+  const iftarMs=toMs(iftarTime);
 
-  // Which is next?
   let targetMs, targetLabel, activeSide;
   const diffSehri=sehriMs-nowMs;
   const diffIftar=iftarMs-nowMs;
@@ -2131,30 +2251,23 @@ function rmdUpdate(){
   } else if(diffIftar>0){
     targetMs=iftarMs; targetLabel='Iftar in'; activeSide='iftar';
   } else {
-    // Both passed today — Sehri is next (tomorrow)
     targetMs=sehriMs+86400000; targetLabel='Sehri ends in'; activeSide='sehri';
   }
 
-  // Highlight active side
   document.getElementById('rmdSehri').classList.toggle('active-rmd',activeSide==='sehri');
   document.getElementById('rmdIftar').classList.toggle('active-rmd',activeSide==='iftar');
 
-  // Format countdown
   let remaining=targetMs-nowMs;
   if(remaining<0)remaining+=86400000;
   const totalSec=Math.floor(remaining/1000);
   const hrs=Math.floor(totalSec/3600);
   const mins=Math.floor((totalSec%3600)/60);
   const secs=totalSec%60;
-  const cdStr=hrs+'h '+(mins<10?'0':'')+mins+'m '+(secs<10?'0':'')+secs+'s';
 
   document.getElementById('rmdCdLabel').textContent=targetLabel;
-  document.getElementById('rmdCd').textContent=cdStr;
+  document.getElementById('rmdCd').textContent=hrs+'h '+(mins<10?'0':'')+mins+'m '+(secs<10?'0':'')+secs+'s';
 
-  // Start ticking every second if not already
-  if(!rmdInterval){
-    rmdInterval=setInterval(rmdUpdate,1000);
-  }
+  if(!rmdInterval){rmdInterval=setInterval(rmdUpdate,1000);}
 }
 
 function rmdStop(){
@@ -2164,16 +2277,15 @@ function rmdStop(){
 function slScheduleAll(){
   slTimers.forEach(t=>clearTimeout(t));slTimers=[];
   if(!('Notification'in window)||Notification.permission!=='granted')return;
+  if(!slData.length)return;
   const now=Date.now();
-  const todayDate=new Date();
-  const isFriday=todayDate.getDay()===5;
-  const todayMidnight=new Date(todayDate);todayMidnight.setHours(0,0,0,0);
+  const isFriday=new Date().getDay()===5;
+  const todayMidnight=new Date();todayMidnight.setHours(0,0,0,0);
   const midnight=todayMidnight.getTime();
 
   slData.forEach(p=>{
-    if(!p.remind)return;
-    // Use Jumu'ah time on Friday for Dhuhr slot
-    const timeStr=(p.id==='dhuhr'&&isFriday)?(p.jumuahTime||SL_JUMUAH.time):p.time;
+    if(!p.remind||p.time==='—')return;
+    const timeStr=(p.id==='dhuhr'&&isFriday)?p.jumuahTime:p.time;
     const displayName=(p.id==='dhuhr'&&isFriday)?SL_JUMUAH.en:p.en;
     const [h,m]=timeStr.split(':').map(Number);
     let fireAt=midnight+h*3600000+m*60000-p.remind*60000;
@@ -2190,7 +2302,6 @@ function slScheduleAll(){
 }
 
 function slShowReminder(name,mins){
-  // In-app toast
   let t=document.getElementById('slToast');
   if(!t){
     t=document.createElement('div');t.id='slToast';
