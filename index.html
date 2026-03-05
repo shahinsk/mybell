@@ -374,8 +374,11 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .surah-ctrl-btn.paused{background:rgba(240,165,0,0.15);color:var(--gold);border:1.5px solid rgba(240,165,0,0.3);}
 .surah-progress-wrap{flex:1;position:relative;height:36px;display:flex;align-items:center;cursor:pointer;}
 .surah-progress-bg{position:absolute;left:0;right:0;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;}
+.surah-progress-buf{position:absolute;left:0;height:3px;background:rgba(240,165,0,0.2);border-radius:2px;width:0%;}
 .surah-progress-fill{position:absolute;left:0;height:3px;background:var(--gold);border-radius:2px;width:0%;}
-.surah-progress-dot{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--gold);top:50%;transform:translate(-50%,-50%);left:0%;transition:left .1s;}
+.surah-progress-dot{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--gold);top:50%;transform:translate(-50%,-50%);left:0%;transition:left .15s linear;}
+.surah-progress-dot.buffering{animation:dotPulse .8s ease-in-out infinite;}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,165,0,0.5)}50%{box-shadow:0 0 0 6px rgba(240,165,0,0)}}
 .surah-time{font-family:var(--mono);font-size:0.7rem;color:var(--muted);min-width:38px;text-align:right;}
 .surah-loading{font-family:var(--mono);font-size:0.72rem;color:var(--hint);text-align:center;padding:6px;animation:pulse 1.2s ease-in-out infinite;}
 @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
@@ -659,6 +662,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
       </button>
       <div class="surah-progress-wrap" id="surahProgressWrap" onclick="surahSeek(event)">
         <div class="surah-progress-bg"></div>
+        <div class="surah-progress-buf" id="surahBuf"></div>
         <div class="surah-progress-fill" id="surahFill"></div>
         <div class="surah-progress-dot" id="surahDot"></div>
       </div>
@@ -2622,20 +2626,23 @@ let surahAudio=null;
 let surahCurrent=null;
 let surahPlaying=false;
 let surahProgInterval=null;
+let surahStallTimer=null;
+let surahLoadRetry=0;
+const SURAH_CDNS=[
+  n=>`https://cdn.islamic.network/quran/audio-surah/128/${document.getElementById('surahReciter').value}/${n}.mp3`,
+  n=>`https://verses.quran.com/${document.getElementById('surahReciter').value.split('.')[1]}/${String(n).padStart(3,'0')}.mp3`,
+];
 
 function surahSearch(q){
   const dd=document.getElementById('surahDropdown');
   const val=q.trim().toLowerCase();
   if(!val){dd.classList.remove('open');return;}
-
   const results=SURAHS.filter(s=>
     s.en.toLowerCase().includes(val)||
     s.ar.includes(val)||
     String(s.n)===val
   ).slice(0,8);
-
   if(!results.length){dd.classList.remove('open');return;}
-
   dd.innerHTML=results.map(s=>`
     <div class="surah-opt" ontouchend="surahSelect(${s.n},event)" onclick="surahSelect(${s.n})">
       <div class="surah-opt-left">
@@ -2652,51 +2659,156 @@ function surahSelect(num, e){
   const s=SURAHS.find(x=>x.n===num);
   if(!s)return;
 
-  // Close dropdown, update input
   document.getElementById('surahDropdown').classList.remove('open');
   document.getElementById('surahInp').value=s.en;
 
-  // Stop existing audio
-  surahStop();
+  surahDestroy();
   surahCurrent=s;
+  surahLoadRetry=0;
 
-  // Show now playing
   document.getElementById('surahNowAr').textContent=s.ar;
   document.getElementById('surahNowEn').textContent='Surah '+s.n+' · '+s.en;
   document.getElementById('surahNow').style.display='block';
-
-  // Show loading
-  document.getElementById('surahLoading').style.display='block';
   document.getElementById('surahControls').style.display='none';
   document.getElementById('surahError').style.display='none';
+  surahSetStatus('loading');
 
-  const reciter=document.getElementById('surahReciter').value;
-  const num3=String(num).padStart(3,'0');
-  const url=`https://cdn.islamic.network/quran/audio-surah/128/${reciter}/${num}.mp3`;
+  surahLoadAudio(num);
+}
 
-  surahAudio=new Audio(url);
-  surahAudio.preload='auto';
+function surahLoadAudio(num){
+  const url=SURAH_CDNS[0](num);
+  surahCreateAudio(url, num);
+}
 
-  surahAudio.addEventListener('canplay',()=>{
-    document.getElementById('surahLoading').style.display='none';
+function surahCreateAudio(url, num){
+  const audio=new Audio();
+  audio.crossOrigin='anonymous';
+  // Don't set preload=auto — let it stream naturally to avoid large downloads stalling
+  audio.preload='metadata';
+
+  // Show controls as soon as we have metadata (duration known)
+  audio.addEventListener('loadedmetadata',()=>{
     document.getElementById('surahControls').style.display='flex';
-    surahPlay();
+    surahSetStatus('');
+    // Auto-play
+    const p=audio.play();
+    if(p&&p.catch)p.catch(err=>{
+      // Autoplay blocked — show play button, don't treat as error
+      surahSetPlayIcon(false);
+      surahPlaying=false;
+    });
+    surahPlaying=true;
+    surahSetPlayIcon(true);
   },{once:true});
 
-  surahAudio.addEventListener('error',()=>{
-    document.getElementById('surahLoading').style.display='none';
-    document.getElementById('surahError').textContent='Could not load audio. Check connection.';
-    document.getElementById('surahError').style.display='block';
-  },{once:true});
-
-  surahAudio.addEventListener('ended',()=>{
-    surahPlaying=false;
-    surahSetPlayIcon(false);
-    clearInterval(surahProgInterval);
-    surahUpdateProg(1);
+  // Buffering stall detection
+  audio.addEventListener('waiting',()=>{
+    surahSetStatus('buffering');
+    document.getElementById('surahDot')?.classList.add('buffering');
+    surahStallTimer=setTimeout(()=>surahRecoverStall(audio,num),8000);
+  });
+  audio.addEventListener('playing',()=>{
+    surahSetStatus('');
+    document.getElementById('surahDot')?.classList.remove('buffering');
+    clearTimeout(surahStallTimer);
+  });
+  audio.addEventListener('stalled',()=>{
+    surahSetStatus('buffering');
+    document.getElementById('surahDot')?.classList.add('buffering');
+    clearTimeout(surahStallTimer);
+    surahStallTimer=setTimeout(()=>surahRecoverStall(audio,num),6000);
+  });
+  audio.addEventListener('suspend',()=>{
+    // Browser suspended download — resume it
+    if(!audio.ended&&surahPlaying){
+      setTimeout(()=>{if(audio.readyState<3&&surahPlaying)audio.load();},2000);
+    }
   });
 
-  surahAudio.addEventListener('timeupdate',surahUpdateProgFromAudio);
+  audio.addEventListener('error',()=>{
+    clearTimeout(surahStallTimer);
+    // Try fallback CDN once
+    if(surahLoadRetry===0){
+      surahLoadRetry=1;
+      surahSetStatus('loading');
+      const fb=`https://everyayah.com/data/${surahGetEveryAyahReciter()}/surah/${String(num).padStart(3,'0')}.mp3`;
+      audio.src=''; audio.load();
+      surahCreateAudio(fb, num);
+    } else {
+      surahSetStatus('');
+      document.getElementById('surahError').textContent='Audio unavailable. Try a different reciter.';
+      document.getElementById('surahError').style.display='block';
+    }
+  },{once:true});
+
+  audio.addEventListener('ended',()=>{
+    surahPlaying=false;
+    surahSetPlayIcon(false);
+    surahSetStatus('');
+    surahUpdateProg(1);
+    document.getElementById('surahTime').textContent='0:00';
+  });
+
+  audio.addEventListener('timeupdate',()=>{
+    if(!audio.duration)return;
+    const pct=audio.currentTime/audio.duration;
+    surahUpdateProg(pct);
+    // Update buffered range
+    if(audio.buffered.length){
+      const bufEnd=audio.buffered.end(audio.buffered.length-1);
+      const bufPct=bufEnd/audio.duration;
+      const buf=document.getElementById('surahBuf');
+      if(buf)buf.style.width=(bufPct*100)+'%';
+    }
+    const rem=Math.max(0,audio.duration-audio.currentTime);
+    const m=Math.floor(rem/60);
+    const sec=Math.floor(rem%60);
+    document.getElementById('surahTime').textContent='-'+m+':'+(sec<10?'0':'')+sec;
+  });
+
+  audio.src=url;
+  audio.load();
+  surahAudio=audio;
+}
+
+function surahGetEveryAyahReciter(){
+  const map={
+    'ar.alafasy':'Alafasy_128kbps',
+    'ar.abdurrahmaansudais':'AbdurRahmanAsSudees_192kbps',
+    'ar.husary':'Husary_128kbps',
+    'ar.minshawi':'Minshawy_Murattal_128kbps',
+    'ar.muhammadayyoub':'MohammedAyyoub_128kbps',
+  };
+  return map[document.getElementById('surahReciter').value]||'Alafasy_128kbps';
+}
+
+function surahRecoverStall(audio, num){
+  if(!surahAudio||surahAudio!==audio)return;
+  const pos=audio.currentTime;
+  surahSetStatus('reconnecting');
+  // Force reload by briefly setting src to '' then back
+  const src=audio.src;
+  audio.src='';
+  audio.load();
+  setTimeout(()=>{
+    if(!surahAudio||surahAudio!==audio)return;
+    audio.src=src;
+    audio.load();
+    audio.addEventListener('canplay',()=>{
+      audio.currentTime=Math.max(0,pos-2); // back up 2s to avoid gap
+      if(surahPlaying)audio.play().catch(()=>{});
+      surahSetStatus('');
+    },{once:true});
+  },500);
+}
+
+function surahSetStatus(state){
+  const loading=document.getElementById('surahLoading');
+  if(state==='loading'){loading.textContent='Loading audio…';loading.style.display='block';}
+  else if(state==='buffering'){loading.textContent='Buffering…';loading.style.display='block';}
+  else if(state==='reconnecting'){loading.textContent='Reconnecting…';loading.style.display='block';}
+  else{loading.style.display='none';}
 }
 
 function surahPlay(){
@@ -2711,16 +2823,24 @@ function surahPause(){
   surahAudio.pause();
   surahPlaying=false;
   surahSetPlayIcon(false);
+  clearTimeout(surahStallTimer);
 }
 
-function surahStop(){
+function surahDestroy(){
+  clearTimeout(surahStallTimer);
+  clearInterval(surahProgInterval);
   if(surahAudio){
     surahAudio.pause();
     surahAudio.src='';
+    surahAudio.load();
     surahAudio=null;
   }
   surahPlaying=false;
-  clearInterval(surahProgInterval);
+}
+
+function surahStop(){
+  surahDestroy();
+  surahSetPlayIcon(false);
 }
 
 function surahToggle(e){
@@ -2732,6 +2852,7 @@ function surahToggle(e){
 function surahSetPlayIcon(playing){
   const btn=document.getElementById('surahPlayBtn');
   const ico=document.getElementById('surahPlayIco');
+  if(!btn||!ico)return;
   if(playing){
     btn.classList.remove('paused');
     ico.innerHTML='<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
@@ -2739,17 +2860,6 @@ function surahSetPlayIcon(playing){
     btn.classList.add('paused');
     ico.innerHTML='<polygon points="5,3 19,12 5,21"/>';
   }
-}
-
-function surahUpdateProgFromAudio(){
-  if(!surahAudio||!surahAudio.duration)return;
-  const pct=surahAudio.currentTime/surahAudio.duration;
-  surahUpdateProg(pct);
-  // Update time
-  const rem=surahAudio.duration-surahAudio.currentTime;
-  const m=Math.floor(rem/60);
-  const s=Math.floor(rem%60);
-  document.getElementById('surahTime').textContent='-'+m+':'+(s<10?'0':'')+s;
 }
 
 function surahUpdateProg(pct){
@@ -2763,13 +2873,23 @@ function surahSeek(e){
   if(!surahAudio||!surahAudio.duration)return;
   const wrap=document.getElementById('surahProgressWrap');
   const rect=wrap.getBoundingClientRect();
-  const pct=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+  const x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
+  const pct=Math.max(0,Math.min(1,x/rect.width));
   surahAudio.currentTime=pct*surahAudio.duration;
 }
 
 function surahReciterChange(){
   if(surahCurrent)surahSelect(surahCurrent.n);
 }
+
+// Touch seek support
+document.addEventListener('DOMContentLoaded',()=>{
+  const pw=document.getElementById('surahProgressWrap');
+  if(pw){
+    pw.addEventListener('touchstart',e=>{e.preventDefault();surahSeek(e);},{passive:false});
+    pw.addEventListener('touchmove',e=>{e.preventDefault();surahSeek(e);},{passive:false});
+  }
+});
 
 // Close dropdown on outside tap
 document.addEventListener('click',e=>{
