@@ -232,6 +232,94 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 @keyframes stopPulse{0%,100%{box-shadow:0 0 20px rgba(224,72,72,0.2)}50%{box-shadow:0 0 40px rgba(224,72,72,0.6)}}
 .t-alarm-stop:active{background:rgba(224,72,72,0.45);transform:scale(.96);}
 
+/* ══════════════════════════════════════════
+   SALAH & TASBIH SCREEN
+   ══════════════════════════════════════════ */
+#salahScr{padding:20px 20px 100px;gap:18px;align-items:stretch;}
+
+/* Header */
+.sl-hdr{text-align:center;padding:4px 0 2px;}
+.sl-page-title{font-family:var(--disp);font-size:3.2rem;letter-spacing:6px;color:var(--gold);line-height:1;text-shadow:0 0 40px rgba(240,165,0,0.25);}
+.sl-page-sub{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--hint);margin-top:2px;}
+
+/* Prayer rows */
+.sl-prayers{display:flex;flex-direction:column;gap:9px;}
+.sl-row{background:#0c0c1e;border:1.5px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;transition:border-color .2s,background .2s;}
+.sl-row.is-next{border-color:rgba(240,165,0,0.4);background:rgba(240,165,0,0.04);}
+.sl-row-name{font-family:var(--disp);font-size:1.25rem;letter-spacing:2px;color:var(--text);}
+.sl-row.is-next .sl-row-name{color:var(--gold);}
+.sl-row-arabic{font-size:0.95rem;color:var(--muted);direction:rtl;margin-top:1px;}
+.sl-row-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.sl-time-in{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:0.92rem;padding:6px 9px;width:88px;text-align:center;outline:none;-webkit-appearance:none;transition:border-color .18s;}
+.sl-time-in:focus{border-color:rgba(240,165,0,0.5);background:rgba(240,165,0,0.05);}
+.sl-remind-row{display:flex;align-items:center;gap:5px;}
+.sl-remind-lbl{font-size:0.58rem;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
+.sl-remind-in{background:rgba(240,165,0,0.07);border:1px solid rgba(240,165,0,0.2);border-radius:6px;color:var(--gold);font-family:var(--mono);font-size:0.82rem;padding:4px 7px;width:44px;text-align:center;outline:none;}
+.sl-remind-in:focus{border-color:rgba(240,165,0,0.5);}
+.sl-remind-unit{font-size:0.56rem;color:var(--muted);}
+.sl-next-tag{font-size:0.58rem;background:rgba(240,165,0,0.14);color:var(--gold);border:1px solid rgba(240,165,0,0.3);border-radius:20px;padding:2px 9px;white-space:nowrap;}
+
+/* Notification row */
+.sl-notif-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(240,165,0,0.06);border:1px solid rgba(240,165,0,0.18);border-radius:10px;padding:10px 14px;font-size:0.68rem;color:#c88800;}
+.sl-notif-row button{background:rgba(240,165,0,0.18);border:1px solid rgba(240,165,0,0.35);color:var(--gold);border-radius:7px;padding:5px 14px;font-size:0.66rem;cursor:pointer;font-family:var(--mono);}
+
+/* Separator */
+.sl-sep{display:flex;align-items:center;gap:12px;margin:4px 0;}
+.sl-sep-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.09));}
+.sl-sep-line:last-child{background:linear-gradient(270deg,transparent,rgba(255,255,255,0.09));}
+.sl-sep-label{font-family:var(--disp);font-size:1.6rem;letter-spacing:5px;color:var(--gold);opacity:0.8;}
+
+/* ── Tasbih milestone ── */
+.tsb-ms-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.tsb-ms-label{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--hint);}
+.tsb-ms-row{display:flex;align-items:center;gap:18px;}
+.tsb-ms-btn{width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:var(--text);font-size:1.25rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;-webkit-tap-highlight-color:transparent;}
+.tsb-ms-btn:active{background:rgba(240,165,0,0.15);border-color:var(--gold);color:var(--gold);transform:scale(.92);}
+.tsb-ms-val{font-family:var(--disp);font-size:2.4rem;letter-spacing:3px;color:var(--text);min-width:76px;text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:border-color .15s;-webkit-tap-highlight-color:rgba(240,165,0,0.15);}
+.tsb-ms-val:hover,.tsb-ms-val:active{border-bottom-color:rgba(240,165,0,0.4);}
+.tsb-ms-val.editing-mode{display:none;}
+.tsb-ms-input{font-family:var(--disp);font-size:2.4rem;letter-spacing:3px;color:var(--gold);width:90px;text-align:center;background:rgba(240,165,0,0.07);border:none;border-bottom:2px solid var(--gold);border-radius:4px 4px 0 0;outline:none;padding:0 4px;}
+.tsb-ms-presets{display:flex;gap:8px;}
+.tsb-msp{font-family:var(--mono);font-size:0.74rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:var(--hint);padding:5px 12px;cursor:pointer;transition:all .14s;-webkit-tap-highlight-color:transparent;}
+.tsb-msp:active,.tsb-msp.on{background:rgba(240,165,0,0.1);border-color:rgba(240,165,0,0.4);color:var(--gold);}
+
+/* ── Tasbih big button ── */
+.tsb-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.tsb-ring-outer{position:relative;width:220px;height:220px;}
+.tsb-svg{position:absolute;inset:0;transform:rotate(-90deg);}
+.tsb-ring-bg{fill:none;stroke:rgba(255,255,255,0.05);stroke-width:9;}
+.tsb-ring-fg{fill:none;stroke:var(--gold);stroke-width:9;stroke-linecap:round;
+  stroke-dasharray:616;stroke-dashoffset:616;transition:stroke-dashoffset .25s ease;}
+.tsb-btn{position:absolute;inset:18px;border-radius:50%;border:none;
+  background:radial-gradient(circle at 38% 35%,#1c1c30,#09090f);
+  box-shadow:0 10px 40px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.05),inset 0 1px 0 rgba(255,255,255,.07);
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  transition:transform .07s,box-shadow .12s;-webkit-tap-highlight-color:transparent;user-select:none;}
+.tsb-btn:active{transform:scale(.91);box-shadow:0 4px 18px rgba(0,0,0,.85),inset 0 3px 10px rgba(0,0,0,.5);}
+.tsb-btn.flash{animation:tsbFlash .35s ease-out;}
+@keyframes tsbFlash{
+  0%{box-shadow:0 10px 40px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.05)}
+  35%{box-shadow:0 0 0 rgba(0,0,0,0),0 0 50px rgba(240,165,0,.7),0 0 100px rgba(240,165,0,.3)}
+  100%{box-shadow:0 10px 40px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.05)}
+}
+.tsb-num{font-family:var(--disp);font-size:3.8rem;letter-spacing:2px;color:var(--text);line-height:1;}
+.tsb-tap-lbl{font-size:0.54rem;letter-spacing:5px;text-transform:uppercase;color:var(--muted);}
+.tsb-cycle-lbl{font-size:0.68rem;color:var(--hint);letter-spacing:2px;}
+
+/* ── Stats ── */
+.tsb-stats{display:flex;align-items:center;justify-content:center;gap:0;}
+.tsb-stat{display:flex;flex-direction:column;align-items:center;gap:3px;padding:0 28px;}
+.tsb-stat-div{width:1px;height:36px;background:rgba(255,255,255,0.08);}
+.tsb-stat-n{font-family:var(--disp);font-size:2.2rem;letter-spacing:2px;color:var(--text);}
+.tsb-stat-l{font-size:0.56rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+
+/* ── Actions ── */
+.tsb-act-row{display:flex;gap:10px;}
+.tsb-undo{flex:1;padding:13px;border-radius:var(--r);border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:var(--hint);font-family:var(--disp);font-size:1.1rem;letter-spacing:2px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.tsb-undo:active{background:rgba(255,255,255,0.09);}
+.tsb-reset{flex:1;padding:13px;border-radius:var(--r);border:1.5px solid rgba(224,72,72,0.25);background:rgba(224,72,72,0.05);color:var(--red);font-family:var(--disp);font-size:1.1rem;letter-spacing:2px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.tsb-reset:active{background:rgba(224,72,72,0.15);}
+
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 </style>
 </head>
@@ -424,6 +512,82 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 
 </div>
 
+<!-- ═══════ SALAH & TASBIH ═══════ -->
+<div class="scr" id="salahScr">
+
+  <!-- ─── Prayer Times ─── -->
+  <div class="sl-hdr">
+    <div class="sl-page-title">SALAH</div>
+    <div class="sl-page-sub">prayer reminders</div>
+  </div>
+
+  <div id="slPrayers" class="sl-prayers"></div>
+
+  <div class="sl-notif-row" id="slNotifRow" style="display:none">
+    <span>⚠ Enable notifications for reminders</span>
+    <button onclick="slAskNotif()">Allow</button>
+  </div>
+
+  <!-- ─── Divider ─── -->
+  <div class="sl-sep">
+    <span class="sl-sep-line"></span>
+    <span class="sl-sep-label">TASBIH</span>
+    <span class="sl-sep-line"></span>
+  </div>
+
+  <!-- ─── Milestone ─── -->
+  <div class="tsb-ms-wrap">
+    <div class="tsb-ms-label">MILESTONE</div>
+    <div class="tsb-ms-row">
+      <button class="tsb-ms-btn" id="tsbMsBtnMinus" ontouchend="tsbAdjMs(-1,event)" onclick="tsbAdjMs(-1)">－</button>
+      <div class="tsb-ms-val" id="tsbMsVal">33</div>
+      <button class="tsb-ms-btn" ontouchend="tsbAdjMs(1,event)" onclick="tsbAdjMs(1)">＋</button>
+    </div>
+    <div class="tsb-ms-presets">
+      <button class="tsb-msp" onclick="tsbSetMs(33)">33</button>
+      <button class="tsb-msp" onclick="tsbSetMs(99)">99</button>
+      <button class="tsb-msp" onclick="tsbSetMs(100)">100</button>
+      <button class="tsb-msp" onclick="tsbSetMs(1000)">1000</button>
+    </div>
+  </div>
+
+  <!-- ─── Tasbih counter button ─── -->
+  <div class="tsb-wrap">
+    <div class="tsb-ring-outer">
+      <svg class="tsb-svg" viewBox="0 0 220 220">
+        <circle class="tsb-ring-bg" cx="110" cy="110" r="98"/>
+        <circle class="tsb-ring-fg" id="tsbRingFg" cx="110" cy="110" r="98"/>
+      </svg>
+      <button class="tsb-btn" id="tsbBtn">
+        <div class="tsb-num" id="tsbNum">0</div>
+        <div class="tsb-tap-lbl">TAP</div>
+      </button>
+    </div>
+    <div class="tsb-cycle-lbl" id="tsbCycleLbl">0 of 33</div>
+  </div>
+
+  <!-- ─── Stats row ─── -->
+  <div class="tsb-stats">
+    <div class="tsb-stat">
+      <div class="tsb-stat-n" id="tsbStatTotal">0</div>
+      <div class="tsb-stat-l">TOTAL</div>
+    </div>
+    <div class="tsb-stat-div"></div>
+    <div class="tsb-stat">
+      <div class="tsb-stat-n" id="tsbStatRounds">0</div>
+      <div class="tsb-stat-l">ROUNDS</div>
+    </div>
+  </div>
+
+  <!-- ─── Actions ─── -->
+  <div class="tsb-act-row">
+    <button class="tsb-undo" id="tsbUndoBtn" ontouchend="tsbUndo(event)" onclick="tsbUndo()">◀ UNDO</button>
+    <button class="tsb-reset" ontouchend="tsbReset(event)" onclick="tsbReset()">RESET</button>
+  </div>
+
+  <div style="height:16px"></div>
+</div>
+
 <!-- ═══════ BOTTOM NAV ═══════ -->
 <nav class="bottom-nav" id="bottomNav" style="display:none">
   <button class="nav-btn active" id="navBell" onclick="switchTab('bell')">
@@ -445,6 +609,15 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
       </svg>
     </span>
     <span class="nav-lbl">Timer</span>
+  </button>
+  <button class="nav-btn" id="navSalah" onclick="switchTab('salah')">
+    <span class="nav-ico">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3C8.5 3 6 6 6 9c0 4 6 12 6 12s6-8 6-12c0-3-2.5-6-6-6z"/>
+        <circle cx="12" cy="9" r="2.2" fill="currentColor" stroke="none"/>
+      </svg>
+    </span>
+    <span class="nav-lbl">Salah</span>
   </button>
 </nav>
 <script>
@@ -1364,6 +1537,10 @@ document.addEventListener('DOMContentLoaded',()=>{
     chatUnread=0;
     document.getElementById('chatBadge').classList.remove('on');
   });
+
+  // Init Salah & Tasbih
+  tsbInit();
+  slInit();
 });
 
 // ── Reconnect on tab focus
@@ -1381,23 +1558,6 @@ document.addEventListener('visibilitychange',()=>{
    TAB NAVIGATION
    ══════════════════════════════════════════════════ */
 let currentTab='bell';
-
-function switchTab(tab){
-  currentTab=tab;
-  document.getElementById('navBell').classList.toggle('active',tab==='bell');
-  document.getElementById('navTimer').classList.toggle('active',tab==='timer');
-  // Only switch between main and timer screens (not setup)
-  if(myRoom){ // only if setup is done
-    if(tab==='bell'){
-      document.getElementById('mainScr').classList.add('on');
-      document.getElementById('timerScr').classList.remove('on');
-    } else {
-      document.getElementById('timerScr').classList.add('on');
-      document.getElementById('mainScr').classList.remove('on');
-      timerCheckNotif();
-    }
-  }
-}
 
 // Show nav once setup complete
 function showNav(){
@@ -1765,10 +1925,309 @@ function askNotifTimer(){
 // Listen for SW alarm fire message
 if('serviceWorker'in navigator){
   navigator.serviceWorker.addEventListener('message',e=>{
-    if(e.data&&e.data.type==='ALARM_FIRED'){
-      if(tRunning){ tRunning=false; clearInterval(tInterval); tInterval=null; fireAlarm(); }
+    if(!e.data)return;
+    if(e.data.type==='ALARM_FIRED'){
+      if(tRunning){tRunning=false;clearInterval(tInterval);tInterval=null;fireAlarm();}
+    }
+    if(e.data.type==='PRAYER_FIRED'){
+      slShowReminder(e.data.name, e.data.mins);
     }
   });
+}
+
+/* ══════════════════════════════════════════════════════
+   SALAH — Prayer Time Reminders
+   ══════════════════════════════════════════════════════ */
+const SL_KEY='bell_prayers_v1';
+const SL_DEFAULTS=[
+  {id:'fajr',   en:'Fajr',   ar:'الفجر',  time:'05:30', remind:15},
+  {id:'dhuhr',  en:'Dhuhr',  ar:'الظهر',  time:'13:00', remind:15},
+  {id:'asr',    en:'Asr',    ar:'العصر',  time:'16:30', remind:15},
+  {id:'maghrib',en:'Maghrib',ar:'المغرب', time:'19:15', remind:10},
+  {id:'isha',   en:'Isha',   ar:'العشاء', time:'20:45', remind:15},
+];
+let slData=[];
+let slTimers=[];
+
+function slInit(){
+  try{
+    const raw=localStorage.getItem(SL_KEY);
+    const saved=raw?JSON.parse(raw):null;
+    slData=SL_DEFAULTS.map((d,i)=>{
+      const s=saved&&saved[i]||{};
+      return{id:d.id,en:d.en,ar:d.ar,
+        time:s.time||d.time,
+        remind:s.remind!=null?Number(s.remind):d.remind};
+    });
+  }catch(e){slData=SL_DEFAULTS.map(d=>({...d}));}
+  slRender();
+  slScheduleAll();
+}
+
+function slSave(){
+  localStorage.setItem(SL_KEY,JSON.stringify(slData.map(d=>({time:d.time,remind:d.remind}))));
+  slScheduleAll();
+}
+
+function slRender(){
+  const wrap=document.getElementById('slPrayers');
+  if(!wrap)return;
+  wrap.innerHTML='';
+
+  const now=new Date();
+  const nowMin=now.getHours()*60+now.getMinutes();
+
+  // Find which prayer is next
+  let nextIdx=-1, nextDiff=Infinity;
+  slData.forEach((p,i)=>{
+    const [h,m]=p.time.split(':').map(Number);
+    let d=(h*60+m)-nowMin; if(d<=0)d+=1440;
+    if(d<nextDiff){nextDiff=d;nextIdx=i;}
+  });
+
+  slData.forEach((p,i)=>{
+    const isNext=i===nextIdx;
+    const div=document.createElement('div');
+    div.className='sl-row'+(isNext?' is-next':'');
+    div.innerHTML=`
+      <div>
+        <div class="sl-row-name">${p.en}</div>
+        <div class="sl-row-arabic">${p.ar}</div>
+      </div>
+      <div class="sl-row-right">
+        <input class="sl-time-in" type="time" value="${p.time}"
+          onchange="slSetTime(${i},this.value)">
+        <div class="sl-remind-row">
+          <span class="sl-remind-lbl">remind</span>
+          <input class="sl-remind-in" type="number" min="0" max="120"
+            value="${p.remind}" inputmode="numeric"
+            onchange="slSetRemind(${i},this.value)">
+          <span class="sl-remind-unit">min before</span>
+        </div>
+        ${isNext?`<div class="sl-next-tag">NEXT · ${nextDiff<60?nextDiff+'m':Math.floor(nextDiff/60)+'h'}</div>`:''}
+      </div>`;
+    wrap.appendChild(div);
+  });
+}
+
+function slSetTime(i,v){slData[i].time=v;slSave();slRender();}
+function slSetRemind(i,v){
+  const n=parseInt(v,10);
+  slData[i].remind=isNaN(n)?0:Math.max(0,n);
+  slSave();
+}
+
+function slScheduleAll(){
+  slTimers.forEach(t=>clearTimeout(t));slTimers=[];
+  if(!('Notification'in window)||Notification.permission!=='granted')return;
+  const now=Date.now();
+  const todayMidnight=new Date();todayMidnight.setHours(0,0,0,0);
+  const midnight=todayMidnight.getTime();
+
+  slData.forEach(p=>{
+    if(!p.remind)return;
+    const [h,m]=p.time.split(':').map(Number);
+    let fireAt=midnight+h*3600000+m*60000-p.remind*60000;
+    if(fireAt-now<0)fireAt+=86400000; // tomorrow
+    const delay=fireAt-now;
+    if(delay>86400000)return;
+    // SW handles screen-off
+    if('serviceWorker'in navigator&&navigator.serviceWorker.controller){
+      navigator.serviceWorker.controller.postMessage({
+        type:'SCHEDULE_PRAYER',id:p.id,name:p.en,mins:p.remind,delayMs:delay
+      });
+    }
+    // Local backup
+    slTimers.push(setTimeout(()=>slShowReminder(p.en,p.remind),delay));
+  });
+}
+
+function slShowReminder(name,mins){
+  // In-app toast
+  let t=document.getElementById('slToast');
+  if(!t){
+    t=document.createElement('div');t.id='slToast';
+    t.style.cssText='position:fixed;top:16px;left:50%;transform:translateX(-50%);'
+      +'background:#12122a;border:1.5px solid rgba(240,165,0,0.55);border-radius:12px;'
+      +'padding:13px 22px;font-family:var(--mono);font-size:0.8rem;color:var(--gold);'
+      +'z-index:9997;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.7);'
+      +'transition:opacity .4s;pointer-events:none;';
+    document.body.appendChild(t);
+  }
+  t.textContent='🕌  '+name+' prayer in '+mins+' min';
+  t.style.opacity='1';
+  slPrayerBeep();
+  if(navigator.vibrate)navigator.vibrate([100,60,100,60,200]);
+  clearTimeout(t._to);t._to=setTimeout(()=>{t.style.opacity='0';},6000);
+}
+
+function slPrayerBeep(){
+  const c=getAC();const t=c.currentTime;
+  [[523,0],[659,0.2],[784,0.4]].forEach(([f,w])=>{
+    const o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type='sine';o.frequency.value=f;
+    g.gain.setValueAtTime(0,t+w);
+    g.gain.linearRampToValueAtTime(0.35,t+w+0.05);
+    g.gain.exponentialRampToValueAtTime(0.001,t+w+0.4);
+    o.start(t+w);o.stop(t+w+0.45);
+  });
+}
+
+function slAskNotif(){
+  Notification.requestPermission().then(p=>{
+    if(p==='granted'){document.getElementById('slNotifRow').style.display='none';slScheduleAll();}
+  });
+}
+function slCheckNotif(){
+  const r=document.getElementById('slNotifRow');
+  if(r)r.style.display=(!('Notification'in window)||Notification.permission==='granted')?'none':'flex';
+}
+
+/* ══════════════════════════════════════════════════════
+   TASBIH
+   ══════════════════════════════════════════════════════ */
+const TSB_KEY='bell_tasbih_v1';
+const TSB_CIRC=2*Math.PI*98; // ~616
+
+let tsb={count:0,total:0,rounds:0,ms:33};
+
+function tsbInit(){
+  try{const d=JSON.parse(localStorage.getItem(TSB_KEY)||'{}');
+    tsb.count=d.count||0;tsb.total=d.total||0;
+    tsb.rounds=d.rounds||0;tsb.ms=d.ms||33;
+  }catch(e){}
+  tsbRender();
+  // Wire tap button with touchend for instant response
+  const btn=document.getElementById('tsbBtn');
+  let tsbTouched=false;
+  btn.addEventListener('touchstart',()=>{tsbTouched=true;},{passive:true});
+  btn.addEventListener('touchend',e=>{
+    e.preventDefault();if(tsbTouched){tsbTouched=false;tsbTap();}
+  },{passive:false});
+  btn.addEventListener('click',()=>{if(!tsbTouched)tsbTap();});
+  // Wire milestone val tap-to-edit
+  const msv=document.getElementById('tsbMsVal');
+  let msTouched=false;
+  msv.addEventListener('touchend',e=>{e.preventDefault();msTouched=true;tsbEditMs();});
+  msv.addEventListener('click',()=>{if(!msTouched)tsbEditMs();msTouched=false;});
+}
+
+function tsbTap(){
+  tsb.count++;tsb.total++;
+  const milestone=tsb.count>=tsb.ms;
+  if(milestone){tsb.count=0;tsb.rounds++;tsbFlash();tsbMilestoneBeep();}
+  tsbRender();tsbSave();
+}
+
+function tsbUndo(e){
+  if(e){e.preventDefault&&e.preventDefault();}
+  if(tsb.total===0)return;
+  tsb.total--;
+  if(tsb.count>0){tsb.count--;}
+  else if(tsb.rounds>0){tsb.rounds--;tsb.count=tsb.ms-1;}
+  tsbRender();tsbSave();
+}
+
+function tsbReset(e){
+  if(e){e.preventDefault&&e.preventDefault();}
+  if(tsb.total===0&&tsb.count===0)return;
+  if(!confirm('Reset tasbih counter?'))return;
+  tsb.count=0;tsb.total=0;tsb.rounds=0;
+  tsbRender();tsbSave();
+}
+
+function tsbAdjMs(d,e){
+  if(e){e.preventDefault&&e.preventDefault();}
+  tsbSetMs(Math.max(1,tsb.ms+d));
+}
+
+function tsbSetMs(n){
+  tsb.ms=n;
+  document.getElementById('tsbMsVal').textContent=n;
+  document.querySelectorAll('.tsb-msp').forEach(b=>
+    b.classList.toggle('on',parseInt(b.textContent)===n));
+  tsbRender();tsbSave();
+}
+
+function tsbEditMs(){
+  const el=document.getElementById('tsbMsVal');
+  el.classList.add('editing-mode');
+  const inp=document.createElement('input');
+  inp.className='tsb-ms-input';inp.type='number';inp.min='1';inp.inputMode='numeric';
+  inp.value=tsb.ms;
+  el.insertAdjacentElement('afterend',inp);
+  setTimeout(()=>{inp.focus();inp.select();
+    setTimeout(()=>{inp.onblur=done;},300);
+  },50);
+  inp.onkeydown=ev=>{if(ev.key==='Enter'){ev.preventDefault();done();}
+                     if(ev.key==='Escape'){cancel();}};
+  function done(){
+    const v=parseInt(inp.value,10);
+    if(v>0){tsb.ms=v;}
+    cleanup();tsbRender();tsbSave();
+  }
+  function cancel(){cleanup();}
+  function cleanup(){
+    inp.onblur=null;inp.remove();
+    el.classList.remove('editing-mode');
+    el.textContent=tsb.ms;
+    document.querySelectorAll('.tsb-msp').forEach(b=>
+      b.classList.toggle('on',parseInt(b.textContent)===tsb.ms));
+  }
+}
+
+function tsbRender(){
+  const pct=tsb.ms>0?tsb.count/tsb.ms:0;
+  document.getElementById('tsbNum').textContent=tsb.count;
+  document.getElementById('tsbCycleLbl').textContent=tsb.count+' of '+tsb.ms;
+  document.getElementById('tsbStatTotal').textContent=tsb.total;
+  document.getElementById('tsbStatRounds').textContent=tsb.rounds;
+  document.getElementById('tsbMsVal').textContent=tsb.ms;
+  document.getElementById('tsbRingFg').style.strokeDashoffset=TSB_CIRC*(1-pct);
+  document.getElementById('tsbUndoBtn').style.opacity=tsb.total>0?'1':'0.3';
+  document.querySelectorAll('.tsb-msp').forEach(b=>
+    b.classList.toggle('on',parseInt(b.textContent)===tsb.ms));
+}
+
+function tsbSave(){
+  localStorage.setItem(TSB_KEY,JSON.stringify(tsb));
+}
+
+function tsbFlash(){
+  const btn=document.getElementById('tsbBtn');
+  btn.classList.remove('flash');void btn.offsetWidth;btn.classList.add('flash');
+  setTimeout(()=>btn.classList.remove('flash'),400);
+}
+
+function tsbMilestoneBeep(){
+  const c=getAC();const t=c.currentTime;
+  // Ascending chime — A4, C#5, E5
+  [[440,0,0.5],[554,0.18,0.45],[659,0.36,0.5]].forEach(([f,w,dur])=>{
+    const o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);
+    o.type='triangle';o.frequency.value=f;
+    g.gain.setValueAtTime(0,t+w);
+    g.gain.linearRampToValueAtTime(0.5,t+w+0.04);
+    g.gain.exponentialRampToValueAtTime(0.001,t+w+dur);
+    o.start(t+w);o.stop(t+w+dur+0.05);
+  });
+}
+
+/* ── switchTab — 3 tabs ── */
+function switchTab(tab){
+  currentTab=tab;
+  ['Bell','Timer','Salah'].forEach(n=>{
+    const el=document.getElementById('nav'+n);
+    if(el)el.classList.toggle('active',n.toLowerCase()===tab);
+  });
+  if(myRoom){
+    document.getElementById('mainScr').classList.toggle('on',tab==='bell');
+    document.getElementById('timerScr').classList.toggle('on',tab==='timer');
+    document.getElementById('salahScr').classList.toggle('on',tab==='salah');
+    if(tab==='timer')timerCheckNotif();
+    if(tab==='salah'){slCheckNotif();slRender();}
+  }
 }
 </script>
 </body>
