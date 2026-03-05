@@ -242,6 +242,22 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .sl-page-title{font-family:var(--disp);font-size:3.2rem;letter-spacing:6px;color:var(--gold);line-height:1;text-shadow:0 0 40px rgba(240,165,0,0.25);}
 .sl-page-sub{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--hint);margin-top:2px;}
 
+/* Ramadan Sehri/Iftar card */
+.rmd-card{width:100%;background:linear-gradient(135deg,#0d0d22 0%,#0a1020 100%);border:1.5px solid rgba(56,192,232,0.22);border-radius:16px;padding:14px 16px 12px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;}
+.rmd-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(56,192,232,0.07),transparent);pointer-events:none;}
+.rmd-label{font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:rgba(56,192,232,0.6);text-align:center;}
+.rmd-times{display:flex;align-items:center;gap:0;}
+.rmd-block{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;}
+.rmd-block.active-rmd{background:rgba(56,192,232,0.06);border-radius:10px;}
+.rmd-icon{font-size:1.4rem;line-height:1;}
+.rmd-name{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--hint);}
+.rmd-time{font-family:var(--disp);font-size:1.8rem;letter-spacing:3px;color:var(--text);}
+.rmd-block.active-rmd .rmd-time{color:#38c0e8;}
+.rmd-divider{width:1px;height:52px;background:rgba(255,255,255,0.07);flex-shrink:0;margin:0 4px;}
+.rmd-countdown-row{display:flex;align-items:center;justify-content:center;gap:10px;border-top:1px solid rgba(255,255,255,0.06);padding-top:10px;}
+.rmd-countdown-label{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--hint);}
+.rmd-countdown{font-family:var(--disp);font-size:1.5rem;letter-spacing:3px;color:#38c0e8;}
+
 /* Prayer rows */
 .sl-prayers{display:flex;flex-direction:column;gap:9px;}
 .sl-row{background:#0c0c1e;border:1.5px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;transition:border-color .2s,background .2s;}
@@ -520,6 +536,28 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
   <div class="sl-hdr">
     <div class="sl-page-title">SALAH</div>
     <div class="sl-page-sub">prayer reminders</div>
+  </div>
+
+  <!-- ─── Sehri / Iftar Card ─── -->
+  <div class="rmd-card" id="rmdCard">
+    <div class="rmd-label">RAMADAN</div>
+    <div class="rmd-times">
+      <div class="rmd-block" id="rmdSehri">
+        <div class="rmd-icon">🌙</div>
+        <div class="rmd-name">Sehri Ends</div>
+        <div class="rmd-time" id="rmdSehriTime">—</div>
+      </div>
+      <div class="rmd-divider"></div>
+      <div class="rmd-block" id="rmdIftar">
+        <div class="rmd-icon">🌅</div>
+        <div class="rmd-name">Iftar Starts</div>
+        <div class="rmd-time" id="rmdIftarTime">—</div>
+      </div>
+    </div>
+    <div class="rmd-countdown-row">
+      <div class="rmd-countdown-label" id="rmdCdLabel">—</div>
+      <div class="rmd-countdown" id="rmdCd">—</div>
+    </div>
   </div>
 
   <div id="slPrayers" class="sl-prayers"></div>
@@ -1982,7 +2020,7 @@ function slRender(){
   wrap.innerHTML='';
 
   const now=new Date();
-  const isFriday=now.getDay()===5; // 0=Sun,5=Fri
+  const isFriday=now.getDay()===5;
   const nowMin=now.getHours()*60+now.getMinutes();
 
   // Build display list — swap Dhuhr for Jumu'ah on Friday
@@ -2028,6 +2066,9 @@ function slRender(){
       </div>`;
     wrap.appendChild(div);
   });
+
+  // Update Sehri/Iftar card whenever prayer list updates
+  rmdUpdate();
 }
 
 function slSetTime(i,v,isFriday){
@@ -2042,6 +2083,82 @@ function slSetRemind(i,v){
   const n=parseInt(v,10);
   slData[i].remind=isNaN(n)?0:Math.max(0,n);
   slSave();
+}
+
+/* ── Sehri / Iftar live card ── */
+let rmdInterval=null;
+
+function rmdUpdate(){
+  const card=document.getElementById('rmdCard');
+  if(!card||!slData.length)return;
+
+  // Sehri ends at Fajr time, Iftar starts at Maghrib time
+  const fajr=slData.find(p=>p.id==='fajr');
+  const maghrib=slData.find(p=>p.id==='maghrib');
+  if(!fajr||!maghrib)return;
+
+  const sehriTime=fajr.time;    // e.g. "05:30"
+  const iftarTime=maghrib.time; // e.g. "19:15"
+
+  // Display times
+  function fmt24to12(t){
+    const [h,m]=t.split(':').map(Number);
+    const ap=h>=12?'PM':'AM';
+    const h12=h%12||12;
+    return h12+':'+(m<10?'0'+m:m)+' '+ap;
+  }
+  document.getElementById('rmdSehriTime').textContent=fmt24to12(sehriTime);
+  document.getElementById('rmdIftarTime').textContent=fmt24to12(iftarTime);
+
+  // Countdown to next — Sehri (Fajr) or Iftar (Maghrib)
+  const now=new Date();
+  const nowMs=now.getHours()*3600000+now.getMinutes()*60000+now.getSeconds()*1000;
+
+  function timeToMs(t){
+    const [h,m]=t.split(':').map(Number);
+    return h*3600000+m*60000;
+  }
+  const sehriMs=timeToMs(sehriTime);
+  const iftarMs=timeToMs(iftarTime);
+
+  // Which is next?
+  let targetMs, targetLabel, activeSide;
+  const diffSehri=sehriMs-nowMs;
+  const diffIftar=iftarMs-nowMs;
+
+  if(diffSehri>0&&(diffSehri<diffIftar||diffIftar<=0)){
+    targetMs=sehriMs; targetLabel='Sehri ends in'; activeSide='sehri';
+  } else if(diffIftar>0){
+    targetMs=iftarMs; targetLabel='Iftar in'; activeSide='iftar';
+  } else {
+    // Both passed today — Sehri is next (tomorrow)
+    targetMs=sehriMs+86400000; targetLabel='Sehri ends in'; activeSide='sehri';
+  }
+
+  // Highlight active side
+  document.getElementById('rmdSehri').classList.toggle('active-rmd',activeSide==='sehri');
+  document.getElementById('rmdIftar').classList.toggle('active-rmd',activeSide==='iftar');
+
+  // Format countdown
+  let remaining=targetMs-nowMs;
+  if(remaining<0)remaining+=86400000;
+  const totalSec=Math.floor(remaining/1000);
+  const hrs=Math.floor(totalSec/3600);
+  const mins=Math.floor((totalSec%3600)/60);
+  const secs=totalSec%60;
+  const cdStr=hrs+'h '+(mins<10?'0':'')+mins+'m '+(secs<10?'0':'')+secs+'s';
+
+  document.getElementById('rmdCdLabel').textContent=targetLabel;
+  document.getElementById('rmdCd').textContent=cdStr;
+
+  // Start ticking every second if not already
+  if(!rmdInterval){
+    rmdInterval=setInterval(rmdUpdate,1000);
+  }
+}
+
+function rmdStop(){
+  if(rmdInterval){clearInterval(rmdInterval);rmdInterval=null;}
 }
 
 function slScheduleAll(){
@@ -2259,12 +2376,15 @@ function switchTab(tab){
       document.getElementById('timerScr').classList.remove('on');
     }
     slCheckNotif();
-    slRender();
-  } else if(myRoom){
-    document.getElementById('mainScr').classList.toggle('on',tab==='bell');
-    document.getElementById('timerScr').classList.toggle('on',tab==='timer');
-    document.getElementById('salahScr').classList.remove('on');
-    if(tab==='timer')timerCheckNotif();
+    slRender(); // rmdUpdate() is called inside slRender
+  } else {
+    rmdStop(); // stop ticking when leaving salah tab
+    if(myRoom){
+      document.getElementById('mainScr').classList.toggle('on',tab==='bell');
+      document.getElementById('timerScr').classList.toggle('on',tab==='timer');
+      document.getElementById('salahScr').classList.remove('on');
+      if(tab==='timer')timerCheckNotif();
+    }
   }
 }
 </script>
