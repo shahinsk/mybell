@@ -168,10 +168,10 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .t-adj-btn{width:52px;height:52px;border-radius:26px;border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--text);font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1;}
 .t-adj-btn.t-min-adj{width:auto;min-width:64px;padding:0 12px;font-size:0.82rem;letter-spacing:0.5px;border-radius:26px;}
 .t-adj-btn:active{background:rgba(240,165,0,0.15);border-color:var(--gold);color:var(--gold);transform:scale(0.92);}
-.t-digits{font-family:var(--disp);font-size:3.2rem;letter-spacing:4px;color:var(--text);min-width:72px;text-align:center;line-height:1;cursor:pointer;border-bottom:2px solid transparent;transition:border-color .15s;-webkit-tap-highlight-color:rgba(240,165,0,0.2);}
+.t-digits{font-family:var(--disp);font-size:3.2rem;letter-spacing:4px;color:var(--text);min-width:80px;text-align:center;line-height:1;cursor:pointer;border-bottom:2px solid transparent;transition:border-color .15s;-webkit-tap-highlight-color:rgba(240,165,0,0.2);}
 .t-digits:hover{border-bottom-color:rgba(240,165,0,0.3);}
 .t-digits.editing{visibility:hidden;position:absolute;}
-.t-digit-input{font-family:var(--disp);font-size:3.2rem;letter-spacing:2px;color:var(--gold);width:80px;text-align:center;background:rgba(240,165,0,0.08);border:none;border-bottom:2px solid var(--gold);border-radius:4px 4px 0 0;outline:none;visibility:hidden;position:absolute;caret-color:var(--gold);padding:2px 4px;}
+.t-digit-input{font-family:var(--disp);font-size:3.2rem;letter-spacing:2px;color:var(--gold);width:100px;text-align:center;background:rgba(240,165,0,0.08);border:none;border-bottom:2px solid var(--gold);border-radius:4px 4px 0 0;outline:none;visibility:hidden;position:absolute;caret-color:var(--gold);padding:2px 4px;}
 .t-digit-input.editing{visibility:visible;position:relative;}
 .t-unit-lbl{font-size:0.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
 .t-edit-hint{font-size:0.58rem;color:rgba(240,165,0,0.5);letter-spacing:1px;height:14px;text-align:center;}
@@ -381,7 +381,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
     <div class="t-unit">
       <button class="t-adj-btn t-min-adj" onclick="adjTime('min',1)">＋1m</button>
       <div class="t-digits" id="tMinDisplay">00</div>
-      <input class="t-digit-input" id="tMinInput" type="number" min="0" max="99" inputmode="numeric" pattern="[0-9]*" placeholder="–">
+      <input class="t-digit-input" id="tMinInput" type="number" min="0" max="9999" inputmode="numeric" pattern="[0-9]*" placeholder="–">
       <div class="t-unit-lbl">MIN</div>
       <div class="t-edit-hint" id="tMinHint"></div>
       <button class="t-adj-btn t-min-adj" onclick="adjTime('min',-1)">－1m</button>
@@ -1432,7 +1432,7 @@ function adjTime(unit,delta){
     // delta is a sign (+1 or -1); multiply by preset step
     const step=delta>0?tPresetStep:-tPresetStep;
     let mins=Math.floor(tTotalSec/60)+step;
-    mins=Math.max(0,Math.min(99*60/60,mins)); // cap at 99 min display
+    mins=Math.max(0,mins);
     tTotalSec=mins*60+(tTotalSec%60);
     // de-select presets only if we've drifted from a clean multiple
     const isClean=Object.values([1,5,10,15,30,60]).includes(Math.floor(tTotalSec/60)) && tTotalSec%60===0;
@@ -1443,7 +1443,7 @@ function adjTime(unit,delta){
   } else {
     let secs=(tTotalSec%60)+delta;
     if(secs<0){secs=50; let m=Math.floor(tTotalSec/60)-1; tTotalSec=Math.max(0,m)*60+secs;}
-    else if(secs>=60){secs=0; let m=Math.floor(tTotalSec/60)+1; tTotalSec=Math.min(99,m)*60;}
+    else if(secs>=60){secs=0; let m=Math.floor(tTotalSec/60)+1; tTotalSec=Math.max(0,m)*60;}
     else tTotalSec=Math.floor(tTotalSec/60)*60+secs;
     document.querySelectorAll('.t-pre').forEach(b=>b.classList.remove('sel'));
   }
@@ -1481,7 +1481,7 @@ function commitEdit(unit){
   inp.onblur=null;
   const raw=parseInt(inp.value,10);
   const val=isNaN(raw)?-1:raw;
-  if(unit==='min'&&val>=0&&val<=99){
+  if(unit==="min"&&val>=0){
     tTotalSec=val*60+(tTotalSec%60);
   } else if(unit==='sec'&&val>=0&&val<=59){
     tTotalSec=Math.floor(tTotalSec/60)*60+val;
@@ -1594,10 +1594,14 @@ function renderTimerDisplay(){
   const s=tRemainSec>0?tRemainSec:tTotalSec;
   const m=Math.floor(s/60);
   const sec=s%60;
-  const str=(m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;
-  document.getElementById('tCountdown').textContent=str;
-  document.getElementById('tMinDisplay').textContent=m<10?'0'+m:''+m;
-  document.getElementById('tSecDisplay').textContent=sec<10?'0'+sec:''+sec;
+  const mStr=m<10?'0'+m:''+m;
+  const sStr=sec<10?'0'+sec:''+sec;
+  // Countdown ring label — shrink font for large minute values
+  const cdEl=document.getElementById('tCountdown');
+  cdEl.textContent=mStr+':'+sStr;
+  cdEl.style.fontSize=m>=100?'2.4rem':m>=10?'3.0rem':'3.4rem';
+  document.getElementById('tMinDisplay').textContent=mStr;
+  document.getElementById('tSecDisplay').textContent=sStr;
 
   // Progress ring
   const prog=document.getElementById('tRingProg');
