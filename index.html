@@ -168,8 +168,13 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .t-adj-btn{width:52px;height:52px;border-radius:26px;border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--text);font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1;}
 .t-adj-btn.t-min-adj{width:auto;min-width:64px;padding:0 12px;font-size:0.82rem;letter-spacing:0.5px;border-radius:26px;}
 .t-adj-btn:active{background:rgba(240,165,0,0.15);border-color:var(--gold);color:var(--gold);transform:scale(0.92);}
-.t-digits{font-family:var(--disp);font-size:3.2rem;letter-spacing:4px;color:var(--text);min-width:72px;text-align:center;line-height:1;}
+.t-digits{font-family:var(--disp);font-size:3.2rem;letter-spacing:4px;color:var(--text);min-width:72px;text-align:center;line-height:1;cursor:pointer;border-bottom:2px solid transparent;transition:border-color .15s;-webkit-tap-highlight-color:rgba(240,165,0,0.2);}
+.t-digits:hover{border-bottom-color:rgba(240,165,0,0.3);}
+.t-digits.editing{visibility:hidden;position:absolute;}
+.t-digit-input{font-family:var(--disp);font-size:3.2rem;letter-spacing:2px;color:var(--gold);width:80px;text-align:center;background:rgba(240,165,0,0.08);border:none;border-bottom:2px solid var(--gold);border-radius:4px 4px 0 0;outline:none;visibility:hidden;position:absolute;caret-color:var(--gold);padding:2px 4px;}
+.t-digit-input.editing{visibility:visible;position:relative;}
 .t-unit-lbl{font-size:0.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.t-edit-hint{font-size:0.58rem;color:rgba(240,165,0,0.5);letter-spacing:1px;height:14px;text-align:center;}
 .t-colon{font-family:var(--disp);font-size:3rem;color:var(--muted);padding-bottom:28px;line-height:1;}
 
 /* Ring */
@@ -376,16 +381,20 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
     <div class="t-unit">
       <button class="t-adj-btn t-min-adj" onclick="adjTime('min',1)">＋1m</button>
       <div class="t-digits" id="tMinDisplay">00</div>
+      <input class="t-digit-input" id="tMinInput" type="number" min="0" max="99" inputmode="numeric" pattern="[0-9]*" placeholder="–">
       <div class="t-unit-lbl">MIN</div>
+      <div class="t-edit-hint" id="tMinHint"></div>
       <button class="t-adj-btn t-min-adj" onclick="adjTime('min',-1)">－1m</button>
     </div>
     <div class="t-colon">:</div>
     <!-- Seconds -->
     <div class="t-unit">
-      <button class="t-adj-btn" onclick="adjTime('sec',10)">＋</button>
+      <button class="t-adj-btn" onclick="adjTime('sec',10)">＋10s</button>
       <div class="t-digits" id="tSecDisplay">00</div>
+      <input class="t-digit-input" id="tSecInput" type="number" min="0" max="59" inputmode="numeric" pattern="[0-9]*" placeholder="–">
       <div class="t-unit-lbl">SEC</div>
-      <button class="t-adj-btn" onclick="adjTime('sec',-10)">－</button>
+      <div class="t-edit-hint" id="tSecHint"></div>
+      <button class="t-adj-btn" onclick="adjTime('sec',-10)">－10s</button>
     </div>
   </div>
 
@@ -1309,6 +1318,32 @@ document.addEventListener('DOMContentLoaded',()=>{
   stopBtn.addEventListener('touchend',e=>{e.preventDefault();stopAlarm();},{passive:false});
   stopBtn.addEventListener('click',stopAlarm);
 
+  // Digit tap-to-edit — wire touchend + click for both min and sec
+  ['min','sec'].forEach(unit=>{
+    const dispId=unit==='min'?'tMinDisplay':'tSecDisplay';
+    const inpId =unit==='min'?'tMinInput':'tSecInput';
+    const disp=document.getElementById(dispId);
+    const inp =document.getElementById(inpId);
+
+    // Tap on digit display opens edit
+    let digitTouched=false;
+    disp.addEventListener('touchend',e=>{
+      e.preventDefault();
+      digitTouched=true;
+      startEdit(unit);
+    },{passive:false});
+    disp.addEventListener('click',()=>{
+      if(!digitTouched) startEdit(unit);
+      digitTouched=false;
+    });
+
+    // Enter key commits, Escape cancels
+    inp.addEventListener('keydown',e=>{
+      if(e.key==='Enter'){e.preventDefault();commitEdit(unit);}
+      if(e.key==='Escape'){cancelEdit(unit);}
+    });
+  });
+
   document.getElementById('chatMsgs')?.addEventListener('click',()=>{
     chatUnread=0;
     document.getElementById('chatBadge').classList.remove('on');
@@ -1415,6 +1450,59 @@ function adjTime(unit,delta){
   tTotalSec=Math.max(0,tTotalSec);
   tRemainSec=tTotalSec;
   renderTimerDisplay();
+}
+
+function startEdit(unit){
+  if(tRunning) return;
+  const disp=document.getElementById(unit==='min'?'tMinDisplay':'tSecDisplay');
+  const inp=document.getElementById(unit==='min'?'tMinInput':'tSecInput');
+  const hint=document.getElementById(unit==='min'?'tMinHint':'tSecHint');
+  if(inp.classList.contains('editing')) return; // already open
+
+  disp.classList.add('editing');
+  inp.classList.add('editing');
+  inp.value='';
+  hint.textContent='tap ↵ to set';
+
+  // Delay focus slightly so mobile keyboard opens correctly after touch event
+  setTimeout(()=>{
+    inp.focus();
+    // Delay blur attachment so it doesn't fire instantly from the focus call
+    setTimeout(()=>{ inp.onblur=commitEdit.bind(null,unit); }, 300);
+  }, 50);
+}
+
+function commitEdit(unit){
+  const disp=document.getElementById(unit==='min'?'tMinDisplay':'tSecDisplay');
+  const inp=document.getElementById(unit==='min'?'tMinInput':'tSecInput');
+  const hint=document.getElementById(unit==='min'?'tMinHint':'tSecHint');
+  if(!inp.classList.contains('editing')) return;
+
+  inp.onblur=null;
+  const raw=parseInt(inp.value,10);
+  const val=isNaN(raw)?-1:raw;
+  if(unit==='min'&&val>=0&&val<=99){
+    tTotalSec=val*60+(tTotalSec%60);
+  } else if(unit==='sec'&&val>=0&&val<=59){
+    tTotalSec=Math.floor(tTotalSec/60)*60+val;
+  }
+  tTotalSec=Math.max(0,tTotalSec);
+  tRemainSec=tTotalSec;
+  disp.classList.remove('editing');
+  inp.classList.remove('editing');
+  hint.textContent='';
+  document.querySelectorAll('.t-pre').forEach(b=>b.classList.remove('sel'));
+  renderTimerDisplay();
+}
+
+function cancelEdit(unit){
+  const disp=document.getElementById(unit==='min'?'tMinDisplay':'tSecDisplay');
+  const inp=document.getElementById(unit==='min'?'tMinInput':'tSecInput');
+  const hint=document.getElementById(unit==='min'?'tMinHint':'tSecHint');
+  inp.onblur=null;
+  disp.classList.remove('editing');
+  inp.classList.remove('editing');
+  hint.textContent='';
 }
 
 function timerToggle(){
