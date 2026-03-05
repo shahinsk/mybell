@@ -589,7 +589,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 </div>
 
 <!-- ═══════ BOTTOM NAV ═══════ -->
-<nav class="bottom-nav" id="bottomNav" style="display:none">
+<nav class="bottom-nav" id="bottomNav">
   <button class="nav-btn active" id="navBell" onclick="switchTab('bell')">
     <span class="nav-ico">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -1478,6 +1478,9 @@ function addChatMsg(text,from,isMe){
 
 // Clear unread badge when user taps chat area
 document.addEventListener('DOMContentLoaded',()=>{
+  // Always show nav bar — Salah/Tasbih accessible without Bell setup
+  document.getElementById('bottomNav').style.display='flex';
+
   // Bell button — only fires sendRing, strictly isolated
   const bellBtn=document.getElementById('bellBtn');
   // Use touchend to avoid 300ms delay on mobile and ghost click
@@ -1560,9 +1563,8 @@ document.addEventListener('visibilitychange',()=>{
 let currentTab='bell';
 
 // Show nav once setup complete
-function showNav(){
-  document.getElementById('bottomNav').style.display='flex';
-}
+// Show nav once setup complete (already shown from DOMContentLoaded)
+function showNav(){ /* nav always visible */ }
 
 /* ══════════════════════════════════════════════════
    TIMER
@@ -2221,12 +2223,20 @@ function switchTab(tab){
     const el=document.getElementById('nav'+n);
     if(el)el.classList.toggle('active',n.toLowerCase()===tab);
   });
-  if(myRoom){
+  // Salah/Tasbih always accessible even before Bell setup
+  if(tab==='salah'){
+    document.getElementById('salahScr').classList.add('on');
+    if(myRoom){
+      document.getElementById('mainScr').classList.remove('on');
+      document.getElementById('timerScr').classList.remove('on');
+    }
+    slCheckNotif();
+    slRender();
+  } else if(myRoom){
     document.getElementById('mainScr').classList.toggle('on',tab==='bell');
     document.getElementById('timerScr').classList.toggle('on',tab==='timer');
-    document.getElementById('salahScr').classList.toggle('on',tab==='salah');
+    document.getElementById('salahScr').classList.remove('on');
     if(tab==='timer')timerCheckNotif();
-    if(tab==='salah'){slCheckNotif();slRender();}
   }
 }
 </script>
