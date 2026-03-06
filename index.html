@@ -320,13 +320,15 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .prc-card.live .prc-cd{color:rgba(46,207,114,.9);}
 
 
-.hadith-card{background:linear-gradient(160deg,#0e0e1e,#080812);border:1.5px solid rgba(255,255,255,.08);border-radius:18px;padding:24px 20px 20px;display:flex;flex-direction:column;gap:0;}
-.hadith-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.hadith-section{display:flex;flex-direction:column;gap:14px;}
+.hadith-section-top{display:flex;align-items:center;justify-content:space-between;padding:0 2px;}
 .hadith-badge{font-size:.58rem;letter-spacing:2.5px;text-transform:uppercase;background:rgba(240,165,0,.08);color:var(--gold);border:1px solid rgba(240,165,0,.2);border-radius:20px;padding:4px 14px;}
 .hadith-date-lbl{font-family:var(--mono);font-size:.62rem;color:var(--muted);}
-.hadith-ar{font-size:1.2rem;line-height:2;color:rgba(255,255,255,.65);direction:rtl;text-align:right;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,.07);}
-.hadith-bn{font-size:1.08rem;line-height:2;color:rgba(255,255,255,.90);font-family:'Noto Serif Bengali','Hind Siliguri','SolaimanLipi',sans-serif;margin-bottom:14px;}
-.hadith-ref{font-family:var(--mono);font-size:.62rem;color:rgba(240,165,0,.5);text-align:right;letter-spacing:1px;}
+.hadith-list{display:flex;flex-direction:column;gap:12px;}
+.hadith-item{background:linear-gradient(160deg,#0e0e1e,#080812);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:20px 18px 16px;display:flex;flex-direction:column;gap:12px;}
+.hadith-item-ar{font-size:1.1rem;line-height:2;color:rgba(255,255,255,.6);direction:rtl;text-align:right;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06);}
+.hadith-item-bn{font-size:1.05rem;line-height:1.9;color:rgba(255,255,255,.88);font-family:'Noto Serif Bengali','Hind Siliguri','SolaimanLipi',sans-serif;}
+.hadith-item-ref{font-family:var(--mono);font-size:.6rem;color:rgba(240,165,0,.45);text-align:right;letter-spacing:1px;}
 
 /* ── Surah card ── */
 .surah-card{background:#0c0c1e;border:1.5px solid rgba(255,255,255,.08);border-radius:18px;padding:22px 18px 20px;display:flex;flex-direction:column;gap:18px;}
@@ -666,14 +668,12 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 
   <!-- ── TAB 2: QURAN ── -->
   <div class="sl-panel" id="slPanelQuran" style="display:none">
-    <div class="hadith-card">
-      <div class="hadith-top">
+    <div class="hadith-section">
+      <div class="hadith-section-top">
         <div class="hadith-badge">আজকের হাদিস</div>
         <div class="hadith-date-lbl" id="hadithDate"></div>
       </div>
-      <div class="hadith-ar"  id="hadithAr"></div>
-      <div class="hadith-bn"  id="hadithBn">লোড হচ্ছে…</div>
-      <div class="hadith-ref" id="hadithRef"></div>
+      <div id="hadithList" class="hadith-list"></div>
     </div>
     <div class="surah-card">
       <div class="surah-card-label">সূরা তিলাওয়াত · Surah Recitation</div>
@@ -685,7 +685,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
           <div class="surah-dropdown" id="surahDropdown"></div>
         </div>
         <select class="surah-reciter" id="surahReciter" onchange="surahReciterChange()">
-          <option value="ar.alafasy">Alafasy</option>
+          <option value="ar.alafasy">Alafasy ★</option>
           <option value="ar.abdurrahmaansudais">Sudais</option>
           <option value="ar.husary">Husary</option>
           <option value="ar.minshawi">Minshawi</option>
@@ -2789,21 +2789,48 @@ function surahBegin(s) {
   $('surahError').style.display = 'none';
   surahStatus('লোড হচ্ছে…');
   const rec = $('surahReciter').value;
-  surahTryURL('https://cdn.islamic.network/quran/audio-surah/128/' + rec + '/' + s.n + '.mp3', s.n);
+  const n3  = String(s.n).padStart(3, '0');
+  /* Alafasy: use everyayah.com — single reliable MP3 per surah, complete file.
+     preload=auto so the whole surah buffers upfront → never stops mid-playback.
+     Other reciters: stream from cdn.islamic.network (preload=none). */
+  if (rec === 'ar.alafasy') {
+    surahTryURL('https://everyayah.com/data/Alafasy_128kbps/surah' + n3 + '.mp3', s.n, true);
+  } else {
+    surahTryURL('https://cdn.islamic.network/quran/audio-surah/128/' + rec + '/' + s.n + '.mp3', s.n, false);
+  }
 }
 
-function surahTryURL(url, num) {
-  /* Key fix: do NOT set crossOrigin — the CDN rejects CORS preflight requests
-     which was causing every load to silently fail.
-     Also use preload='none' so the browser doesn't suspend mid-stream. */
+function surahTryURL(url, num, fullLoad) {
+  /* No crossOrigin — CDNs block CORS preflight requests. */
   const a = new Audio(url);
-  a.preload = 'none';
+  a.preload = fullLoad ? 'auto' : 'none';
 
-  a.addEventListener('loadedmetadata', () => {
-    document.getElementById('surahControls').style.display = 'flex';
-    surahStatus('');
-    surahDoPlay(a);
-  }, { once: true });
+  if (fullLoad) {
+    /* Full-load mode (Alafasy): show download % via progress event,
+       then start playing only when canplaythrough fires — meaning the
+       browser has enough data to play all the way to the end without stopping. */
+    a.addEventListener('progress', () => {
+      if (!a.duration) return;
+      try {
+        const buf = a.buffered.length ? a.buffered.end(a.buffered.length - 1) : 0;
+        const pct = Math.round((buf / a.duration) * 100);
+        surahStatus('লোড হচ্ছে… ' + pct + '%');
+        surahProg(0, buf / a.duration);
+      } catch(_) {}
+    });
+    a.addEventListener('canplaythrough', () => {
+      document.getElementById('surahControls').style.display = 'flex';
+      surahStatus('');
+      surahDoPlay(a);
+    }, { once: true });
+  } else {
+    /* Stream mode: show controls as soon as metadata (duration) is known */
+    a.addEventListener('loadedmetadata', () => {
+      document.getElementById('surahControls').style.display = 'flex';
+      surahStatus('');
+      surahDoPlay(a);
+    }, { once: true });
+  }
 
   a.addEventListener('waiting', () => {
     surahStatus('বাফারিং…');
@@ -2838,7 +2865,7 @@ function surahTryURL(url, num) {
       const rec = document.getElementById('surahReciter').value;
       const name = rmap[rec] || 'Alafasy_128kbps';
       const n3 = String(num).padStart(3, '0');
-      surahTryURL('https://everyayah.com/data/' + name + '/surah' + n3 + '.mp3', num);
+      surahTryURL('https://everyayah.com/data/' + name + '/surah' + n3 + '.mp3', num, false);
     } else {
       surahStatus('');
       const el = document.getElementById('surahError');
@@ -3001,16 +3028,28 @@ const HADITH = [
 function hadithLoad() {
   const d = new Date();
   const doy = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
-  const h = HADITH[doy % HADITH.length];
   const months = ['জানু','ফেব্রু','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টে','অক্টো','নভে','ডিসে'];
+
   const dl = document.getElementById('hadithDate');
-  const ar = document.getElementById('hadithAr');
-  const bn = document.getElementById('hadithBn');
-  const rf = document.getElementById('hadithRef');
   if (dl) dl.textContent = d.getDate() + ' ' + months[d.getMonth()];
-  if (ar) ar.textContent = h.ar;
-  if (bn) bn.textContent = h.bn;
-  if (rf) rf.textContent = '— ' + h.ref;
+
+  // Show 7 hadith per day — offset by day, cycle through full list
+  const PER_DAY = 7;
+  const start = (doy * PER_DAY) % HADITH.length;
+  const list = document.getElementById('hadithList');
+  if (!list) return;
+
+  list.innerHTML = '';
+  for (let i = 0; i < PER_DAY; i++) {
+    const h = HADITH[(start + i) % HADITH.length];
+    const item = document.createElement('div');
+    item.className = 'hadith-item';
+    item.innerHTML = `
+      <div class="hadith-item-ar">${h.ar}</div>
+      <div class="hadith-item-bn">${h.bn}</div>
+      <div class="hadith-item-ref">— ${h.ref}</div>`;
+    list.appendChild(item);
+  }
 }
 
 /* ══════════════════════════════════════════
