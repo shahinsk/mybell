@@ -294,7 +294,32 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .sl-notif-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(240,165,0,.06);border:1px solid rgba(240,165,0,.18);border-radius:10px;padding:10px 14px;font-size:.66rem;color:#c88800;}
 .sl-notif-row button{background:rgba(240,165,0,.18);border:1px solid rgba(240,165,0,.35);color:var(--gold);border-radius:7px;padding:5px 14px;font-size:.64rem;cursor:pointer;font-family:var(--mono);}
 
-/* ── Hadith card ── */
+/* ── Live / Next Prayer Card ── */
+.prc-card{background:linear-gradient(135deg,#0f0e1a,#0a0c10);border:1.5px solid rgba(240,165,0,.28);border-radius:16px;padding:14px 16px 12px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;}
+.prc-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 90% 60% at 50% -10%,rgba(240,165,0,.08),transparent);pointer-events:none;}
+.prc-card.live{border-color:rgba(46,207,114,.4);}
+.prc-card.live::before{background:radial-gradient(ellipse 90% 60% at 50% -10%,rgba(46,207,114,.08),transparent);}
+.prc-label-row{display:flex;align-items:center;justify-content:space-between;}
+.prc-badge{font-size:.54rem;letter-spacing:3px;text-transform:uppercase;color:rgba(240,165,0,.8);background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.2);border-radius:20px;padding:3px 10px;}
+.prc-card.live .prc-badge{color:rgba(46,207,114,.9);background:rgba(46,207,114,.08);border-color:rgba(46,207,114,.25);}
+.prc-source{font-size:.52rem;color:rgba(240,165,0,.3);font-family:var(--mono);}
+.prc-card.live .prc-source{color:rgba(46,207,114,.3);}
+.prc-body{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.prc-left{display:flex;flex-direction:column;align-items:flex-start;gap:4px;}
+.prc-icon{font-size:2rem;line-height:1;margin-bottom:2px;}
+.prc-name-ar{font-size:1.5rem;color:var(--gold);direction:rtl;line-height:1;}
+.prc-card.live .prc-name-ar{color:rgba(46,207,114,.95);}
+.prc-name-en{font-family:var(--disp);font-size:1rem;letter-spacing:3px;color:rgba(255,255,255,.5);margin-top:2px;}
+.prc-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.prc-time-big{font-family:var(--disp);font-size:2.4rem;letter-spacing:3px;color:var(--gold);line-height:1;}
+.prc-card.live .prc-time-big{color:rgba(46,207,114,.95);}
+.prc-window{font-family:var(--mono);font-size:.72rem;color:rgba(255,255,255,.35);margin-top:2px;}
+.prc-cd-row{display:flex;align-items:center;justify-content:center;gap:10px;border-top:1px solid rgba(255,255,255,.06);padding-top:10px;}
+.prc-cd-label{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--hint);}
+.prc-cd{font-family:var(--disp);font-size:1.5rem;letter-spacing:3px;color:var(--gold);}
+.prc-card.live .prc-cd{color:rgba(46,207,114,.9);}
+
+
 .hadith-card{background:linear-gradient(160deg,#0e0e1e,#080812);border:1.5px solid rgba(255,255,255,.08);border-radius:18px;padding:24px 20px 20px;display:flex;flex-direction:column;gap:0;}
 .hadith-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
 .hadith-badge{font-size:.58rem;letter-spacing:2.5px;text-transform:uppercase;background:rgba(240,165,0,.08);color:var(--gold);border:1px solid rgba(240,165,0,.2);border-radius:20px;padding:4px 14px;}
@@ -610,6 +635,28 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
         <div class="rmd-countdown" id="rmdCd">—</div>
       </div>
     </div>
+    <div id="slPrayerCard" class="prc-card" style="display:none">
+      <div class="prc-label-row">
+        <div class="prc-badge" id="prcBadge">NEXT PRAYER</div>
+        <div class="prc-source" id="prcSource"></div>
+      </div>
+      <div class="prc-body">
+        <div class="prc-left">
+          <div class="prc-icon" id="prcIcon">🕌</div>
+          <div class="prc-name-ar" id="prcNameAr"></div>
+          <div class="prc-name-en" id="prcNameEn"></div>
+        </div>
+        <div class="prc-right">
+          <div class="prc-time-big" id="prcTimeBig">—</div>
+          <div class="prc-window" id="prcWindow"></div>
+        </div>
+      </div>
+      <div class="prc-cd-row">
+        <div class="prc-cd-label" id="prcCdLabel">—</div>
+        <div class="prc-cd" id="prcCd">—</div>
+      </div>
+    </div>
+
     <div id="slPrayers" class="sl-prayers"></div>
     <div class="sl-notif-row" id="slNotifRow" style="display:none">
       <span>⚠ Enable notifications for reminders</span>
@@ -2230,7 +2277,7 @@ function slRender(){
   display.forEach((p,i)=>{
     const isNext=i===nextIdx;
     const div=document.createElement('div');
-    div.className='sl-row'+(isNext?' is-next':'');
+    div.className='sl-row';
     const fridayBadge=p.isFriday?`<span class="sl-friday-tag">FRIDAY</span>`:'';
     const endDisplay=p.endTime&&p.endTime!=='—'?
       `<span class="sl-time-arrow">→</span><span class="sl-time-end">${fmt12(p.endTime)}</span>`:'';
@@ -2251,7 +2298,7 @@ function slRender(){
             onchange="slSetRemind(${i},this.value)">
           <span class="sl-remind-unit">min before</span>
         </div>
-        ${isNext?`<div class="sl-next-tag">NEXT · ${nextDiff<60?nextDiff+'m':Math.floor(nextDiff/60)+'h'}</div>`:''}
+        ${''/* next tag moved to prayer card */}
       </div>`;
     // On Friday, let Jumu'ah time be tappable to override
     if(p.isFriday){
@@ -2263,8 +2310,9 @@ function slRender(){
     wrap.appendChild(div);
   });
 
-  // Update Sehri/Iftar card
+  // Update Sehri/Iftar card and prayer card
   rmdUpdate();
+  prcUpdate();
 }
 
 function slEditJumuah(i,p){
@@ -2333,12 +2381,103 @@ function rmdUpdate(){
   document.getElementById('rmdCdLabel').textContent=targetLabel;
   document.getElementById('rmdCd').textContent=hrs+'h '+(mins<10?'0':'')+mins+'m '+(secs<10?'0':'')+secs+'s';
 
-  if(!rmdInterval){rmdInterval=setInterval(rmdUpdate,1000);}
+  if(!rmdInterval){rmdInterval=setInterval(()=>{rmdUpdate();prcUpdate();},1000);}
 }
 
 function rmdStop(){
   if(rmdInterval){clearInterval(rmdInterval);rmdInterval=null;}
 }
+
+/* ── Live / Next Prayer Card ── */
+const PRC_ICONS={fajr:'🌅',dhuhr:'☀️',asr:'🌤️',maghrib:'🌇',isha:'🌙'};
+
+function prcUpdate(){
+  if(!slData.length)return;
+  const card=document.getElementById('slPrayerCard');
+  if(!card)return;
+
+  const now=new Date();
+  const isFriday=now.getDay()===5;
+  const nowSec=now.getHours()*3600+now.getMinutes()*60+now.getSeconds();
+
+  function toSec(t){
+    if(!t||t==='—')return-1;
+    const[h,m]=t.split(':').map(Number);return h*3600+m*60;
+  }
+
+  // Build same display list as slRender
+  const display=slData.map(p=>{
+    if(p.id==='dhuhr'&&isFriday) return{...p,en:SL_JUMUAH.en,ar:SL_JUMUAH.ar,time:p.jumuahTime,isFriday:true};
+    return{...p,isFriday:false};
+  });
+
+  // Find live prayer (started but not yet ended)
+  let live=null;
+  for(const p of display){
+    const start=toSec(p.time);
+    const end=toSec(p.endTime);
+    if(start<0)continue;
+    // Fajr window crosses midnight? handle normally
+    if(end>start){
+      if(nowSec>=start&&nowSec<end){live=p;break;}
+    } else if(end>0){
+      // window that goes past midnight (Isha → Midnight)
+      if(nowSec>=start||nowSec<end){live=p;break;}
+    }
+  }
+
+  // Find next prayer (smallest positive diff)
+  let next=null, nextDiff=Infinity;
+  for(const p of display){
+    if(p.time==='—')continue;
+    const[h,m]=p.time.split(':').map(Number);
+    let d=(h*3600+m*60)-nowSec; if(d<=0)d+=86400;
+    if(d<nextDiff){nextDiff=d;next=p;}
+  }
+
+  const target=live||next;
+  if(!target){card.style.display='none';return;}
+  card.style.display='flex';
+
+  const isLive=!!live;
+  card.classList.toggle('live',isLive);
+
+  // Badge & source
+  document.getElementById('prcBadge').textContent=isLive?'NOW · LIVE':'NEXT PRAYER';
+  document.getElementById('prcSource').textContent=isLive?'in progress':'coming up';
+
+  // Icon, names, time
+  document.getElementById('prcIcon').textContent=PRC_ICONS[target.id]||'🕌';
+  document.getElementById('prcNameAr').textContent=target.ar;
+  document.getElementById('prcNameEn').textContent=target.en+(target.isFriday?' · الجمعة':'');
+  document.getElementById('prcTimeBig').textContent=fmt12(target.time);
+
+  // Window
+  const winEl=document.getElementById('prcWindow');
+  if(target.endTime&&target.endTime!=='—'){
+    winEl.textContent=fmt12(target.time)+' → '+fmt12(target.endTime);
+  } else {
+    winEl.textContent='';
+  }
+
+  // Countdown
+  const cdEl=document.getElementById('prcCd');
+  const cdLbl=document.getElementById('prcCdLabel');
+  if(isLive){
+    // Count down to end
+    const endSec=toSec(target.endTime);
+    let rem=endSec-nowSec; if(rem<0)rem+=86400;
+    const h=Math.floor(rem/3600),m=Math.floor((rem%3600)/60),s=rem%60;
+    cdLbl.textContent='ends in';
+    cdEl.textContent=h>0?h+'h '+(m<10?'0':'')+m+'m':m+'m '+(s<10?'0':'')+s+'s';
+  } else {
+    // Count down to start
+    const h=Math.floor(nextDiff/3600),m=Math.floor((nextDiff%3600)/60),s=nextDiff%60;
+    cdLbl.textContent='starts in';
+    cdEl.textContent=h>0?h+'h '+(m<10?'0':'')+m+'m':m+'m '+(s<10?'0':'')+s+'s';
+  }
+}
+
 
 function slScheduleAll(){
   slTimers.forEach(t=>clearTimeout(t));slTimers=[];
