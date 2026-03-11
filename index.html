@@ -148,7 +148,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 0;opacity:0.38;transition:opacity .2s;-webkit-tap-highlight-color:transparent;color:var(--text);}
 .nav-btn.active{opacity:1;color:var(--gold);}
 .nav-ico{display:flex;align-items:center;justify-content:center;width:24px;height:24px;}
-.nav-lbl{font-family:var(--mono);font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;}
+.nav-lbl{font-family:var(--mono);font-size:0.72rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;}
 .nav-btn.active .nav-lbl{color:var(--gold);}
 
 /* ═══════ TIMER SCREEN ═══════ */
@@ -247,7 +247,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 
 /* inner tab bar */
 .sl-tabs{display:flex;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:4px;margin-bottom:18px;gap:4px;}
-.sl-tab{flex:1;padding:9px 4px;border:none;background:transparent;color:var(--muted);font-family:var(--mono);font-size:.72rem;letter-spacing:.5px;border-radius:10px;cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent;white-space:nowrap;}
+.sl-tab{flex:1;padding:10px 4px;border:none;background:transparent;color:rgba(255,255,255,.45);font-family:var(--mono);font-size:.82rem;letter-spacing:.5px;border-radius:10px;cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent;white-space:nowrap;font-weight:500;}
 .sl-tab.active{background:rgba(240,165,0,.13);color:var(--gold);border:1px solid rgba(240,165,0,.28);}
 
 /* panels */
@@ -322,7 +322,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 
 .hadith-section{display:flex;flex-direction:column;gap:12px;}
 .hadith-section-top{display:flex;align-items:center;justify-content:space-between;padding:0 2px;}
-.hadith-badge{font-size:.58rem;letter-spacing:2.5px;text-transform:uppercase;background:rgba(240,165,0,.08);color:var(--gold);border:1px solid rgba(240,165,0,.2);border-radius:20px;padding:4px 14px;}
+.hadith-badge{font-size:.68rem;letter-spacing:2.5px;text-transform:uppercase;background:rgba(240,165,0,.08);color:var(--gold);border:1px solid rgba(240,165,0,.2);border-radius:20px;padding:4px 14px;}
 .hadith-nav{display:flex;align-items:center;gap:10px;}
 .hadith-nav-dots{display:flex;gap:5px;}
 .hadith-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .25s;}
@@ -342,7 +342,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 
 /* ── Surah card ── */
 .surah-card{background:linear-gradient(160deg,#0d0d20,#080810);border:1.5px solid rgba(240,165,0,.18);border-radius:20px;padding:22px 18px 20px;display:flex;flex-direction:column;gap:16px;}
-.surah-card-label{font-size:.6rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(240,165,0,.55);}
+.surah-card-label{font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:rgba(240,165,0,.55);}
 .surah-search-row{display:flex;gap:10px;align-items:center;}
 .surah-search-wrap{flex:1;position:relative;}
 .surah-inp{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;font-family:var(--mono);font-size:.95rem;padding:13px 14px;outline:none;box-sizing:border-box;transition:border-color .18s;}
@@ -358,7 +358,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .surah-reciter{background:rgba(240,165,0,.08);border:1.5px solid rgba(240,165,0,.25);border-radius:12px;color:var(--gold);font-family:var(--mono);font-size:.72rem;padding:13px 10px;outline:none;cursor:pointer;-webkit-appearance:none;min-width:78px;text-align:center;}
 .surah-now{text-align:center;padding:8px 0 4px;}
 .surah-now-ar{font-size:2.6rem;color:var(--gold);margin-bottom:6px;text-shadow:0 0 30px rgba(240,165,0,.3);}
-.surah-now-en{font-family:var(--mono);font-size:.82rem;color:rgba(255,255,255,.7);letter-spacing:2.5px;text-transform:uppercase;}
+.surah-now-en{font-family:var(--mono);font-size:.88rem;color:rgba(255,255,255,.82);letter-spacing:2px;text-transform:uppercase;font-weight:500;}
 .surah-controls{display:flex;align-items:center;gap:14px;}
 .surah-ctrl-btn{width:54px;height:54px;border-radius:50%;border:none;background:var(--gold);color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:transform .1s;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 20px rgba(240,165,0,.35);}
 .surah-ctrl-btn:active{transform:scale(.88);}
@@ -370,7 +370,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .surah-progress-dot{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--gold);top:50%;transform:translate(-50%,-50%);left:0%;box-shadow:0 0 8px rgba(240,165,0,.6);}
 .surah-progress-dot.buf{animation:dotPulse .9s ease-in-out infinite;}
 @keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,165,0,.6)}50%{box-shadow:0 0 0 8px rgba(240,165,0,0)}}
-.surah-time{font-family:var(--mono);font-size:.82rem;color:rgba(255,255,255,.75);min-width:46px;text-align:right;font-weight:600;}
+.surah-time{font-family:var(--mono);font-size:.9rem;color:#fff;min-width:46px;text-align:right;font-weight:600;}
 .surah-status{font-family:var(--mono);font-size:.78rem;color:var(--gold);text-align:center;padding:6px;animation:fadePulse 1.2s infinite;letter-spacing:.5px;}
 @keyframes fadePulse{0%,100%{opacity:.35}50%{opacity:1}}
 .surah-error{font-family:var(--mono);font-size:.76rem;color:#ff6b6b;text-align:center;padding:6px;line-height:1.5;}
@@ -387,16 +387,16 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .surah-dl-bar-lbl{font-family:var(--mono);font-size:.6rem;color:var(--muted);min-width:48px;text-align:right;}
 
 /* ── Tasbih ── */
-.tsb-names-label{font-size:.58rem;letter-spacing:3px;text-transform:uppercase;color:rgba(240,165,0,.6);margin-bottom:8px;padding:0 2px;}
+.tsb-names-label{font-size:.68rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(240,165,0,.75);margin-bottom:8px;padding:0 2px;font-weight:600;}
 .tsb-names-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .tsb-names-scroll::-webkit-scrollbar{display:none;}
 .tsb-name-chip{flex-shrink:0;padding:9px 16px;border-radius:22px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:3px;}
 .tsb-name-chip.active{background:rgba(240,165,0,.12);border-color:rgba(240,165,0,.45);}
-.tsb-name-chip-ar{font-size:1rem;color:rgba(255,255,255,.8);line-height:1.2;}
+.tsb-name-chip-ar{font-size:1.1rem;color:rgba(255,255,255,.88);line-height:1.3;}
 .tsb-name-chip.active .tsb-name-chip-ar{color:var(--gold);}
-.tsb-name-chip-en{font-family:var(--mono);font-size:.55rem;color:var(--muted);letter-spacing:.5px;}
+.tsb-name-chip-en{font-family:var(--mono);font-size:.68rem;color:rgba(255,255,255,.5);letter-spacing:.5px;}
 .tsb-name-chip.active .tsb-name-chip-en{color:rgba(240,165,0,.75);}
-.tsb-name-chip-cnt{font-family:var(--disp);font-size:.85rem;color:rgba(240,165,0,.6);margin-top:1px;}
+.tsb-name-chip-cnt{font-family:var(--disp);font-size:1rem;color:rgba(240,165,0,.7);margin-top:2px;}
 
 .tsb-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
 .tsb-ring-outer{position:relative;width:210px;height:210px;}
@@ -408,23 +408,23 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .tsb-btn.flash{animation:tsbFlash .35s ease-out;}
 @keyframes tsbFlash{0%{box-shadow:0 8px 36px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06)}40%{box-shadow:0 0 0 0 transparent,0 0 60px rgba(240,165,0,.8),0 0 120px rgba(240,165,0,.3)}100%{box-shadow:0 8px 36px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06)}}
 .tsb-num{font-family:var(--disp);font-size:3.6rem;letter-spacing:2px;color:#fff;line-height:1;}
-.tsb-tap-lbl{font-size:.52rem;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,.35);}
-.tsb-cycle-lbl{font-size:.72rem;color:rgba(255,255,255,.45);letter-spacing:1px;}
+.tsb-tap-lbl{font-size:.62rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.4);}
+.tsb-cycle-lbl{font-size:.82rem;color:rgba(255,255,255,.55);letter-spacing:1.5px;}
 
 .tsb-dhikr-counts{display:flex;flex-direction:column;gap:6px;width:100%;}
 .tsb-dhikr-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:9px 14px;}
 .tsb-dhikr-row.active-dhikr{background:rgba(240,165,0,.06);border-color:rgba(240,165,0,.25);}
-.tsb-dhikr-ar{font-size:.95rem;color:rgba(255,255,255,.7);flex:1;}
+.tsb-dhikr-ar{font-size:1rem;color:rgba(255,255,255,.78);flex:1;}
 .tsb-dhikr-row.active-dhikr .tsb-dhikr-ar{color:var(--gold);}
-.tsb-dhikr-count{font-family:var(--disp);font-size:1.4rem;color:rgba(255,255,255,.5);min-width:40px;text-align:right;}
+.tsb-dhikr-count{font-family:var(--disp);font-size:1.55rem;color:rgba(255,255,255,.6);min-width:44px;text-align:right;}
 .tsb-dhikr-row.active-dhikr .tsb-dhikr-count{color:var(--gold);}
-.tsb-dhikr-target{font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-left:4px;}
+.tsb-dhikr-target{font-family:var(--mono);font-size:.68rem;color:rgba(255,255,255,.35);margin-left:4px;}
 
 .tsb-stats{display:flex;align-items:center;justify-content:center;}
 .tsb-stat{display:flex;flex-direction:column;align-items:center;gap:3px;padding:0 28px;}
 .tsb-stat-div{width:1px;height:36px;background:rgba(255,255,255,.08);}
 .tsb-stat-n{font-family:var(--disp);font-size:2.2rem;letter-spacing:2px;color:#fff;}
-.tsb-stat-l{font-size:.56rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.tsb-stat-l{font-size:.68rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.45);}
 .tsb-act-row{display:flex;gap:10px;}
 .tsb-undo{flex:1;padding:13px;border-radius:var(--r);border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.65);font-family:var(--disp);font-size:1.1rem;letter-spacing:2px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;}
 .tsb-undo:active{background:rgba(255,255,255,.09);}
@@ -433,6 +433,34 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 
 @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+/* ── Dua / Surah Reading Screen ── */
+.dua-header{text-align:center;padding:8px 0 4px;}
+.dua-title{font-size:2.2rem;color:var(--gold);text-shadow:0 0 30px rgba(240,165,0,.3);margin-bottom:6px;}
+.dua-subtitle{font-family:var(--mono);font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.4);}
+.dua-tabs{display:flex;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:4px;gap:4px;}
+.dua-tab{flex:1;padding:11px 4px;border:none;background:transparent;color:rgba(255,255,255,.45);font-family:var(--mono);font-size:.82rem;letter-spacing:.5px;border-radius:10px;cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent;font-weight:500;}
+.dua-tab.active{background:rgba(240,165,0,.13);color:var(--gold);border:1px solid rgba(240,165,0,.28);}
+.dua-list{display:flex;flex-direction:column;gap:14px;}
+.dua-card{background:linear-gradient(160deg,#0d0d20,#08080f);border:1.5px solid rgba(255,255,255,.08);border-radius:18px;overflow:hidden;cursor:pointer;transition:border-color .18s;}
+.dua-card:active{border-color:rgba(240,165,0,.35);}
+.dua-card-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 14px;}
+.dua-card-left{display:flex;align-items:center;gap:14px;}
+.dua-card-num{width:36px;height:36px;border-radius:50%;background:rgba(240,165,0,.1);border:1.5px solid rgba(240,165,0,.3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.78rem;color:var(--gold);font-weight:600;flex-shrink:0;}
+.dua-card-names{display:flex;flex-direction:column;gap:3px;}
+.dua-card-ar{font-size:1.3rem;color:#fff;line-height:1.2;}
+.dua-card-en{font-family:var(--mono);font-size:.78rem;color:rgba(255,255,255,.55);letter-spacing:.8px;}
+.dua-card-chevron{font-size:1rem;color:rgba(255,255,255,.25);transition:transform .22s;}
+.dua-card.open .dua-card-chevron{transform:rotate(90deg);color:var(--gold);}
+.dua-card-body{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);}
+.dua-card.open .dua-card-body{max-height:2000px;}
+.dua-card-inner{padding:0 18px 20px;display:flex;flex-direction:column;gap:16px;border-top:1px solid rgba(255,255,255,.06);}
+.dua-arabic{font-size:1.45rem;line-height:2.1;color:rgba(255,255,255,.82);direction:rtl;text-align:right;padding-top:14px;}
+.dua-bn-label{font-family:var(--mono);font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(240,165,0,.6);margin-top:2px;}
+.dua-bn{font-size:1.05rem;line-height:1.95;color:rgba(255,255,255,.88);font-family:'Noto Serif Bengali','Hind Siliguri',sans-serif;}
+.dua-meaning-label{font-family:var(--mono);font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(56,192,232,.6);margin-top:2px;}
+.dua-meaning{font-family:var(--mono);font-size:.84rem;line-height:1.75;color:rgba(255,255,255,.62);font-style:italic;}
+.dua-ref{font-family:var(--mono);font-size:.7rem;color:rgba(240,165,0,.7);text-align:right;font-weight:600;background:rgba(240,165,0,.08);border-radius:6px;padding:3px 10px;display:inline-block;align-self:flex-end;}
+
 </style>
 </head>
 <body>
@@ -766,7 +794,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
   <div class="sl-panel" id="slPanelTasbih" style="display:none">
 
     <!-- Dhikr selector -->
-    <div class="tsb-names-label">তাসবিহ বেছে নিন</div>
+    <div class="tsb-names-label">SELECT DHIKR</div>
     <div class="tsb-names-scroll" id="tsbNameScroll"></div>
 
     <!-- Ring counter -->
@@ -789,13 +817,13 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 
     <!-- Grand total -->
     <div class="tsb-stats">
-      <div class="tsb-stat"><div class="tsb-stat-n" id="tsbStatTotal">0</div><div class="tsb-stat-l">মোট</div></div>
+      <div class="tsb-stat"><div class="tsb-stat-n" id="tsbStatTotal">0</div><div class="tsb-stat-l">TOTAL</div></div>
       <div class="tsb-stat-div"></div>
-      <div class="tsb-stat"><div class="tsb-stat-n" id="tsbStatRounds">0</div><div class="tsb-stat-l">রাউন্ড</div></div>
+      <div class="tsb-stat"><div class="tsb-stat-n" id="tsbStatRounds">0</div><div class="tsb-stat-l">ROUNDS</div></div>
     </div>
     <div class="tsb-act-row">
-      <button class="tsb-undo"  id="tsbUndoBtn" ontouchend="tsbUndo(event)"  onclick="tsbUndo()">◀ আন্ডু</button>
-      <button class="tsb-reset"                 ontouchend="tsbReset(event)" onclick="tsbReset()">রিসেট</button>
+      <button class="tsb-undo"  id="tsbUndoBtn" ontouchend="tsbUndo(event)"  onclick="tsbUndo()">◀ UNDO</button>
+      <button class="tsb-reset"                 ontouchend="tsbReset(event)" onclick="tsbReset()">RESET</button>
     </div>
   </div>
 
@@ -803,6 +831,31 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 </div>
 
 <!-- ═══════ BOTTOM NAV ═══════ -->
+
+<!-- ═══════ DUA / SURAH SCREEN ═══════ -->
+<div class="scr" id="duaScr">
+
+  <div class="dua-header">
+    <div class="dua-title">سُوَر وَأَدْعِيَة</div>
+    <div class="dua-subtitle">SURAHS & DUA · বাংলা উচ্চারণ</div>
+  </div>
+
+  <!-- Section tabs -->
+  <div class="dua-tabs">
+    <button class="dua-tab active" id="duaTabSurah" onclick="duaTab('surah')">📖 Last 12 Surahs</button>
+    <button class="dua-tab"        id="duaTabDua"   onclick="duaTab('dua')">🤲 Important Dua</button>
+  </div>
+
+  <!-- Content -->
+  <div id="duaPanelSurah">
+    <div class="dua-list" id="duaSurahList"></div>
+  </div>
+  <div id="duaPanelDua" style="display:none">
+    <div class="dua-list" id="duaDuaList"></div>
+  </div>
+
+</div>
+
 <nav class="bottom-nav" id="bottomNav">
   <button class="nav-btn active" id="navBell" onclick="switchTab('bell')">
     <span class="nav-ico">
@@ -832,6 +885,15 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
       </svg>
     </span>
     <span class="nav-lbl">Salah</span>
+  </button>
+  <button class="nav-btn" id="navDua" onclick="switchTab('dua')">
+    <span class="nav-ico">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 21C7 21 3 16.97 3 12V6l9-3 9 3v6c0 4.97-4 9-9 9z"/>
+        <path d="M9 12l2 2 4-4"/>
+      </svg>
+    </span>
+    <span class="nav-lbl">Dua</span>
   </button>
 </nav>
 <script>
@@ -3351,30 +3413,243 @@ function slTab(t) {
 /* ── switchTab — outer nav (Bell / Timer / Salah) ── */
 function switchTab(tab) {
   currentTab = tab;
-  ['Bell', 'Timer', 'Salah'].forEach(n => {
+  ['Bell','Timer','Salah','Dua'].forEach(n => {
     const el = document.getElementById('nav' + n);
     if (el) el.classList.toggle('active', n.toLowerCase() === tab);
   });
+  // Hide all main screens first
+  ['mainScr','timerScr','salahScr','duaScr'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('on');
+  });
+  rmdStop(); surahStop();
   if (tab === 'salah') {
     document.getElementById('salahScr').classList.add('on');
-    if (myRoom) {
-      document.getElementById('mainScr').classList.remove('on');
-      document.getElementById('timerScr').classList.remove('on');
-    }
-    slCheckNotif();
-    slRender();
-    rmdUpdate();
-    slTab(curSlTab);
-  } else {
-    rmdStop();
-    surahStop();
-    if (myRoom) {
-      document.getElementById('mainScr').classList.toggle('on', tab === 'bell');
-      document.getElementById('timerScr').classList.toggle('on', tab === 'timer');
-      document.getElementById('salahScr').classList.remove('on');
-      if (tab === 'timer') timerCheckNotif();
-    }
+    slCheckNotif(); slRender(); rmdUpdate(); slTab(curSlTab);
+  } else if (tab === 'dua') {
+    document.getElementById('duaScr').classList.add('on');
+    duaInit();
+  } else if (tab === 'bell' && myRoom) {
+    document.getElementById('mainScr').classList.add('on');
+  } else if (tab === 'timer') {
+    if (myRoom) document.getElementById('timerScr').classList.add('on');
+    timerCheckNotif();
   }
 }
+
+/* ══════════════════════════════════════════════════════
+   DUA / SURAH READING PAGE
+   ══════════════════════════════════════════════════════ */
+
+const LAST_12_SURAHS = [
+  {
+    num:103, ar:'سُورَةُ الْعَصْر', en:'Al-Asr', bn_name:'আল আসর',
+    arabic:'وَالْعَصْرِ ﴿١﴾ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ ﴿٢﴾ إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ ﴿٣﴾',
+    bn:'ওয়াল আসর। ইন্নাল ইনসানা লাফী খুসর। ইল্লাল্লাযীনা আমানূ ওয়া আমিলুস সালিহাতি ওয়া তাওয়া-সাও বিল হাক্কি ওয়া তাওয়া-সাও বিস সাবর।',
+    meaning:'শপথ যুগের। নিশ্চয়ই মানুষ ক্ষতিতে আছে। কিন্তু তারা নয়, যারা ঈমান আনে, সৎকাজ করে, পরস্পরকে সত্যের উপদেশ দেয় এবং ধৈর্যের উপদেশ দেয়।'
+  },
+  {
+    num:104, ar:'سُورَةُ الْهُمَزَة', en:'Al-Humazah', bn_name:'আল হুমাযা',
+    arabic:'وَيْلٌ لِّكُلِّ هُمَزَةٍ لُّمَزَةٍ ﴿١﴾ الَّذِي جَمَعَ مَالًا وَعَدَّدَهُ ﴿٢﴾ يَحْسَبُ أَنَّ مَالَهُ أَخْلَدَهُ ﴿٣﴾',
+    bn:'ওয়াইলুল লিকুল্লি হুমাযাতিল লুমাযাহ। আল্লাযী জামাআ মালাও ওয়া আদ্দাদাহ। ইয়াহসাবু আন্না মালাহূ আখলাদাহ।',
+    meaning:'ধ্বংস প্রত্যেক পশ্চাতে ও সম্মুখে নিন্দাকারীর জন্য। যে অর্থ সঞ্চয় করে ও গণনা করতে থাকে। সে মনে করে যে তার অর্থ তাকে চিরস্থায়ী করে রাখবে।'
+  },
+  {
+    num:105, ar:'سُورَةُ الْفِيل', en:'Al-Feel', bn_name:'আল ফীল',
+    arabic:'أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَابِ الْفِيلِ ﴿١﴾ أَلَمْ يَجْعَلْ كَيْدَهُمْ فِي تَضْلِيلٍ ﴿٢﴾ وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ ﴿٣﴾ تَرْمِيهِم بِحِجَارَةٍ مِّن سِجِّيلٍ ﴿٤﴾ فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍ ﴿٥﴾',
+    bn:'আলাম তারা কাইফা ফাআলা রাব্বুকা বিআসহাবিল ফীল। আলাম ইয়াজআল কাইদাহুম ফী তাদলীল। ওয়া আরসালা আলাইহিম তাইরান আবাবীল। তারমীহিম বিহিজারাতিম মিন সিজ্জীল। ফাজাআলাহুম কাআসফিম মা’কুল।',
+    meaning:'তুমি কি দেখনি তোমার রব হস্তীবাহিনীর সাথে কীরূপ ব্যবহার করেছেন? তিনি কি তাদের কৌশল ব্যর্থ করে দেননি? তিনি তাদের উপর ঝাঁকে ঝাঁকে পাখি পাঠিয়েছিলেন। যারা তাদের উপর পোড়া মাটির পাথর নিক্ষেপ করছিল। অতঃপর তিনি তাদের ভক্ষিত তৃণের মতো করে দিলেন।'
+  },
+  {
+    num:106, ar:'سُورَةُ قُرَيْش', en:'Quraish', bn_name:'কুরাইশ',
+    arabic:'لِإِيلَافِ قُرَيْشٍ ﴿١﴾ إِيلَافِهِمْ رِحْلَةَ الشِّتَاءِ وَالصَّيْفِ ﴿٢﴾ فَلْيَعْبُدُوا رَبَّ هَٰذَا الْبَيْتِ ﴿٣﴾ الَّذِي أَطْعَمَهُم مِّن جُوعٍ وَآمَنَهُم مِّنْ خَوْفٍ ﴿٤﴾',
+    bn:'লিঈলাফি কুরাইশ। ঈলাফিহিম রিহলাতাশ শিতাই ওয়াস সাইফ। ফাল ইয়া’বুদূ রাব্বা হাযাল বাইত। আল্লাযী আতআমাহুম মিন জুউইং ওয়া আমানাহুম মিন খাউফ।',
+    meaning:'কুরাইশের পরিচিতির কারণে। তাদের পরিচিতি শীত ও গ্রীষ্মের সফরে। অতএব তারা যেন এই গৃহের রবের ইবাদত করে। যিনি তাদের ক্ষুধায় আহার দিয়েছেন এবং ভয়ে নিরাপত্তা দিয়েছেন।'
+  },
+  {
+    num:107, ar:'سُورَةُ الْمَاعُون', en:'Al-Maun', bn_name:'আল মাউন',
+    arabic:'أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ ﴿١﴾ فَذَٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ ﴿٢﴾ وَلَا يَحُضُّ عَلَىٰ طَعَامِ الْمِسْكِينِ ﴿٣﴾',
+    bn:'আরাআইতাল্লাযী ইউকায্যিবু বিদ্দীন। ফাযালিকাল্লাযী ইয়াদু’উল ইয়াতীম। ওয়া লা ইয়াহুদ্দু আলা তাআমিল মিসকীন।',
+    meaning:'তুমি কি দেখেছ তাকে যে দ্বীনকে মিথ্যা বলে? সে-ই তো ইয়াতীমকে ধাক্কা দেয়। এবং মিসকীনকে খাওয়ানোর জন্য উৎসাহিত করে না।'
+  },
+  {
+    num:108, ar:'سُورَةُ الْكَوْثَر', en:'Al-Kawthar', bn_name:'আল কাউসার',
+    arabic:'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ ﴿١﴾ فَصَلِّ لِرَبِّكَ وَانْحَرْ ﴿٢﴾ إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ ﴿٣﴾',
+    bn:'ইন্না আ’তাইনাকাল কাউসার। ফাসাল্লি লিরাব্বিকা ওয়ানহার। ইন্না শানিআকা হুওয়াল আবতার।',
+    meaning:'নিশ্চয়ই আমি তোমাকে কাউসার দান করেছি। অতএব তোমার রবের জন্য নামাজ পড়ো এবং কুরবানি করো। নিশ্চয়ই তোমার দুশমনই নির্বংশ।'
+  },
+  {
+    num:109, ar:'سُورَةُ الْكَافِرُون', en:'Al-Kafirun', bn_name:'আল কাফিরুন',
+    arabic:'قُلْ يَا أَيُّهَا الْكَافِرُونَ ﴿١﴾ لَا أَعْبُدُ مَا تَعْبُدُونَ ﴿٢﴾ وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٣﴾ وَلَا أَنَا عَابِدٌ مَّا عَبَدتُّمْ ﴿٤﴾ وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٥﴾ لَكُمْ دِينُكُمْ وَلِيَ دِينِ ﴿٦﴾',
+    bn:'কুল ইয়া আয়্যুহাল কাফিরুন। লা আ’বুদু মা তা’বুদুন। ওয়ালা আনতুম আবিদুনা মা আ’বুদ। ওয়ালা আনা আবিদুম মা আবাদতুম। ওয়ালা আনতুম আবিদুনা মা আ’বুদ। লাকুম দীনুকুম ওয়ালিয়া দীন।',
+    meaning:'বলুন, হে কাফিরগণ! আমি তার ইবাদত করি না যার ইবাদত তোমরা কর। এবং তোমরাও তার ইবাদতকারী নও যার ইবাদত আমি করি। এবং আমি ইবাদতকারী নই যার ইবাদত তোমরা করে আসছ। তোমাদের দ্বীন তোমাদের, আমার দ্বীন আমার।'
+  },
+  {
+    num:110, ar:'سُورَةُ النَّصْر', en:'An-Nasr', bn_name:'আন নাসর',
+    arabic:'إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ ﴿١﴾ وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا ﴿٢﴾ فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ ۚ إِنَّهُ كَانَ تَوَّابًا ﴿٣﴾',
+    bn:'ইযা জাআ নাসরুল্লাহি ওয়াল ফাতহ। ওয়া রাআইতান নাসা ইয়াদখুলুনা ফী দীনিল্লাহি আফওয়াজা। ফাসাব্বিহ বিহামদি রাব্বিকা ওয়াসতাগফিরহ। ইন্নাহু কানা তাউওয়াবা।',
+    meaning:'যখন আল্লাহর সাহায্য ও বিজয় আসবে। এবং তুমি দেখবে মানুষ দলে দলে আল্লাহর দ্বীনে প্রবেশ করছে। তখন তোমার রবের প্রশংসায় তাসবিহ পাঠ করো এবং তাঁর কাছে ক্ষমা চাও। নিশ্চয়ই তিনি তওবা কবুলকারী।'
+  },
+  {
+    num:111, ar:'سُورَةُ الْمَسَد', en:'Al-Masad', bn_name:'আল মাসাদ',
+    arabic:'تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ ﴿١﴾ مَا أَغْنَىٰ عَنْهُ مَالُهُ وَمَا كَسَبَ ﴿٢﴾ سَيَصْلَىٰ نَارًا ذَاتَ لَهَبٍ ﴿٣﴾',
+    bn:'তাব্বাত ইয়াদা আবী লাহাবিউ ওয়া তাব্ব। মা আগনা আনহু মালুহু ওয়া মা কাসাব। সাইয়াসলা নারান যাতা লাহাব।',
+    meaning:'আবু লাহাবের হাত ধ্বংস হোক এবং সে নিজেও ধ্বংস হোক। তার ধন-সম্পদ ও তার অর্জন তার কোনো কাজে আসেনি। সে অচিরেই লেলিহান আগুনে প্রবেশ করবে।'
+  },
+  {
+    num:112, ar:'سُورَةُ الْإِخْلَاص', en:'Al-Ikhlas', bn_name:'আল ইখলাস',
+    arabic:'قُلْ هُوَ اللَّهُ أَحَدٌ ﴿١﴾ اللَّهُ الصَّمَدُ ﴿٢﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ ﴿٤﴾',
+    bn:'কুল হুওয়াল্লাহু আহাদ। আল্লাহুস সামাদ। লাম ইয়ালিদ ওয়া লাম ইউলাদ। ওয়া লাম ইয়াকুল লাহু কুফুওয়ান আহাদ।',
+    meaning:'বলুন, তিনি আল্লাহ, একক। আল্লাহ অমুখাপেক্ষী। তিনি কাউকে জন্ম দেননি এবং তাঁকেও জন্ম দেওয়া হয়নি। এবং তাঁর সমকক্ষ কেউ নেই।'
+  },
+  {
+    num:113, ar:'سُورَةُ الْفَلَق', en:'Al-Falaq', bn_name:'আল ফালাক',
+    arabic:'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿١﴾ مِن شَرِّ مَا خَلَقَ ﴿٢﴾ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿٣﴾ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿٤﴾ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿٥﴾',
+    bn:'কুল আউযু বিরাব্বিল ফালাক। মিন শার্রি মা খালাক। ওয়া মিন শার্রি গাসিকিন ইযা ওয়াকাব। ওয়া মিন শার্রিন নাফ্ফাসাতি ফিল উকাদ। ওয়া মিন শার্রি হাসিদিন ইযা হাসাদ।',
+    meaning:'বলুন, আমি আশ্রয় চাই ঊষার রবের কাছে। তিনি যা সৃষ্টি করেছেন তার অনিষ্ট হতে। অন্ধকার রাতের অনিষ্ট হতে যখন তা ঘনিয়ে আসে। গ্রন্থিতে ফুঁকদাত্রীদের অনিষ্ট হতে। এবং হিংসুকের অনিষ্ট হতে যখন সে হিংসা করে।'
+  },
+  {
+    num:114, ar:'سُورَةُ النَّاس', en:'An-Nas', bn_name:'আন নাস',
+    arabic:'قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿٤﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿٥﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿٦﴾',
+    bn:'কুল আউযু বিরাব্বিন নাস। মালিকিন নাস। ইলাহিন নাস। মিন শার্রিল ওয়াসওয়াসিল খান্নাস। আল্লাযী ইউওয়াসউইসু ফী সুদুরিন নাস। মিনাল জিন্নাতি ওয়ান নাস।',
+    meaning:'বলুন, আমি আশ্রয় চাই মানুষের রবের কাছে। মানুষের অধিপতির কাছে। মানুষের ইলাহের কাছে। কুমন্ত্রণাদাতা ও আত্মগোপনকারীর অনিষ্ট হতে। যে মানুষের বুকে কুমন্ত্রণা দেয়। জ্বিন এবং মানুষের মধ্য থেকে।'
+  },
+];
+
+const IMPORTANT_DUA = [
+  {
+    num:1, ar:'دُعَاءُ الِاسْتِفْتَاح', en:'Opening Dua (Sana)', bn_name:'সানা',
+    arabic:'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَىٰ جَدُّكَ وَلَا إِلَٰهَ غَيْرُكَ',
+    bn:'সুবহানাকাল্লাহুম্মা ওয়া বিহামদিকা ওয়া তাবারাকাসমুকা ওয়া তাআলা জাদ্দুকা ওয়া লা ইলাহা গাইরুক।',
+    meaning:'হে আল্লাহ! তুমি পবিত্র, তোমার প্রশংসা করি। তোমার নাম বরকতময়, তোমার মর্যাদা অতি উচ্চ এবং তুমি ছাড়া কোনো ইলাহ নেই।',
+    ref:'আবু দাউদ'
+  },
+  {
+    num:2, ar:'دُعَاءُ الرُّكُوع', en:'Ruku Dua', bn_name:'রুকুর তাসবিহ',
+    arabic:'سُبْحَانَ رَبِّيَ الْعَظِيمِ',
+    bn:'সুবহানা রাব্বিয়াল আযীম।',
+    meaning:'মহান আমার রব, তিনি পবিত্র।',
+    ref:'মুসলিম ৭৭২'
+  },
+  {
+    num:3, ar:'دُعَاءُ السُّجُود', en:'Sujood Dua', bn_name:'সিজদার তাসবিহ',
+    arabic:'سُبْحَانَ رَبِّيَ الْأَعْلَىٰ',
+    bn:'সুবহানা রাব্বিয়াল আ’লা।',
+    meaning:'সর্বোচ্চ আমার রব, তিনি পবিত্র।',
+    ref:'আবু দাউদ ৮৭০'
+  },
+  {
+    num:4, ar:'التَّشَهُّد', en:'Tashahhud', bn_name:'তাশাহহুদ',
+    arabic:'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلَامُ عَلَيْنَا وَعَلَىٰ عِبَادِ اللَّهِ الصَّالِحِينَ، أَشْهَدُ أَن لَّا إِلَٰهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ',
+    bn:'আত্তাহিয়্যাতু লিল্লাহি ওয়াস্সালাওয়াতু ওয়াত্তাইয়্যিবাত। আস্সালামু আলাইকা আইয়্যুহান নাবিয়্যু ওয়া রাহমাতুল্লাহি ওয়া বারাকাতুহ। আস্সালামু আলাইনা ওয়া আলা ইবাদিল্লাহিস সালিহীন। আশহাদু আল্লা ইলাহা ইল্লাল্লাহু ওয়া আশহাদু আন্না মুহাম্মাদান আবদুহু ওয়া রাসূলুহ।',
+    meaning:'সব সম্মান, নামাজ ও পবিত্র বিষয়াদি আল্লাহর জন্য। হে নবী, আপনার উপর শান্তি, আল্লাহর রহমত ও বরকত। আমাদের উপর এবং আল্লাহর নেক বান্দাদের উপর শান্তি। আমি সাক্ষ্য দিচ্ছি আল্লাহ ছাড়া কোনো ইলাহ নেই এবং মুহাম্মদ তাঁর বান্দা ও রাসূল।',
+    ref:'বুখারি ৮৩১'
+  },
+  {
+    num:5, ar:'الصَّلَاةُ الإِبْرَاهِيمِيَّة', en:'Darud Ibrahim', bn_name:'দুরুদ ইবরাহীম',
+    arabic:'اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَّجِيدٌ',
+    bn:'আল্লাহুম্মা সাল্লি আলা মুহাম্মাদিউ ওয়া আলা আলি মুহাম্মাদিন কামা সাল্লাইতা আলা ইবরাহীমা ওয়া আলা আলি ইবরাহীমা ইন্নাকা হামীদুম মাজীদ।',
+    meaning:'হে আল্লাহ! মুহাম্মদ ও তাঁর পরিবারের উপর রহমত বর্ষণ করুন, যেভাবে ইবরাহীম ও তাঁর পরিবারের উপর রহমত বর্ষণ করেছেন। নিশ্চয়ই আপনি প্রশংসনীয় ও মহিমান্বিত।',
+    ref:'বুখারি ৩৩৭০'
+  },
+  {
+    num:6, ar:'دُعَاءُ القُنُوت', en:'Dua Qunoot', bn_name:'দুয়া কুনুত',
+    arabic:'اللَّهُمَّ اهْدِنَا فِيمَنْ هَدَيْتَ وَعَافِنَا فِيمَنْ عَافَيْتَ وَتَوَلَّنَا فِيمَنْ تَوَلَّيْتَ وَبَارِكْ لَنَا فِيمَا أَعْطَيْتَ وَقِنَا شَرَّ مَا قَضَيْتَ',
+    bn:'আল্লাহুম্মাহদিনা ফীমান হাদাইত। ওয়া আফিনা ফীমান আফাইত। ওয়া তাওয়াল্লানা ফীমান তাওয়াল্লাইত। ওয়া বারিক লানা ফীমা আতাইত। ওয়া কিনা শার্রা মা কাদাইত।',
+    meaning:'হে আল্লাহ! যাদের তুমি হিদায়াত দিয়েছ তাদের মধ্যে আমাদেরও হিদায়াত দাও। যাদের তুমি সুস্থতা দিয়েছ তাদের মধ্যে আমাদেরও সুস্থতা দাও। আমাদের তত্ত্বাবধান করো। তুমি যা দিয়েছ তাতে বরকত দাও। এবং তোমার ফয়সালার অনিষ্ট থেকে রক্ষা করো।',
+    ref:'আবু দাউদ ১৪২৫'
+  },
+  {
+    num:7, ar:'دُعَاءُ كَرْبٍ', en:'Dua for Distress', bn_name:'বিপদের দুয়া',
+    arabic:'لَا إِلَٰهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ، لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ، لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ السَّمَاوَاتِ وَرَبُّ الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ',
+    bn:'লা ইলাহা ইল্লাল্লাহুল আযীমুল হালীম। লা ইলাহা ইল্লাল্লাহু রাব্বুল আরশিল আযীম। লা ইলাহা ইল্লাল্লাহু রাব্বুস সামাওয়াতি ওয়া রাব্বুল আরদি ওয়া রাব্বুল আরশিল কারীম।',
+    meaning:'আল্লাহ ছাড়া কোনো ইলাহ নেই, যিনি মহান ও সহনশীল। আল্লাহ ছাড়া কোনো ইলাহ নেই, যিনি মহান আরশের রব। আল্লাহ ছাড়া কোনো ইলাহ নেই, যিনি আসমান, জমিন ও সম্মানিত আরশের রব।',
+    ref:'বুখারি ৬৩৪৬'
+  },
+  {
+    num:8, ar:'دُعَاءُ الصَّبَاح', en:'Morning Dua', bn_name:'সকালের দুয়া',
+    arabic:'اللَّهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ',
+    bn:'আল্লাহুম্মা বিকা আসবাহনা ওয়া বিকা আমসাইনা ওয়া বিকা নাহইয়া ওয়া বিকা নামুতু ওয়া ইলাইকান নুশুর।',
+    meaning:'হে আল্লাহ! তোমার নামে আমরা সকালে উপনীত হয়েছি, তোমার নামে সন্ধ্যায় উপনীত হয়েছি, তোমার ইচ্ছায় আমরা জীবিত থাকি, তোমার ইচ্ছায় মৃত্যুবরণ করি এবং তোমার কাছেই পুনরুত্থান।',
+    ref:'আবু দাউদ ৫০৬৮'
+  },
+  {
+    num:9, ar:'دُعَاءُ الْمَغْفِرَة', en:'Dua for Forgiveness', bn_name:'ক্ষমার দুয়া',
+    arabic:'رَبَّنَا ظَلَمْنَا أَنفُسَنَا وَإِن لَّمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ',
+    bn:'রাব্বানা যালামনা আনফুসানা ওয়া ইল্লাম তাগফিরলানা ওয়া তারহামনা লানাকুনান্না মিনাল খাসিরীন।',
+    meaning:'হে আমাদের রব! আমরা নিজেদের উপর জুলুম করেছি। যদি তুমি আমাদের ক্ষমা না করো এবং আমাদের উপর রহম না করো তাহলে আমরা ক্ষতিগ্রস্তদের অন্তর্ভুক্ত হয়ে যাব।',
+    ref:'সূরা আল-আরাফ ২৩'
+  },
+  {
+    num:10, ar:'دُعَاءُ الْهَمّ', en:'Dua for Anxiety', bn_name:'দুশ্চিন্তার দুয়া',
+    arabic:'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ وَالْعَجْزِ وَالْكَسَلِ وَالْبُخْلِ وَالْجُبْنِ وَضَلَعِ الدَّيْنِ وَغَلَبَةِ الرِّجَالِ',
+    bn:'আল্লাহুম্মা ইন্নী আউযু বিকা মিনাল হাম্মি ওয়াল হাযানি ওয়াল আজযি ওয়াল কাসালি ওয়াল বুখলি ওয়াল জুবনি ওয়া দালাইদ দাইনি ওয়া গালাবাতির রিজাল।',
+    meaning:'হে আল্লাহ! আমি তোমার কাছে দুশ্চিন্তা, দুঃখ, অক্ষমতা, অলসতা, কৃপণতা, ভীরুতা, ঋণের ভার এবং মানুষের প্রাধান্য থেকে আশ্রয় চাই।',
+    ref:'বুখারি ২৮৯৩'
+  },
+];
+
+let duaCurrentTab = 'surah';
+
+function duaTab(t) {
+  duaCurrentTab = t;
+  document.getElementById('duaPanelSurah').style.display = t === 'surah' ? 'block' : 'none';
+  document.getElementById('duaPanelDua').style.display   = t === 'dua'   ? 'block' : 'none';
+  document.getElementById('duaTabSurah').classList.toggle('active', t === 'surah');
+  document.getElementById('duaTabDua').classList.toggle('active',   t === 'dua');
+}
+
+function duaRenderCard(item, container) {
+  const card = document.createElement('div');
+  card.className = 'dua-card';
+  card.innerHTML =
+    '<div class="dua-card-head">' +
+      '<div class="dua-card-left">' +
+        '<div class="dua-card-num">' + item.num + '</div>' +
+        '<div class="dua-card-names">' +
+          '<div class="dua-card-ar">' + item.ar + '</div>' +
+          '<div class="dua-card-en">' + item.en + (item.bn_name ? ' · ' + item.bn_name : '') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="dua-card-chevron">›</div>' +
+    '</div>' +
+    '<div class="dua-card-body">' +
+      '<div class="dua-card-inner">' +
+        '<div class="dua-arabic">' + item.arabic + '</div>' +
+        '<div class="dua-bn-label">উচ্চারণ</div>' +
+        '<div class="dua-bn">' + item.bn + '</div>' +
+        '<div class="dua-meaning-label">অর্থ</div>' +
+        '<div class="dua-meaning">' + item.meaning + '</div>' +
+        (item.ref ? '<div class="dua-ref">— ' + item.ref + '</div>' : '') +
+      '</div>' +
+    '</div>';
+
+  // Toggle open/close
+  const head = card.querySelector('.dua-card-head');
+  let open = false;
+  const toggle = (e) => {
+    e.preventDefault();
+    open = !open;
+    card.classList.toggle('open', open);
+  };
+  head.addEventListener('click', toggle);
+  head.addEventListener('touchend', toggle);
+  container.appendChild(card);
+}
+
+function duaInit() {
+  const surahList = document.getElementById('duaSurahList');
+  const duaList   = document.getElementById('duaDuaList');
+  if (surahList && !surahList.dataset.built) {
+    surahList.dataset.built = '1';
+    LAST_12_SURAHS.forEach(s => duaRenderCard(s, surahList));
+  }
+  if (duaList && !duaList.dataset.built) {
+    duaList.dataset.built = '1';
+    IMPORTANT_DUA.forEach(d => duaRenderCard(d, duaList));
+  }
+}
+
+
 </script>
 </body>
