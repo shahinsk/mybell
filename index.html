@@ -499,6 +499,15 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .app-footer-line1{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);}
 .app-footer-line2{font-family:var(--mono);font-size:.58rem;letter-spacing:1.5px;color:rgba(240,165,0,.55);margin-top:3px;}
 
+.ai-key-info{display:flex;flex-direction:column;gap:8px;}
+.ai-key-title{font-family:var(--mono);font-size:.88rem;color:#c084fc;font-weight:600;}
+.ai-key-desc{font-family:var(--mono);font-size:.76rem;color:rgba(255,255,255,.55);line-height:1.6;}
+.ai-key-inp{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(108,63,255,.35);border-radius:11px;color:#fff;font-family:var(--mono);font-size:.84rem;padding:12px 14px;outline:none;box-sizing:border-box;}
+.ai-key-inp:focus{border-color:rgba(168,85,247,.7);}
+.ai-key-err{font-family:var(--mono);font-size:.72rem;color:#f87171;min-height:16px;}
+.ai-key-save{width:100%;padding:13px;border-radius:11px;border:none;background:linear-gradient(135deg,#6c3fff,#a855f7);color:#fff;font-family:var(--mono);font-size:.84rem;font-weight:600;cursor:pointer;letter-spacing:.5px;-webkit-tap-highlight-color:transparent;}
+.ai-key-save:active{opacity:.85;}
+
 </style>
 </head>
 <body>
@@ -922,16 +931,35 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
   <div class="ai-panel-handle"></div>
   <div class="ai-panel-head">
     <div class="ai-panel-title">✦ AI Assistant</div>
-    <button class="ai-close" onclick="aiToggle()">✕</button>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <button class="ai-close" onclick="aiClearKey()" title="Change API key" style="font-size:.9rem;opacity:.5;">🔑</button>
+      <button class="ai-close" onclick="aiToggle()">✕</button>
+    </div>
   </div>
-  <div class="ai-messages" id="aiMessages">
-    <div class="ai-msg bot">আস্সালামু আলাইকুম! আমি আপনার AI সহকারী। ইসলাম, নামাজ, দুয়া বা যেকোনো বিষয়ে প্রশ্ন করুন। 🌙</div>
+
+  <!-- Key setup screen -->
+  <div id="aiKeySetup" style="display:flex;flex-direction:column;gap:14px;padding:16px 20px 24px;">
+    <div class="ai-key-info">
+      <div class="ai-key-title">🔑 Google Gemini API Key</div>
+      <div class="ai-key-desc">This AI uses Google Gemini — <b style="color:#4ade80;">completely free</b>, no credit card needed.</div>
+      <div class="ai-key-desc" style="margin-top:4px;">① Go to <b style="color:rgba(168,85,247,.9);">aistudio.google.com</b><br>② Sign in with Google<br>③ Click <b>Get API key → Create API key</b><br>④ Paste it below</div>
+    </div>
+    <input class="ai-key-inp" id="aiKeyInp" type="password" placeholder="AIzaSy…" autocomplete="off" spellcheck="false"/>
+    <div class="ai-key-err" id="aiKeyErr"></div>
+    <button class="ai-key-save" ontouchend="aiSaveKey()" onclick="aiSaveKey()">Save & Start Chatting →</button>
   </div>
-  <div class="ai-input-row">
-    <textarea class="ai-inp" id="aiInp" rows="1" placeholder="Ask anything…" oninput="aiAutoResize(this)" onkeydown="aiKeyDown(event)"></textarea>
-    <button class="ai-send" onclick="aiSend()">
-      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-    </button>
+
+  <!-- Chat area -->
+  <div id="aiChatArea" style="display:none;flex-direction:column;flex:1;min-height:0;">
+    <div class="ai-messages" id="aiMessages">
+      <div class="ai-msg bot">আস্সালামু আলাইকুম! ইসলাম, নামাজ, দুয়া বা যেকোনো বিষয়ে প্রশ্ন করুন। 🌙</div>
+    </div>
+    <div class="ai-input-row">
+      <textarea class="ai-inp" id="aiInp" rows="1" placeholder="Ask anything…" oninput="aiAutoResize(this)" onkeydown="aiKeyDown(event)"></textarea>
+      <button class="ai-send" onclick="aiSend()">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -3762,17 +3790,51 @@ function duaInit() {
 
 
 /* ══════════════════════════════════════════════════════
-   AI CHAT
+   AI CHAT — powered by Google Gemini (free tier)
    ══════════════════════════════════════════════════════ */
 let aiOpen = false;
-let aiHistory = [];
+let aiHistory = [];  // Gemini format: [{role:'user',parts:[{text:'...'}]}, ...]
+const AI_KEY_STORE = 'bell_gemini_key';
+const AI_SYSTEM = 'You are a helpful Islamic assistant built into a prayer app called Bell. Answer questions about Islam, prayer (salah), Quran, duas, tasbih, and general topics. Keep answers concise and warm. Respond in Bengali (Bangla) if the user writes in Bengali, otherwise respond in English. Always be respectful and accurate.';
+
+function aiGetKey() { return localStorage.getItem(AI_KEY_STORE) || ''; }
 
 function aiToggle() {
   aiOpen = !aiOpen;
   document.getElementById('aiPanel').classList.toggle('open', aiOpen);
   if (aiOpen) {
-    setTimeout(() => document.getElementById('aiInp').focus(), 350);
+    aiCheckKeyUI();
+    setTimeout(() => {
+      if (aiGetKey()) document.getElementById('aiInp')?.focus();
+      else document.getElementById('aiKeyInp')?.focus();
+    }, 380);
   }
+}
+
+function aiCheckKeyUI() {
+  const hasKey = !!aiGetKey();
+  document.getElementById('aiKeySetup').style.display = hasKey ? 'none'  : 'flex';
+  document.getElementById('aiChatArea').style.display = hasKey ? 'flex'  : 'none';
+}
+
+function aiSaveKey() {
+  const val = (document.getElementById('aiKeyInp').value || '').trim();
+  if (val.length < 20) {
+    document.getElementById('aiKeyErr').textContent = 'Please enter a valid API key (starts with AIza…)';
+    return;
+  }
+  localStorage.setItem(AI_KEY_STORE, val);
+  document.getElementById('aiKeyErr').textContent = '';
+  aiCheckKeyUI();
+  setTimeout(() => document.getElementById('aiInp')?.focus(), 200);
+}
+
+function aiClearKey() {
+  if (!confirm('Remove API key?')) return;
+  localStorage.removeItem(AI_KEY_STORE);
+  aiHistory = [];
+  document.getElementById('aiKeyInp').value = '';
+  aiCheckKeyUI();
 }
 
 function aiAutoResize(el) {
@@ -3785,38 +3847,58 @@ function aiKeyDown(e) {
 }
 
 async function aiSend() {
-  const inp = document.getElementById('aiInp');
+  const key = aiGetKey();
+  if (!key) { aiCheckKeyUI(); return; }
+  const inp  = document.getElementById('aiInp');
   const text = inp.value.trim();
   if (!text) return;
   inp.value = ''; inp.style.height = 'auto';
 
   aiAddMsg(text, 'user');
-  aiHistory.push({ role: 'user', content: text });
+
+  // Add to Gemini history
+  aiHistory.push({ role: 'user', parts: [{ text }] });
 
   const thinkEl = aiAddMsg('চিন্তা করছি…', 'bot thinking');
 
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    // Gemini 1.5 Flash — completely free tier
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + key;
+    const resp = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: 'You are a helpful Islamic assistant built into a prayer app called Bell. Answer questions about Islam, prayer (salah), Quran, duas, and general topics. Keep answers concise and friendly. You can respond in Bengali (Bangla) if the user writes in Bengali, otherwise respond in English. Always be respectful and accurate.',
-        messages: aiHistory
+        system_instruction: { parts: [{ text: AI_SYSTEM }] },
+        contents: aiHistory,
+        generationConfig: { maxOutputTokens: 1024, temperature: 0.7 }
       })
     });
+
     const data = await resp.json();
-    const reply = data.content && data.content[0] ? data.content[0].text : 'দুঃখিত, উত্তর পাওয়া যায়নি।';
+
+    if (!resp.ok) {
+      const msg = data.error?.message || ('HTTP ' + resp.status);
+      if (resp.status === 400 || resp.status === 401 || resp.status === 403) {
+        localStorage.removeItem(AI_KEY_STORE);
+        aiCheckKeyUI();
+        throw new Error('Invalid API key — please re-enter your key.');
+      }
+      throw new Error(msg);
+    }
+
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'দুঃখিত, উত্তর পাওয়া যায়নি।';
     thinkEl.textContent = reply;
-    thinkEl.className = 'ai-msg bot';
-    aiHistory.push({ role: 'assistant', content: reply });
-    // Keep history to last 10 turns
+    thinkEl.className   = 'ai-msg bot';
+
+    // Add assistant reply to history
+    aiHistory.push({ role: 'model', parts: [{ text: reply }] });
+    // Keep last 20 turns
     if (aiHistory.length > 20) aiHistory = aiHistory.slice(-20);
+
   } catch(e) {
-    thinkEl.textContent = 'সংযোগ সমস্যা। আবার চেষ্টা করুন।';
-    thinkEl.className = 'ai-msg bot';
-    aiHistory.pop();
+    thinkEl.textContent = '⚠ ' + (e.message || 'Connection error. Check internet and try again.');
+    thinkEl.className   = 'ai-msg bot';
+    aiHistory.pop(); // remove the failed user message
   }
 }
 
