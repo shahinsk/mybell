@@ -679,13 +679,6 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 
   <!-- ── TAB 2: QURAN ── -->
   <div class="sl-panel" id="slPanelQuran" style="display:none">
-    <div class="hadith-section">
-      <div class="hadith-section-top">
-        <div class="hadith-badge">আজকের হাদিস</div>
-        <div class="hadith-date-lbl" id="hadithDate"></div>
-      </div>
-      <div id="hadithList" class="hadith-list"></div>
-    </div>
     <div class="surah-card">
       <div class="surah-card-label">সূরা তিলাওয়াত · Surah Recitation</div>
       <div class="surah-search-row">
@@ -735,6 +728,13 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
         <div class="surah-dl-bar-bg"><div class="surah-dl-bar-fill" id="surahDlBarFill"></div></div>
         <div class="surah-dl-bar-lbl" id="surahDlBarLbl">0 / 114</div>
       </div>
+    </div>
+    <div class="hadith-section">
+      <div class="hadith-section-top">
+        <div class="hadith-badge">আজকের হাদিস</div>
+        <div class="hadith-date-lbl" id="hadithDate"></div>
+      </div>
+      <div id="hadithList" class="hadith-list"></div>
     </div>
   </div>
 
@@ -2950,50 +2950,83 @@ function surahBegin(s) {
   if (rec === 'ar.alafasy') {
     surahGetBlobURL(s.n).then(blobURL => {
       if (blobURL) {
-        surahPlay(blobURL, s.n, true);   // local blob — instant, offline
+        surahPlay(blobURL, s.n, -1);   // blob from IndexedDB — bypasses network entirely
       } else {
-        surahPlay(ALAFASY_BASE + n3 + '.mp3', s.n, false); // stream from network
+        surahPlayFromCDN(s.n, 0);
       }
     });
   } else {
-    surahPlay('https://cdn.islamic.network/quran/audio-surah/128/' + rec + '/' + s.n + '.mp3', s.n, false);
+    surahPlayFromCDN(s.n, 0);
   }
 }
 
-/* surahPlay — the single unified audio loader.
-   local=true  → blob URL, audio is fully in memory, plays immediately
-   local=false → network URL, show % progress, play on loadedmetadata */
-function surahPlay(url, num, local) {
-  const a = new Audio();
-  a.preload = 'auto';
+/* ── CDN list ── */
+const SURAH_CDNS = [
+  n => 'https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/' + n + '.mp3',
+  n => 'https://everyayah.com/data/Alafasy_128kbps/surah' + String(n).padStart(3,'0') + '.mp3',
+  n => 'https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/' + String(n).padStart(3,'0') + '.mp3',
+];
+const OTHER_CDNS = {
+  'ar.abdurrahmaansudais': n => 'https://cdn.islamic.network/quran/audio-surah/128/ar.abdurrahmaansudais/' + n + '.mp3',
+  'ar.husary':             n => 'https://cdn.islamic.network/quran/audio-surah/128/ar.husary/' + n + '.mp3',
+  'ar.minshawi':           n => 'https://cdn.islamic.network/quran/audio-surah/128/ar.minshawi/' + n + '.mp3',
+  'ar.muhammadayyoub':     n => 'https://cdn.islamic.network/quran/audio-surah/128/ar.muhammadayyoub/' + n + '.mp3',
+};
 
+function surahPlayFromCDN(num, cdnIdx) {
+  const rec = document.getElementById('surahReciter').value;
+  const isAlafasy = rec === 'ar.alafasy';
+  const list = isAlafasy ? SURAH_CDNS : [OTHER_CDNS[rec], ...SURAH_CDNS];
+  const urlFn = list[cdnIdx];
+  if (!urlFn) {
+    surahStatus('');
+    const el = document.getElementById('surahError');
+    el.textContent = 'সকল সার্ভার ব্যর্থ। ইন্টারনেট সংযোগ চেক করুন।';
+    el.style.display = 'block';
+    return;
+  }
+  surahRetry = cdnIdx;
+  surahPlay(urlFn(num), num, cdnIdx);
+}
+
+/* Use Audio element directly — it bypasses the Service Worker,
+   unlike fetch() which the SW intercepts and may block. */
+function surahPlay(url, num, cdnIdx) {
+  clearTimeout(surahStallTimer);
+  if (surahAudio) {
+    surahAudio.pause();
+    if (surahAudio._blobURL) URL.revokeObjectURL(surahAudio._blobURL);
+    surahAudio.src = '';
+    surahAudio = null;
+  }
+  surahPlaying = false;
+
+  const a = new Audio();
+  a._blobURL = null;
+  surahAudio = a;
+
+  /* loadedmetadata = duration known → show controls and start playing ONCE */
   a.addEventListener('loadedmetadata', () => {
-    if (a !== surahAudio) return;
+    if (surahAudio !== a) return;
     document.getElementById('surahControls').style.display = 'flex';
     surahStatus('');
-    const p = a.play();
-    if (p && p.catch) p.catch(() => {});
+    a.play().catch(() => {});
     surahPlaying = true;
     surahIcon(true);
   }, { once: true });
 
-  if (!local) {
-    a.addEventListener('progress', () => {
-      if (!a.duration) return;
-      try {
-        const buf = a.buffered.length ? a.buffered.end(a.buffered.length - 1) : 0;
-        const pct = Math.round((buf / a.duration) * 100);
-        surahStatus('লোড হচ্ছে… ' + pct + '%');
-        surahProg(0, buf / a.duration);
-      } catch(_) {}
-    });
-  }
-
+  a.addEventListener('progress', () => {
+    if (!a.duration) return;
+    try {
+      const b = a.buffered.length ? a.buffered.end(a.buffered.length-1) : 0;
+      surahProg(a.currentTime/a.duration, b/a.duration);
+    } catch(_) {}
+  });
   a.addEventListener('waiting', () => {
     surahStatus('বাফারিং…');
     document.getElementById('surahDot').classList.add('buf');
     clearTimeout(surahStallTimer);
-    surahStallTimer = setTimeout(() => surahNudge(a), 8000);
+    surahStallTimer = setTimeout(() => { if(surahAudio===a){try{a.currentTime=Math.max(0,a.currentTime-.5);}catch(_){}} }, 8000);
   });
   a.addEventListener('playing', () => {
     surahStatus('');
@@ -3004,53 +3037,28 @@ function surahPlay(url, num, local) {
     surahStatus('বাফারিং…');
     document.getElementById('surahDot').classList.add('buf');
     clearTimeout(surahStallTimer);
-    surahStallTimer = setTimeout(() => surahNudge(a), 8000);
+    surahStallTimer = setTimeout(() => { if(surahAudio===a){try{a.currentTime=Math.max(0,a.currentTime-.5);}catch(_){}} }, 8000);
   });
-
   a.addEventListener('error', () => {
+    if (surahAudio !== a) return;
     clearTimeout(surahStallTimer);
-    if (a !== surahAudio) return;
-    if (surahRetry === 0 && !local) {
-      surahRetry = 1;
-      surahStatus('অন্য সার্ভার…');
-      const rmap = { 'ar.alafasy':'Alafasy_128kbps', 'ar.abdurrahmaansudais':'AbdurRahmanAsSudees_192kbps', 'ar.husary':'Husary_128kbps', 'ar.minshawi':'Minshawy_Murattal_128kbps', 'ar.muhammadayyoub':'MohammedAyyoub_128kbps' };
-      const rec = document.getElementById('surahReciter').value;
-      const n3  = String(num).padStart(3, '0');
-      surahPlay('https://everyayah.com/data/' + (rmap[rec]||'Alafasy_128kbps') + '/surah' + n3 + '.mp3', num, false);
-    } else {
-      surahStatus('');
-      const el = document.getElementById('surahError');
-      el.textContent = 'অডিও লোড হয়নি। অন্য রিসাইটার বেছে নিন।';
-      el.style.display = 'block';
-    }
+    surahPlayFromCDN(num, cdnIdx + 1);
   }, { once: true });
-
   a.addEventListener('ended', () => {
-    surahPlaying = false; surahIcon(false); surahStatus('');
-    surahProg(1, 1);
-    document.getElementById('surahTime').textContent = '—';
+    surahPlaying=false; surahIcon(false); surahStatus('');
+    surahProg(1,1); document.getElementById('surahTime').textContent='—';
   });
-
   a.addEventListener('timeupdate', () => {
     if (!a.duration) return;
-    const p = a.currentTime / a.duration;
-    let b = 0; try { if (a.buffered.length) b = a.buffered.end(a.buffered.length-1)/a.duration; } catch(_){}
-    surahProg(p, b);
-    const rem = Math.max(0, a.duration - a.currentTime);
-    const m = Math.floor(rem/60), sc = Math.floor(rem%60);
-    document.getElementById('surahTime').textContent = '-' + m + ':' + (sc<10?'0':'') + sc;
+    surahProg(a.currentTime/a.duration,
+      (() => { try { return a.buffered.length ? a.buffered.end(a.buffered.length-1)/a.duration : 0; } catch(_){return 0;} })());
+    const rem=Math.max(0,a.duration-a.currentTime), m=Math.floor(rem/60), sc=Math.floor(rem%60);
+    document.getElementById('surahTime').textContent='-'+m+':'+(sc<10?'0':'')+sc;
   });
 
-  surahAudio = a;
+  /* Set src LAST, after all listeners are attached.
+     Do NOT call play() here — loadedmetadata handler does it. */
   a.src = url;
-
-  // Blob URLs are fully local — trigger play immediately to avoid suspend
-  if (local) {
-    const p = a.play();
-    if (p && p.catch) p.catch(() => {});
-    surahPlaying = true;
-    surahIcon(true);
-  }
 }
 
 function surahReciterChange() { if (surahCurrent) surahBegin(surahCurrent); }
@@ -3073,7 +3081,7 @@ function surahToggle(e) {
 }
 function surahKill() {
   clearTimeout(surahStallTimer);
-  if (surahAudio) { surahAudio.pause(); surahAudio.src = ''; surahAudio = null; }
+  if (surahAudio) { surahAudio.pause(); if (surahAudio._blobURL) URL.revokeObjectURL(surahAudio._blobURL); surahAudio.src = ''; surahAudio = null; }
   surahPlaying = false;
 }
 function surahStop() { surahKill(); }
