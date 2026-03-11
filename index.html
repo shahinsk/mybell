@@ -320,9 +320,19 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .prc-card.live .prc-cd{color:rgba(46,207,114,.9);}
 
 
-.hadith-section{display:flex;flex-direction:column;gap:14px;}
+.hadith-section{display:flex;flex-direction:column;gap:12px;}
 .hadith-section-top{display:flex;align-items:center;justify-content:space-between;padding:0 2px;}
 .hadith-badge{font-size:.58rem;letter-spacing:2.5px;text-transform:uppercase;background:rgba(240,165,0,.08);color:var(--gold);border:1px solid rgba(240,165,0,.2);border-radius:20px;padding:4px 14px;}
+.hadith-nav{display:flex;align-items:center;gap:10px;}
+.hadith-nav-dots{display:flex;gap:5px;}
+.hadith-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .25s;}
+.hadith-dot.active{background:var(--gold);width:18px;border-radius:3px;}
+.hadith-viewport{overflow:hidden;border-radius:16px;}
+.hadith-track{display:flex;transition:transform .35s cubic-bezier(.4,0,.2,1);will-change:transform;}
+.hadith-item{min-width:100%;background:linear-gradient(160deg,#0e0e1e,#080812);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box;}
+.hadith-item-ar{font-size:1.2rem;line-height:2;color:rgba(255,255,255,.75);direction:rtl;text-align:right;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.07);}
+.hadith-item-bn{font-size:1.08rem;line-height:1.95;color:rgba(255,255,255,.92);font-family:'Noto Serif Bengali','Hind Siliguri','SolaimanLipi',sans-serif;}
+.hadith-item-ref{font-family:var(--mono);font-size:.65rem;color:rgba(240,165,0,.55);text-align:right;letter-spacing:1.5px;}
 .hadith-date-lbl{font-family:var(--mono);font-size:.62rem;color:var(--muted);}
 .hadith-list{display:flex;flex-direction:column;gap:12px;}
 .hadith-item{background:linear-gradient(160deg,#0e0e1e,#080812);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:20px 18px 16px;display:flex;flex-direction:column;gap:12px;}
@@ -331,39 +341,39 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .hadith-item-ref{font-family:var(--mono);font-size:.6rem;color:rgba(240,165,0,.45);text-align:right;letter-spacing:1px;}
 
 /* ── Surah card ── */
-.surah-card{background:#0c0c1e;border:1.5px solid rgba(255,255,255,.08);border-radius:18px;padding:22px 18px 20px;display:flex;flex-direction:column;gap:18px;}
-.surah-card-label{font-size:.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--hint);}
+.surah-card{background:linear-gradient(160deg,#0d0d20,#080810);border:1.5px solid rgba(240,165,0,.18);border-radius:20px;padding:22px 18px 20px;display:flex;flex-direction:column;gap:16px;}
+.surah-card-label{font-size:.6rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(240,165,0,.55);}
 .surah-search-row{display:flex;gap:10px;align-items:center;}
 .surah-search-wrap{flex:1;position:relative;}
-.surah-inp{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;color:var(--text);font-family:var(--mono);font-size:.86rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color .18s;}
-.surah-inp:focus{border-color:rgba(240,165,0,.5);background:rgba(240,165,0,.03);}
-.surah-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#10102a;border:1.5px solid rgba(255,255,255,.1);border-radius:12px;z-index:300;max-height:240px;overflow-y:auto;display:none;box-shadow:0 12px 40px rgba(0,0,0,.7);}
+.surah-inp{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;font-family:var(--mono);font-size:.95rem;padding:13px 14px;outline:none;box-sizing:border-box;transition:border-color .18s;}
+.surah-inp:focus{border-color:rgba(240,165,0,.6);background:rgba(240,165,0,.04);}
+.surah-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#10102a;border:1.5px solid rgba(255,255,255,.12);border-radius:12px;z-index:300;max-height:260px;overflow-y:auto;display:none;box-shadow:0 16px 48px rgba(0,0,0,.8);}
 .surah-dropdown.open{display:block;}
-.surah-opt{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;gap:10px;-webkit-tap-highlight-color:transparent;}
-.surah-opt:active{background:rgba(240,165,0,.08);}
+.surah-opt{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;gap:10px;-webkit-tap-highlight-color:transparent;}
+.surah-opt:active{background:rgba(240,165,0,.1);}
 .surah-opt-left{display:flex;align-items:center;gap:10px;}
-.surah-opt-num{font-family:var(--mono);font-size:.6rem;color:var(--muted);min-width:22px;}
-.surah-opt-en{font-family:var(--mono);font-size:.82rem;color:var(--text);}
-.surah-opt-ar{font-size:1rem;color:var(--gold);direction:rtl;}
-.surah-reciter{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;color:var(--hint);font-family:var(--mono);font-size:.7rem;padding:12px 8px;outline:none;cursor:pointer;-webkit-appearance:none;min-width:74px;text-align:center;}
-.surah-now{text-align:center;padding:6px 0 2px;}
-.surah-now-ar{font-size:2rem;color:var(--gold);margin-bottom:5px;}
-.surah-now-en{font-family:var(--mono);font-size:.68rem;color:var(--hint);letter-spacing:2px;text-transform:uppercase;}
+.surah-opt-num{font-family:var(--mono);font-size:.65rem;color:var(--muted);min-width:22px;}
+.surah-opt-en{font-family:var(--mono);font-size:.88rem;color:#fff;}
+.surah-opt-ar{font-size:1.1rem;color:var(--gold);direction:rtl;}
+.surah-reciter{background:rgba(240,165,0,.08);border:1.5px solid rgba(240,165,0,.25);border-radius:12px;color:var(--gold);font-family:var(--mono);font-size:.72rem;padding:13px 10px;outline:none;cursor:pointer;-webkit-appearance:none;min-width:78px;text-align:center;}
+.surah-now{text-align:center;padding:8px 0 4px;}
+.surah-now-ar{font-size:2.6rem;color:var(--gold);margin-bottom:6px;text-shadow:0 0 30px rgba(240,165,0,.3);}
+.surah-now-en{font-family:var(--mono);font-size:.82rem;color:rgba(255,255,255,.7);letter-spacing:2.5px;text-transform:uppercase;}
 .surah-controls{display:flex;align-items:center;gap:14px;}
-.surah-ctrl-btn{width:50px;height:50px;border-radius:50%;border:none;background:var(--gold);color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:transform .1s;-webkit-tap-highlight-color:transparent;}
+.surah-ctrl-btn{width:54px;height:54px;border-radius:50%;border:none;background:var(--gold);color:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:transform .1s;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 20px rgba(240,165,0,.35);}
 .surah-ctrl-btn:active{transform:scale(.88);}
-.surah-ctrl-btn.paused{background:rgba(240,165,0,.12);color:var(--gold);border:1.5px solid rgba(240,165,0,.35);}
-.surah-progress-wrap{flex:1;position:relative;height:40px;display:flex;align-items:center;cursor:pointer;touch-action:none;}
-.surah-progress-bg{position:absolute;left:0;right:0;height:4px;background:rgba(255,255,255,.08);border-radius:2px;}
-.surah-progress-buf{position:absolute;left:0;height:4px;background:rgba(240,165,0,.18);border-radius:2px;width:0%;}
-.surah-progress-fill{position:absolute;left:0;height:4px;background:var(--gold);border-radius:2px;width:0%;}
-.surah-progress-dot{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--gold);top:50%;transform:translate(-50%,-50%);left:0%;}
+.surah-ctrl-btn.paused{background:rgba(240,165,0,.1);color:var(--gold);border:2px solid rgba(240,165,0,.45);box-shadow:none;}
+.surah-progress-wrap{flex:1;position:relative;height:44px;display:flex;align-items:center;cursor:pointer;touch-action:none;}
+.surah-progress-bg{position:absolute;left:0;right:0;height:5px;background:rgba(255,255,255,.1);border-radius:3px;}
+.surah-progress-buf{position:absolute;left:0;height:5px;background:rgba(240,165,0,.2);border-radius:3px;width:0%;}
+.surah-progress-fill{position:absolute;left:0;height:5px;background:var(--gold);border-radius:3px;width:0%;}
+.surah-progress-dot{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--gold);top:50%;transform:translate(-50%,-50%);left:0%;box-shadow:0 0 8px rgba(240,165,0,.6);}
 .surah-progress-dot.buf{animation:dotPulse .9s ease-in-out infinite;}
-@keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,165,0,.5)}50%{box-shadow:0 0 0 7px rgba(240,165,0,0)}}
-.surah-time{font-family:var(--mono);font-size:.68rem;color:var(--muted);min-width:40px;text-align:right;}
-.surah-status{font-family:var(--mono);font-size:.68rem;color:var(--hint);text-align:center;padding:4px;animation:fadePulse 1.2s infinite;}
-@keyframes fadePulse{0%,100%{opacity:.4}50%{opacity:1}}
-.surah-error{font-family:var(--mono);font-size:.68rem;color:var(--red);text-align:center;padding:4px;}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,165,0,.6)}50%{box-shadow:0 0 0 8px rgba(240,165,0,0)}}
+.surah-time{font-family:var(--mono);font-size:.82rem;color:rgba(255,255,255,.75);min-width:46px;text-align:right;font-weight:600;}
+.surah-status{font-family:var(--mono);font-size:.78rem;color:var(--gold);text-align:center;padding:6px;animation:fadePulse 1.2s infinite;letter-spacing:.5px;}
+@keyframes fadePulse{0%,100%{opacity:.35}50%{opacity:1}}
+.surah-error{font-family:var(--mono);font-size:.76rem;color:#ff6b6b;text-align:center;padding:6px;line-height:1.5;}
 .surah-dl-row{display:flex;align-items:center;gap:12px;background:rgba(240,165,0,.04);border:1px solid rgba(240,165,0,.14);border-radius:12px;padding:12px 14px;}
 .surah-dl-info{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;}
 .surah-dl-title{font-family:var(--mono);font-size:.72rem;color:var(--gold);letter-spacing:.4px;}
@@ -731,10 +741,15 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
     </div>
     <div class="hadith-section">
       <div class="hadith-section-top">
-        <div class="hadith-badge">আজকের হাদিস</div>
-        <div class="hadith-date-lbl" id="hadithDate"></div>
+        <div class="hadith-badge">হাদিস</div>
+        <div class="hadith-nav">
+          <div class="hadith-nav-dots" id="hadithDots"></div>
+          <div class="hadith-date-lbl" id="hadithDate"></div>
+        </div>
       </div>
-      <div id="hadithList" class="hadith-list"></div>
+      <div class="hadith-viewport" id="hadithViewport">
+        <div class="hadith-track" id="hadithTrack"></div>
+      </div>
     </div>
   </div>
 
@@ -3026,7 +3041,11 @@ function surahPlay(url, num, cdnIdx) {
     surahStatus('বাফারিং…');
     document.getElementById('surahDot').classList.add('buf');
     clearTimeout(surahStallTimer);
-    surahStallTimer = setTimeout(() => { if(surahAudio===a){try{a.currentTime=Math.max(0,a.currentTime-.5);}catch(_){}} }, 8000);
+    surahStallTimer = setTimeout(() => {
+      if (surahAudio !== a) return;
+      // If stuck buffering for 10s, try next CDN
+      surahPlayFromCDN(num, cdnIdx + 1);
+    }, 10000);
   });
   a.addEventListener('playing', () => {
     surahStatus('');
@@ -3037,7 +3056,10 @@ function surahPlay(url, num, cdnIdx) {
     surahStatus('বাফারিং…');
     document.getElementById('surahDot').classList.add('buf');
     clearTimeout(surahStallTimer);
-    surahStallTimer = setTimeout(() => { if(surahAudio===a){try{a.currentTime=Math.max(0,a.currentTime-.5);}catch(_){}} }, 8000);
+    surahStallTimer = setTimeout(() => {
+      if (surahAudio !== a) return;
+      surahPlayFromCDN(num, cdnIdx + 1);
+    }, 10000);
   });
   a.addEventListener('error', () => {
     if (surahAudio !== a) return;
@@ -3172,31 +3194,94 @@ const HADITH = [
   { ar: 'رَأْسُ الأَمْرِ الإِسْلَامُ وَعَمُودُهُ الصَّلَاةُ', bn: 'সকল বিষয়ের মূল হলো ইসলাম, তার খুঁটি হলো নামাজ এবং তার শীর্ষ হলো আল্লাহর পথে জিহাদ।', ref: 'তিরমিযী ২৬১৬' },
 ];
 
-function hadithLoad() {
-  const d = new Date();
-  const doy = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
-  const months = ['জানু','ফেব্রু','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টে','অক্টো','নভে','ডিসে'];
+let hadithIdx   = 0;
+let hadithStart = 0;
+const HADITH_PER_DAY = 7;
+let hadithTouchX = 0;
 
+function hadithLoad() {
+  const d    = new Date();
+  const doy  = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
+  const months = ['জানু','ফেব্রু','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টে','অক্টো','নভে','ডিসে'];
   const dl = document.getElementById('hadithDate');
   if (dl) dl.textContent = d.getDate() + ' ' + months[d.getMonth()];
 
-  // Show 7 hadith per day — offset by day, cycle through full list
-  const PER_DAY = 7;
-  const start = (doy * PER_DAY) % HADITH.length;
-  const list = document.getElementById('hadithList');
-  if (!list) return;
+  hadithStart = (doy * HADITH_PER_DAY) % HADITH.length;
+  hadithIdx   = 0;
+  hadithRender();
+  hadithWireSwipe();
+}
 
-  list.innerHTML = '';
-  for (let i = 0; i < PER_DAY; i++) {
-    const h = HADITH[(start + i) % HADITH.length];
-    const item = document.createElement('div');
-    item.className = 'hadith-item';
-    item.innerHTML = `
-      <div class="hadith-item-ar">${h.ar}</div>
-      <div class="hadith-item-bn">${h.bn}</div>
-      <div class="hadith-item-ref">— ${h.ref}</div>`;
-    list.appendChild(item);
+function hadithRender() {
+  const track = document.getElementById('hadithTrack');
+  const dots  = document.getElementById('hadithDots');
+  if (!track) return;
+
+  // Build all cards
+  track.innerHTML = '';
+  for (let i = 0; i < HADITH_PER_DAY; i++) {
+    const h    = HADITH[(hadithStart + i) % HADITH.length];
+    const card = document.createElement('div');
+    card.className = 'hadith-item';
+    card.innerHTML =
+      '<div class="hadith-item-ar">' + h.ar + '</div>' +
+      '<div class="hadith-item-bn">' + h.bn + '</div>' +
+      '<div class="hadith-item-ref">— ' + h.ref + '</div>';
+    track.appendChild(card);
   }
+
+  // Dots
+  if (dots) {
+    dots.innerHTML = '';
+    for (let i = 0; i < HADITH_PER_DAY; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'hadith-dot' + (i === hadithIdx ? ' active' : '');
+      dot.onclick = (function(idx){ return function(){ hadithGoTo(idx); }; })(i);
+      dots.appendChild(dot);
+    }
+  }
+
+  hadithGoTo(hadithIdx, false);
+}
+
+function hadithGoTo(idx, animate) {
+  if (idx < 0) idx = HADITH_PER_DAY - 1;
+  if (idx >= HADITH_PER_DAY) idx = 0;
+  hadithIdx = idx;
+
+  const track = document.getElementById('hadithTrack');
+  if (track) {
+    track.style.transition = animate === false ? 'none' : 'transform .35s cubic-bezier(.4,0,.2,1)';
+    track.style.transform  = 'translateX(-' + (idx * 100) + '%)';
+  }
+
+  // Update dots
+  const dotEls = document.querySelectorAll('.hadith-dot');
+  dotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+
+function hadithWireSwipe() {
+  const vp = document.getElementById('hadithViewport');
+  if (!vp || vp._swiped) return;
+  vp._swiped = true;
+
+  let startX = 0, startY = 0, dragging = false;
+
+  vp.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    dragging = true;
+  }, { passive: true });
+
+  vp.addEventListener('touchend', e => {
+    if (!dragging) return;
+    dragging = false;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+      dx < 0 ? hadithGoTo(hadithIdx + 1) : hadithGoTo(hadithIdx - 1);
+    }
+  }, { passive: true });
 }
 
 /* ══════════════════════════════════════════
