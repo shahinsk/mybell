@@ -364,6 +364,17 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .surah-status{font-family:var(--mono);font-size:.68rem;color:var(--hint);text-align:center;padding:4px;animation:fadePulse 1.2s infinite;}
 @keyframes fadePulse{0%,100%{opacity:.4}50%{opacity:1}}
 .surah-error{font-family:var(--mono);font-size:.68rem;color:var(--red);text-align:center;padding:4px;}
+.surah-dl-row{display:flex;align-items:center;gap:12px;background:rgba(240,165,0,.04);border:1px solid rgba(240,165,0,.14);border-radius:12px;padding:12px 14px;}
+.surah-dl-info{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;}
+.surah-dl-title{font-family:var(--mono);font-size:.72rem;color:var(--gold);letter-spacing:.4px;}
+.surah-dl-sub{font-size:.59rem;color:var(--muted);line-height:1.4;}
+.surah-dl-btn{background:rgba(240,165,0,.15);border:1.5px solid rgba(240,165,0,.38);color:var(--gold);font-family:var(--mono);font-size:.7rem;letter-spacing:1px;border-radius:9px;padding:8px 14px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .14s;-webkit-tap-highlight-color:transparent;}
+.surah-dl-btn:active{background:rgba(240,165,0,.3);}
+.surah-dl-btn:disabled{opacity:.4;cursor:default;}
+.surah-dl-bar-wrap{display:flex;align-items:center;gap:10px;}
+.surah-dl-bar-bg{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;}
+.surah-dl-bar-fill{height:100%;background:var(--gold);border-radius:3px;width:0%;transition:width .25s;}
+.surah-dl-bar-lbl{font-family:var(--mono);font-size:.6rem;color:var(--muted);min-width:48px;text-align:right;}
 
 /* ── Tasbih ── */
 .tsb-ms-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;}
@@ -713,6 +724,17 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
       </div>
       <div class="surah-status" id="surahLoading" style="display:none"></div>
       <div class="surah-error"  id="surahError"   style="display:none"></div>
+      <div class="surah-dl-row" id="surahDlRow">
+        <div class="surah-dl-info">
+          <div class="surah-dl-title" id="surahDlTitle">📥 Download Quran · Alafasy</div>
+          <div class="surah-dl-sub"   id="surahDlSub">Save all 114 surahs once — plays offline, never stalls (~180 MB)</div>
+        </div>
+        <button class="surah-dl-btn" id="surahDlBtn" onclick="surahDlStart()">Save</button>
+      </div>
+      <div class="surah-dl-bar-wrap" id="surahDlBarWrap" style="display:none">
+        <div class="surah-dl-bar-bg"><div class="surah-dl-bar-fill" id="surahDlBarFill"></div></div>
+        <div class="surah-dl-bar-lbl" id="surahDlBarLbl">0 / 114</div>
+      </div>
     </div>
   </div>
 
@@ -2777,6 +2799,93 @@ function surahPick(num, e) {
   surahBegin(s);
 }
 
+const SURAH_CACHE  = 'alafasy-quran-v1';
+const ALAFASY_BASE = 'https://everyayah.com/data/Alafasy_128kbps/surah';
+
+/* Check how many surahs are already cached and update the UI */
+async function surahDlCheck() {
+  const row = document.getElementById('surahDlRow');
+  if (!('caches' in window)) { if(row) row.style.display='none'; return; }
+  try {
+    const cache = await caches.open(SURAH_CACHE);
+    const n = (await cache.keys()).length;
+    const btn = document.getElementById('surahDlBtn');
+    if (n >= 114) {
+      document.getElementById('surahDlTitle').textContent = '✅ Quran Saved · Alafasy';
+      document.getElementById('surahDlSub').textContent   = 'All 114 surahs cached — plays offline, zero stalling';
+      btn.textContent = 'Delete'; btn.onclick = surahDlDelete;
+    } else if (n > 0) {
+      document.getElementById('surahDlSub').textContent = n + ' / 114 saved — tap Save to finish';
+    }
+  } catch(_) {}
+}
+
+let surahDlAbort = false;
+async function surahDlStart() {
+  if (!('caches' in window)) { alert('Your browser does not support the Cache API.'); return; }
+  const btn   = document.getElementById('surahDlBtn');
+  const wrap  = document.getElementById('surahDlBarWrap');
+  const fill  = document.getElementById('surahDlBarFill');
+  const lbl   = document.getElementById('surahDlBarLbl');
+  const title = document.getElementById('surahDlTitle');
+  const sub   = document.getElementById('surahDlSub');
+  btn.textContent = 'Cancel'; btn.onclick = () => { surahDlAbort = true; };
+  wrap.style.display = 'flex'; surahDlAbort = false;
+  try {
+    const cache    = await caches.open(SURAH_CACHE);
+    const existing = new Set((await cache.keys()).map(r => r.url));
+    let done = existing.size;
+    for (let i = 1; i <= 114; i++) {
+      if (surahDlAbort) {
+        sub.textContent = 'Paused — ' + done + '/114 saved. Tap Save to resume.';
+        btn.textContent = 'Resume'; btn.onclick = surahDlStart; return;
+      }
+      const n3  = String(i).padStart(3,'0');
+      const url = ALAFASY_BASE + n3 + '.mp3';
+      if (!existing.has(url)) {
+        try {
+          const resp = await fetch(url, { cache: 'no-store' });
+          if (resp.ok) { await cache.put(url, resp); }
+        } catch(_) {}
+      }
+      done++;
+      const pct = Math.round((done/114)*100);
+      fill.style.width = pct + '%';
+      lbl.textContent  = done + ' / 114';
+      title.textContent = '📥 Downloading… ' + pct + '%';
+    }
+    wrap.style.display = 'none';
+    title.textContent  = '✅ Quran Saved · Alafasy';
+    sub.textContent    = 'All 114 surahs cached — plays fully offline without stalling';
+    btn.textContent    = 'Delete'; btn.onclick = surahDlDelete;
+  } catch(e) {
+    sub.textContent = 'Error: ' + e.message;
+    btn.textContent = 'Retry'; btn.onclick = surahDlStart;
+  }
+}
+
+async function surahDlDelete() {
+  if (!confirm('Delete all downloaded Quran audio? (~180 MB)')) return;
+  await caches.delete(SURAH_CACHE);
+  document.getElementById('surahDlTitle').textContent = '📥 Download Quran · Alafasy';
+  document.getElementById('surahDlSub').textContent   = 'Save all 114 surahs once — plays offline, never stalls (~180 MB)';
+  const btn = document.getElementById('surahDlBtn');
+  btn.textContent = 'Save'; btn.onclick = surahDlStart;
+  document.getElementById('surahDlBarFill').style.width = '0%';
+  document.getElementById('surahDlBarWrap').style.display = 'none';
+}
+
+/* Try to serve from Cache API; fall back to network URL */
+async function surahCachedURL(url) {
+  if (!('caches' in window)) return null;
+  try {
+    const cache = await caches.open(SURAH_CACHE);
+    const match = await cache.match(url);
+    if (match) return URL.createObjectURL(await match.blob());
+  } catch(_) {}
+  return null;
+}
+
 function surahBegin(s) {
   surahKill();
   surahCurrent = s;
@@ -2790,41 +2899,52 @@ function surahBegin(s) {
   surahStatus('লোড হচ্ছে…');
   const rec = $('surahReciter').value;
   const n3  = String(s.n).padStart(3, '0');
-  /* Alafasy: use everyayah.com — single reliable MP3 per surah, complete file.
-     preload=auto so the whole surah buffers upfront → never stops mid-playback.
-     Other reciters: stream from cdn.islamic.network (preload=none). */
   if (rec === 'ar.alafasy') {
-    surahTryURL('https://everyayah.com/data/Alafasy_128kbps/surah' + n3 + '.mp3', s.n, true);
+    const netURL = ALAFASY_BASE + n3 + '.mp3';
+    surahCachedURL(netURL).then(blobURL => {
+      if (blobURL) {
+        surahTryURL(blobURL, s.n, 'cache');   // served from local cache — instant, zero stalling
+      } else {
+        surahTryURL(netURL,  s.n, 'full');    // not cached yet — buffer fully before playing
+      }
+    });
   } else {
-    surahTryURL('https://cdn.islamic.network/quran/audio-surah/128/' + rec + '/' + s.n + '.mp3', s.n, false);
+    surahTryURL('https://cdn.islamic.network/quran/audio-surah/128/' + rec + '/' + s.n + '.mp3', s.n, 'stream');
   }
 }
 
-function surahTryURL(url, num, fullLoad) {
-  /* No crossOrigin — CDNs block CORS preflight requests. */
+function surahTryURL(url, num, mode) {
+  /* mode 'cache'  = blob URL from Cache API — instant, no network, no stalling
+     mode 'full'   = network fetch with preload=auto — buffers entire file first
+     mode 'stream' = preload=none — starts quickly but may stall on long surahs */
   const a = new Audio(url);
-  a.preload = fullLoad ? 'auto' : 'none';
+  a.preload = (mode === 'cache' || mode === 'full') ? 'auto' : 'none';
 
-  if (fullLoad) {
-    /* Full-load mode (Alafasy): show download % via progress event,
-       then start playing only when canplaythrough fires — meaning the
-       browser has enough data to play all the way to the end without stopping. */
-    a.addEventListener('progress', () => {
-      if (!a.duration) return;
-      try {
-        const buf = a.buffered.length ? a.buffered.end(a.buffered.length - 1) : 0;
-        const pct = Math.round((buf / a.duration) * 100);
-        surahStatus('লোড হচ্ছে… ' + pct + '%');
-        surahProg(0, buf / a.duration);
-      } catch(_) {}
-    });
+  if (mode === 'cache') {
+    /* Blob is already fully local — canplaythrough fires almost instantly */
     a.addEventListener('canplaythrough', () => {
       document.getElementById('surahControls').style.display = 'flex';
       surahStatus('');
       surahDoPlay(a);
     }, { once: true });
+  } else if (mode === 'full') {
+    /* Show controls + start playing as soon as duration is known.
+       Progress bar fills as more data buffers — but we don't wait for 100%. */
+    a.addEventListener('loadedmetadata', () => {
+      if (a !== surahAudio) return;
+      document.getElementById('surahControls').style.display = 'flex';
+      surahStatus('');
+      surahDoPlay(a);
+    }, { once: true });
+    a.addEventListener('progress', () => {
+      if (!a.duration) return;
+      try {
+        const buf = a.buffered.length ? a.buffered.end(a.buffered.length - 1) : 0;
+        surahProg(a.currentTime / a.duration, buf / a.duration);
+      } catch(_) {}
+    });
   } else {
-    /* Stream mode: show controls as soon as metadata (duration) is known */
+    /* Stream: show controls as soon as duration is known */
     a.addEventListener('loadedmetadata', () => {
       document.getElementById('surahControls').style.display = 'flex';
       surahStatus('');
@@ -2865,7 +2985,7 @@ function surahTryURL(url, num, fullLoad) {
       const rec = document.getElementById('surahReciter').value;
       const name = rmap[rec] || 'Alafasy_128kbps';
       const n3 = String(num).padStart(3, '0');
-      surahTryURL('https://everyayah.com/data/' + name + '/surah' + n3 + '.mp3', num, false);
+      surahTryURL('https://everyayah.com/data/' + name + '/surah' + n3 + '.mp3', num, 'stream');
     } else {
       surahStatus('');
       const el = document.getElementById('surahError');
@@ -2895,10 +3015,10 @@ function surahTryURL(url, num, fullLoad) {
 
   a.src = url;
   surahAudio = a;
-  /* Calling play() immediately triggers the resource fetch — this avoids the
-     "suspend after metadata" bug where browsers stop downloading if play()
-     is not called promptly after src is set. */
-  surahDoPlay(a);
+  /* In stream mode, call play() immediately to trigger fetch + start.
+     In cache/full mode, play() is called by the canplaythrough handler above —
+     calling it here too would double-trigger and abort the load. */
+  if (mode === 'stream') surahDoPlay(a);
 }
 
 function surahDoPlay(a) {
@@ -2976,6 +3096,7 @@ function surahReciterChange() { if (surahCurrent) surahBegin(surahCurrent); }
 
 /* Wire seek and dropdown close */
 document.addEventListener('DOMContentLoaded', () => {
+  surahDlCheck();
   const pw = document.getElementById('surahProgressWrap');
   if (pw) {
     pw.addEventListener('touchstart', e => { e.preventDefault(); surahSeek(e); }, { passive: false });
