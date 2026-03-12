@@ -512,29 +512,53 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .surah-list-section{display:flex;flex-direction:column;gap:10px;}
 .surah-list-header{display:flex;align-items:center;justify-content:space-between;padding:0 2px;}
 .surah-list-badge{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;background:rgba(240,165,0,.08);color:var(--gold);border:1px solid rgba(240,165,0,.2);border-radius:20px;padding:4px 14px;}
-.surah-list-hint{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.5px;}
-.surah-list-wrap{display:flex;flex-direction:column;gap:0;}
-.surah-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;transition:background .14s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.surah-row:active,.surah-row.playing{background:rgba(240,165,0,.07);}
-.surah-row.playing{border-left:2px solid var(--gold);padding-left:12px;}
-.surah-row-num{font-family:var(--mono);font-size:.7rem;color:var(--muted);min-width:28px;text-align:center;}
-.surah-row.playing .surah-row-num{color:var(--gold);}
-.surah-row-names{flex:1;display:flex;flex-direction:column;gap:2px;}
-.surah-row-ar{font-size:1.05rem;color:rgba(255,255,255,.85);line-height:1.2;}
-.surah-row-en{font-family:var(--mono);font-size:.7rem;color:rgba(255,255,255,.4);letter-spacing:.5px;}
-.surah-row.playing .surah-row-ar{color:#fff;}
-.surah-row.playing .surah-row-en{color:rgba(240,165,0,.7);}
-.surah-play-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .14s;-webkit-tap-highlight-color:transparent;}
-.surah-row:active .surah-play-btn,.surah-row.playing .surah-play-btn{border-color:rgba(240,165,0,.5);background:rgba(240,165,0,.1);}
-.surah-play-btn svg{width:14px;height:14px;fill:rgba(255,255,255,.5);}
-.surah-row.playing .surah-play-btn svg{fill:var(--gold);}
-.surah-equalizer{display:none;align-items:flex-end;gap:2px;height:14px;}
-.surah-row.playing .surah-equalizer{display:flex;}
-.surah-row.playing .surah-play-btn svg{display:none;}
-.surah-eq-bar{width:3px;background:var(--gold);border-radius:1px;animation:eqAnim 0.8s ease-in-out infinite alternate;}
-.surah-eq-bar:nth-child(2){animation-delay:.15s;}
-.surah-eq-bar:nth-child(3){animation-delay:.3s;}
-@keyframes eqAnim{from{height:3px}to{height:12px}}
+.surah-list-hint{font-family:var(--mono);font-size:.62rem;color:rgba(255,255,255,.4);letter-spacing:.5px;}
+.surah-list-wrap{display:flex;flex-direction:column;gap:10px;}
+/* card */
+.surah-card-row{background:linear-gradient(160deg,#0d0d20,#08080f);border:1.5px solid rgba(255,255,255,.09);border-radius:16px;overflow:hidden;transition:border-color .18s;}
+.surah-card-row.playing{border-color:rgba(240,165,0,.45);}
+/* card head */
+.surah-card-head{display:flex;align-items:center;gap:12px;padding:14px 16px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.surah-card-num{width:38px;height:38px;border-radius:50%;background:rgba(240,165,0,.08);border:1.5px solid rgba(240,165,0,.22);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.82rem;color:var(--gold);font-weight:700;flex-shrink:0;}
+.surah-card-row.playing .surah-card-num{background:rgba(240,165,0,.18);border-color:var(--gold);}
+.surah-card-head-names{flex:1;display:flex;flex-direction:column;gap:3px;}
+.surah-card-head-ar{font-size:1.2rem;color:#fff;line-height:1.2;}
+.surah-card-head-en{font-family:var(--mono);font-size:.76rem;color:rgba(255,255,255,.55);letter-spacing:.5px;}
+.surah-card-row.playing .surah-card-head-en{color:rgba(240,165,0,.8);}
+.surah-card-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+/* play button */
+.surah-card-play{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;transition:all .14s;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
+.surah-card-play:active{transform:scale(.88);}
+.surah-card-play svg{width:15px;height:15px;fill:rgba(255,255,255,.6);}
+.surah-card-row.playing .surah-card-play{border-color:var(--gold);background:rgba(240,165,0,.12);}
+.surah-card-row.playing .surah-card-play svg{fill:var(--gold);}
+/* equalizer animation */
+.surah-eq{display:none;align-items:flex-end;gap:2px;height:15px;padding:0 2px;}
+.surah-card-row.playing .surah-eq{display:flex;}
+.surah-card-row.playing .surah-card-play svg{display:none;}
+.surah-eq-bar{width:3px;background:var(--gold);border-radius:1px;animation:eqAnim .7s ease-in-out infinite alternate;}
+.surah-eq-bar:nth-child(2){animation-delay:.18s;}
+.surah-eq-bar:nth-child(3){animation-delay:.36s;}
+@keyframes eqAnim{from{height:3px}to{height:13px}}
+/* chevron expand */
+.surah-card-chevron{font-size:1.1rem;color:rgba(255,255,255,.22);transition:transform .22s;line-height:1;}
+.surah-card-row.open .surah-card-chevron{transform:rotate(90deg);color:rgba(240,165,0,.7);}
+/* expandable body */
+.surah-card-body{max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1);}
+.surah-card-row.open .surah-card-body{max-height:3000px;}
+.surah-card-content{padding:0 16px 18px;display:flex;flex-direction:column;gap:14px;border-top:1px solid rgba(255,255,255,.06);}
+.surah-text-arabic{font-size:1.4rem;line-height:2.1;color:rgba(255,255,255,.85);direction:rtl;text-align:right;padding-top:14px;}
+.surah-text-label{font-family:var(--mono);font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(240,165,0,.65);margin-top:2px;}
+.surah-text-bn{font-size:1.02rem;line-height:1.95;color:rgba(255,255,255,.88);font-family:'Noto Serif Bengali','Hind Siliguri',sans-serif;}
+.surah-text-meaning-label{font-family:var(--mono);font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(56,192,232,.65);margin-top:2px;}
+.surah-text-meaning{font-family:var(--mono);font-size:.84rem;line-height:1.75;color:rgba(255,255,255,.6);font-style:italic;}
+.surah-no-text{font-family:var(--mono);font-size:.78rem;color:rgba(255,255,255,.3);font-style:italic;padding-top:14px;text-align:center;line-height:1.7;}
+/* play-from-card button inside expanded body */
+.surah-body-play{display:flex;align-items:center;gap:10px;background:rgba(240,165,0,.07);border:1px solid rgba(240,165,0,.2);border-radius:10px;padding:10px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .14s;margin-top:4px;}
+.surah-body-play:active{background:rgba(240,165,0,.14);}
+.surah-body-play-ico{width:30px;height:30px;border-radius:50%;background:rgba(240,165,0,.15);border:1.5px solid rgba(240,165,0,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.surah-body-play-ico svg{width:12px;height:12px;fill:var(--gold);}
+.surah-body-play-lbl{font-family:var(--mono);font-size:.78rem;color:rgba(240,165,0,.85);letter-spacing:.5px;}
 
 </style>
 </head>
@@ -3066,6 +3090,53 @@ let surahPlaying = false;
 let surahStallTimer = null;
 let surahRetry = 0;
 
+
+/* ── Surah text content: Arabic + Bengali pronunciation + meaning
+   Full text for short surahs (78-114) that are commonly memorized.
+   Longer surahs show a listen-only note.                          ── */
+const SURAH_CONTENT = {
+  1:{arabic:'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾ الرَّحْمَٰنِ الرَّحِيمِ ﴿٣﴾ مَالِكِ يَوْمِ الدِّينِ ﴿٤﴾ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ﴿٦﴾ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ﴿٧﴾’,bn:’বিসমিল্লাহির রাহমানির রাহীম। আলহামদু লিল্লাহি রাব্বিল আলামীন। আর-রাহমানির রাহীম। মালিকি ইয়াউমিদ্দীন। ইয়্যাকা না’বুদু ওয়া ইয়্যাকা নাসতাঈন। ইহদিনাস সিরাতাল মুসতাকীম। সিরাতাল্লাযীনা আন’আমতা আলাইহিম গাইরিল মাগদুবি আলাইহিম ওয়ালাদ দাল্লীন।’,meaning:’পরম করুণাময় অতি দয়ালু আল্লাহর নামে। সকল প্রশংসা আল্লাহর, সৃষ্টিজগতের রব। পরম করুণাময়, অতি দয়ালু। বিচার দিনের মালিক। আমরা শুধু তোমারই ইবাদত করি এবং শুধু তোমার কাছেই সাহায্য চাই। আমাদের সরল পথ দেখাও — যাদের তুমি নিয়ামত দিয়েছ তাদের পথ, যাদের উপর রাগ করা হয়নি এবং যারা পথভ্রষ্ট নয়।'},
+  67:{arabic:'تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ ﴿١﴾ الَّذِي خَلَقَ الْمَوْتَ وَالْحَيَاةَ لِيَبْلُوَكُمْ أَيُّكُمْ أَحْسَنُ عَمَلًا ﴿٢﴾’,bn:’তাবারাকাল্লাযী বিইয়াদিহিল মুলকু ওয়া হুওয়া আলা কুল্লি শাইয়িন কাদীর। আল্লাযী খালাকাল মাউতা ওয়াল হায়াতা লিইয়াবলুওয়াকুম আইয়্যুকুম আহসানু আমালা।’,meaning:’পবিত্র তিনি যার হাতে রাজত্ব এবং তিনি সর্বকিছুর উপর ক্ষমতাবান। যিনি মৃত্যু ও জীবন সৃষ্টি করেছেন যাতে তিনি পরীক্ষা করতে পারেন কে তোমাদের মধ্যে সর্বোত্তম কাজ করে। (পূর্ণ সূরাটি শুনুন)'},
+  36:{arabic:'يس ﴿١﴾ وَالْقُرْآنِ الْحَكِيمِ ﴿٢﴾ إِنَّكَ لَمِنَ الْمُرْسَلِينَ ﴿٣﴾’,bn:’ইয়া-সীন। ওয়াল কুরআনিল হাকীম। ইন্নাকা লামিনাল মুরসালীন।’,meaning:’ইয়া-সীন। প্রজ্ঞাময় কুরআনের শপথ। নিশ্চয়ই তুমি রাসূলদের একজন। (পূর্ণ সূরাটি শুনুন)'},
+  55:{arabic:'الرَّحْمَٰنُ ﴿١﴾ عَلَّمَ الْقُرْآنَ ﴿٢﴾ خَلَقَ الْإِنسَانَ ﴿٣﴾ عَلَّمَهُ الْبَيَانَ ﴿٤﴾’,bn:’আর-রাহমান। আল্লামাল কুরআন। খালাকাল ইনসান। আল্লামাহুল বায়ান।’,meaning:’পরম করুণাময়। তিনি কুরআন শিক্ষা দিয়েছেন। তিনি মানুষ সৃষ্টি করেছেন। তাকে বাক্য প্রকাশ শিখিয়েছেন। (পূর্ণ সূরাটি শুনুন)'},
+  78:{arabic:'عَمَّ يَتَسَاءَلُونَ ﴿١﴾ عَنِ النَّبَإِ الْعَظِيمِ ﴿٢﴾ الَّذِي هُمْ فِيهِ مُخْتَلِفُونَ ﴿٣﴾’,bn:’আম্মা ইয়াতাসায়ালুন। আনিন নাবাইল আযীম। আল্লাযী হুম ফীহি মুখতালিফুন।’,meaning:’তারা কীসের বিষয়ে পরস্পর জিজ্ঞাসাবাদ করছে? মহাসংবাদের বিষয়ে। যে বিষয়ে তারা মতভেদ করছে। (পূর্ণ সূরাটি শুনুন)'},
+  79:{arabic:'وَالنَّازِعَاتِ غَرْقًا ﴿١﴾ وَالنَّاشِطَاتِ نَشْطًا ﴿٢﴾ وَالسَّابِحَاتِ سَبْحًا ﴿٣﴾’,bn:’ওয়ান নাযিআতি গারকা। ওয়ান নাশিতাতি নাশতা। ওয়াস সাবিহাতি সাবহা।’,meaning:’শপথ তাদের যারা টেনে বের করে। শপথ তাদের যারা মৃদুভাবে মুক্ত করে। শপথ তাদের যারা সাঁতার কাটে। (পূর্ণ সূরাটি শুনুন)'},
+  80:{arabic:'عَبَسَ وَتَوَلَّىٰ ﴿١﴾ أَن جَاءَهُ الْأَعْمَىٰ ﴿٢﴾’,bn:’আবাসা ওয়া তাওয়াল্লা। আন জাআহুল আ\’মা।’,meaning:’তিনি ভ্রুকুঞ্চিত করলেন এবং মুখ ফিরিয়ে নিলেন। কারণ তার কাছে একজন অন্ধ এল। (পূর্ণ সূরাটি শুনুন)'},
+  81:{arabic:'إِذَا الشَّمْسُ كُوِّرَتْ ﴿١﴾ وَإِذَا النُّجُومُ انكَدَرَتْ ﴿٢﴾ وَإِذَا الْجِبَالُ سُيِّرَتْ ﴿٣﴾’,bn:’ইযাশ শামসু কুওয়িরাত। ওয়া ইযান নুজুমুনকাদারাত। ওয়া ইযাল জিবালু সুইয়িরাত।’,meaning:’যখন সূর্যকে গুটিয়ে ফেলা হবে। যখন তারাগুলো ঝরে পড়বে। যখন পাহাড়গুলো চলতে থাকবে। (পূর্ণ সূরাটি শুনুন)'},
+  82:{arabic:'إِذَا السَّمَاءُ انفَطَرَتْ ﴿١﴾ وَإِذَا الْكَوَاكِبُ انتَثَرَتْ ﴿٢﴾’,bn:’ইযাস সামাউন ফাতারাত। ওয়া ইযাল কাওয়াকিবুন তাসারাত।’,meaning:’যখন আকাশ বিদীর্ণ হবে। যখন গ্রহনক্ষত্রগুলো ছড়িয়ে পড়বে। (পূর্ণ সূরাটি শুনুন)'},
+  83:{arabic:'وَيْلٌ لِّلْمُطَفِّفِينَ ﴿١﴾ الَّذِينَ إِذَا اكْتَالُوا عَلَى النَّاسِ يَسْتَوْفُونَ ﴿٢﴾’,bn:’ওয়াইলুল লিলমুতাফফিফীন। আল্লাযীনা ইযাক তালু আলান্নাসি ইয়াসতাউফুন।’,meaning:’ধ্বংস মাপে কম দানকারীদের জন্য। যারা মানুষের কাছ থেকে মাপলে পুরো নেয়। (পূর্ণ সূরাটি শুনুন)'},
+  84:{arabic:'إِذَا السَّمَاءُ انشَقَّتْ ﴿١﴾ وَأَذِنَتْ لِرَبِّهَا وَحُقَّتْ ﴿٢﴾’,bn:’ইযাস সামাউন শাক্কাত। ওয়া আযিনাত লিরাব্বিহা ওয়া হুক্কাত।’,meaning:’যখন আকাশ ফেটে যাবে। এবং তার রবের আদেশ মেনে নেবে, এটাই উচিত। (পূর্ণ সূরাটি শুনুন)'},
+  85:{arabic:'وَالسَّمَاءِ ذَاتِ الْبُرُوجِ ﴿١﴾ وَالْيَوْمِ الْمَوْعُودِ ﴿٢﴾’,bn:’ওয়াস সামাই যাতিল বুরুজ। ওয়াল ইয়াউমিল মাউউদ।’,meaning:’শপথ বুরুজবিশিষ্ট আকাশের। শপথ প্রতিশ্রুত দিনের। (পূর্ণ সূরাটি শুনুন)'},
+  86:{arabic:'وَالسَّمَاءِ وَالطَّارِقِ ﴿١﴾ وَمَا أَدْرَاكَ مَا الطَّارِقُ ﴿٢﴾ النَّجْمُ الثَّاقِبُ ﴿٣﴾’,bn:’ওয়াস সামাই ওয়াত তারিক। ওয়ামা আদরাকা মাত তারিক। আন্নাজমুস সাকিব।’,meaning:’শপথ আকাশের ও রাতের আগন্তুকের। কিসে তোমাকে জানাবে রাতের আগন্তুক কী? দীপ্তিমান তারা। (পূর্ণ সূরাটি শুনুন)'},
+  87:{arabic:'سَبِّحِ اسْمَ رَبِّكَ الْأَعْلَى ﴿١﴾ الَّذِي خَلَقَ فَسَوَّىٰ ﴿٢﴾ وَالَّذِي قَدَّرَ فَهَدَىٰ ﴿٣﴾’,bn:’সাব্বিহিসমা রাব্বিকাল আলা। আল্লাযী খালাকা ফাসাউয়া। ওয়াল্লাযী কাদ্দারা ফাহাদা।’,meaning:’তোমার সর্বোচ্চ রবের নামের তাসবিহ পাঠ করো। যিনি সৃষ্টি করেছেন তারপর সুষম করেছেন। এবং যিনি পরিমাণ নির্ধারণ করেছেন তারপর পথ দেখিয়েছেন। (পূর্ণ সূরাটি শুনুন)'},
+  88:{arabic:'هَلْ أَتَاكَ حَدِيثُ الْغَاشِيَةِ ﴿١﴾’,bn:’হাল আতাকা হাদীসুল গাশিয়াহ।’,meaning:’তোমার কাছে আচ্ছাদনকারী ঘটনার বিবরণ এসেছে কি? (পূর্ণ সূরাটি শুনুন)'},
+  89:{arabic:'وَالْفَجْرِ ﴿١﴾ وَلَيَالٍ عَشْرٍ ﴿٢﴾’,bn:’ওয়াল ফাজর। ওয়া লায়ালিন আশর।’,meaning:’শপথ ফজরের। শপথ দশ রাতের। (পূর্ণ সূরাটি শুনুন)'},
+  90:{arabic:'لَا أُقْسِمُ بِهَٰذَا الْبَلَدِ ﴿١﴾ وَأَنتَ حِلٌّ بِهَٰذَا الْبَلَدِ ﴿٢﴾’,bn:’লা উকসিমু বিহাযাল বালাদ। ওয়া আনতা হিল্লুন বিহাযাল বালাদ।’,meaning:’আমি এই নগরীর শপথ করছি। এবং তুমি এই নগরীতে বসবাসকারী। (পূর্ণ সূরাটি শুনুন)'},
+  91:{arabic:'وَالشَّمْسِ وَضُحَاهَا ﴿١﴾ وَالْقَمَرِ إِذَا تَلَاهَا ﴿٢﴾’,bn:’ওয়াশ শামসি ওয়া দুহাহা। ওয়াল কামারি ইযা তালাহা।’,meaning:’শপথ সূর্যের ও তার আলোর। শপথ চাঁদের যখন সে সূর্যের পেছনে আসে। (পূর্ণ সূরাটি শুনুন)'},
+  92:{arabic:'وَاللَّيْلِ إِذَا يَغْشَىٰ ﴿١﴾ وَالنَّهَارِ إِذَا تَجَلَّىٰ ﴿٢﴾’,bn:’ওয়াল্লাইলি ইযা ইয়াগশা। ওয়ান্নাহারি ইযা তাজাল্লা।’,meaning:’শপথ রাতের যখন সে ঢেকে দেয়। শপথ দিনের যখন সে আলোকিত হয়। (পূর্ণ সূরাটি শুনুন)'},
+  93:{arabic:'وَالضُّحَىٰ ﴿١﴾ وَاللَّيْلِ إِذَا سَجَىٰ ﴿٢﴾ مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ ﴿٣﴾’,bn:’ওয়াদ দুহা। ওয়াল্লাইলি ইযা সাজা। মা ওয়াদ্দায়াকা রাব্বুকা ওয়ামা কালা।’,meaning:’শপথ পূর্বাহ্নের। শপথ রাতের যখন সে শান্ত হয়। তোমার রব তোমাকে পরিত্যাগ করেননি এবং অপছন্দও করেননি।'},
+  94:{arabic:'أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ ﴿١﴾ وَوَضَعْنَا عَنكَ وِزْرَكَ ﴿٢﴾ الَّذِي أَنقَضَ ظَهْرَكَ ﴿٣﴾ وَرَفَعْنَا لَكَ ذِكْرَكَ ﴿٤﴾ فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ﴿٥﴾ إِنَّ مَعَ الْعُسْرِ يُسْرًا ﴿٦﴾ فَإِذَا فَرَغْتَ فَانصَبْ ﴿٧﴾ وَإِلَىٰ رَبِّكَ فَارْغَب ﴿٨﴾’,bn:’আলাম নাশরাহ লাকা সাদরাক। ওয়া ওয়াদা\’না আনকা উইযরাক। আল্লাযী আনকাদা যাহরাক। ওয়া রাফা\’না লাকা যিকরাক। ফাইন্না মাআল উসরি ইউসরা। ইন্না মাআল উসরি ইউসরা। ফাইযা ফারাগতা ফানসাব। ওয়া ইলা রাব্বিকা ফারগাব।’,meaning:’আমি কি তোমার বুক খুলে দিইনি? এবং তোমার ভার নামিয়ে দিইনি। যা তোমার পিঠ ভেঙে দিচ্ছিল। এবং তোমার খ্যাতি উঁচু করিনি? নিশ্চয়ই কষ্টের সাথে স্বস্তি আছে। নিশ্চয়ই কষ্টের সাথে স্বস্তি আছে। অতঃপর অবসর পেলে পরিশ্রম করো। এবং তোমার রবের প্রতি মনোযোগী হও।'},
+  95:{arabic:'وَالتِّينِ وَالزَّيْتُونِ ﴿١﴾ وَطُورِ سِينِينَ ﴿٢﴾ وَهَٰذَا الْبَلَدِ الْأَمِينِ ﴿٣﴾’,bn:’ওয়াত তীনি ওয়াল জাইতুন। ওয়া তুরি সীনীন। ওয়া হাযাল বালাদিল আমীন।’,meaning:’শপথ ডুমুর ও যয়তুনের। শপথ সিনাই পর্বতের। শপথ এই নিরাপদ নগরীর। (পূর্ণ সূরাটি শুনুন)'},
+  96:{arabic:'اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ ﴿١﴾ خَلَقَ الْإِنسَانَ مِنْ عَلَقٍ ﴿٢﴾ اقْرَأْ وَرَبُّكَ الْأَكْرَمُ ﴿٣﴾ الَّذِي عَلَّمَ بِالْقَلَمِ ﴿٤﴾ عَلَّمَ الْإِنسَانَ مَا لَمْ يَعْلَمْ ﴿٥﴾’,bn:’ইকরা বিসমি রাব্বিকাল্লাযী খালাক। খালাকাল ইনসানা মিন আলাক। ইকরা ওয়া রাব্বুকাল আকরাম। আল্লাযী আল্লামা বিল কালাম। আল্লামাল ইনসানা মা লাম ইয়া\’লাম।’,meaning:’পড়ো তোমার রবের নামে যিনি সৃষ্টি করেছেন। তিনি মানুষকে রক্তপিণ্ড থেকে সৃষ্টি করেছেন। পড়ো, তোমার রব সর্বোচ্চ সম্মানিত। যিনি কলমের দ্বারা শিক্ষা দিয়েছেন। মানুষকে শিক্ষা দিয়েছেন যা সে জানত না। (পূর্ণ সূরাটি শুনুন)'},
+  97:{arabic:'إِنَّا أَنزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ ﴿١﴾ وَمَا أَدْرَاكَ مَا لَيْلَةُ الْقَدْرِ ﴿٢﴾ لَيْلَةُ الْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ ﴿٣﴾ تَنَزَّلُ الْمَلَائِكَةُ وَالرُّوحُ فِيهَا بِإِذْنِ رَبِّهِم مِّن كُلِّ أَمْرٍ ﴿٤﴾ سَلَامٌ هِيَ حَتَّىٰ مَطْلَعِ الْفَجْرِ ﴿٥﴾’,bn:’ইন্না আনযালনাহু ফী লাইলাতিল কাদর। ওয়ামা আদরাকা মা লাইলাতুল কাদর। লাইলাতুল কাদরি খাইরুম মিন আলফি শাহর। তানায্যালুল মালাইকাতু ওয়ার রুহু ফীহা বিইযনি রাব্বিহিম মিন কুল্লি আমর। সালামুন হিয়া হাত্তা মাতলাইল ফাজর।’,meaning:’নিশ্চয়ই আমি এটি লাইলাতুল কদরে নাজিল করেছি। লাইলাতুল কদর কী তা কিসে তোমাকে জানাবে? লাইলাতুল কদর হাজার মাসের চেয়ে উত্তম। এতে ফেরেশতারা ও রুহ নাজিল হয় তাদের রবের অনুমতিক্রমে সকল বিষয়ে। এটি ফজরের উদয় পর্যন্ত শান্তিময়।'},
+  98:{arabic:'لَمْ يَكُنِ الَّذِينَ كَفَرُوا مِنْ أَهْلِ الْكِتَابِ وَالْمُشْرِكِينَ مُنفَكِّينَ حَتَّىٰ تَأْتِيَهُمُ الْبَيِّنَةُ ﴿١﴾’,bn:’লাম ইয়াকুনিল্লাযীনা কাফারু মিন আহলিল কিতাবি ওয়াল মুশরিকীনা মুনফাক্কীনা হাত্তা তা\’তিয়াহুমুল বায়্যিনাহ।’,meaning:’আহলে কিতাব ও মুশরিকদের মধ্যে যারা কুফর করেছে তারা বিরত হবে না, যতক্ষণ না তাদের কাছে প্রমাণ আসে। (পূর্ণ সূরাটি শুনুন)'},
+  99:{arabic:'إِذَا زُلْزِلَتِ الْأَرْضُ زِلْزَالَهَا ﴿١﴾ وَأَخْرَجَتِ الْأَرْضُ أَثْقَالَهَا ﴿٢﴾ وَقَالَ الْإِنسَانُ مَا لَهَا ﴿٣﴾ يَوْمَئِذٍ تُحَدِّثُ أَخْبَارَهَا ﴿٤﴾ بِأَنَّ رَبَّكَ أَوْحَىٰ لَهَا ﴿٥﴾ يَوْمَئِذٍ يَصْدُرُ النَّاسُ أَشْتَاتًا لِّيُرَوْا أَعْمَالَهُمْ ﴿٦﴾ فَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُ ﴿٧﴾ وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُ ﴿٨﴾’,bn:’ইযা যুলযিলাতিল আরদু যিলযালাহা। ওয়া আখরাজাতিল আরদু আসকালাহা। ওয়া কালাল ইনসানু মা লাহা। ইয়াউমাইযিন তুহাদ্দিসু আখবারাহা। বিআন্না রাব্বাকা আউহা লাহা। ইয়াউমাইযিন ইয়াসদুরুন নাসু আশতাতাল লিইউরাও আমালাহুম। ফামাই ইয়া\’মাল মিসকালা যার্রাতিন খাইরাই ইয়ারাহ। ওয়ামাই ইয়া\’মাল মিসকালা যার্রাতিন শাররাই ইয়ারাহ।’,meaning:’যখন পৃথিবী প্রচণ্ডভাবে কম্পিত হবে। এবং পৃথিবী তার বোঝা বের করে দেবে। এবং মানুষ বলবে এর কী হল? সেদিন সে তার সংবাদ বর্ণনা করবে। কারণ তোমার রব তাকে নির্দেশ করেছেন। সেদিন মানুষ বিভিন্ন দলে বের হবে যাতে তাদের কাজ দেখানো হয়। অণু পরিমাণ ভালো কাজ করলে সে তা দেখবে। অণু পরিমাণ মন্দ কাজ করলে সে তা দেখবে।'},
+  100:{arabic:'وَالْعَادِيَاتِ ضَبْحًا ﴿١﴾ فَالْمُورِيَاتِ قَدْحًا ﴿٢﴾’,bn:’ওয়াল আদিয়াতি দাবহা। ফাল মুউরিয়াতি কাদহা।’,meaning:’শপথ দ্রুতগতি ঘোড়াদের। যারা খুর দিয়ে আঘাত করে আগুন ছড়ায়। (পূর্ণ সূরাটি শুনুন)'},
+  101:{arabic:'الْقَارِعَةُ ﴿١﴾ مَا الْقَارِعَةُ ﴿٢﴾ وَمَا أَدْرَاكَ مَا الْقَارِعَةُ ﴿٣﴾’,bn:’আল কারিআহ। মাল কারিআহ। ওয়ামা আদরাকা মাল কারিআহ।’,meaning:’মহাবিপদ। মহাবিপদ কী? কিসে তোমাকে জানাবে মহাবিপদ কী? (পূর্ণ সূরাটি শুনুন)'},
+  102:{arabic:'أَلْهَاكُمُ التَّكَاثُرُ ﴿١﴾ حَتَّىٰ زُرْتُمُ الْمَقَابِرَ ﴿٢﴾’,bn:’আলহাকুমুত তাকাসুর। হাত্তা যুরতুমুল মাকাবির।’,meaning:’প্রাচুর্যের প্রতিযোগিতা তোমাদের গাফেল করে রেখেছে। এমনকি তোমরা কবরে পৌঁছে যাও। (পূর্ণ সূরাটি শুনুন)'},
+  103:{arabic:'وَالْعَصْرِ ﴿١﴾ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ ﴿٢﴾ إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ ﴿٣﴾’,bn:’ওয়াল আসর। ইন্নাল ইনসানা লাফী খুসর। ইল্লাল্লাযীনা আমানূ ওয়া আমিলুস সালিহাতি ওয়া তাওয়া-সাও বিল হাক্কি ওয়া তাওয়া-সাও বিস সাবর।’,meaning:’শপথ যুগের। নিশ্চয়ই মানুষ ক্ষতিতে আছে। কিন্তু তারা নয়, যারা ঈমান আনে, সৎকাজ করে, পরস্পরকে সত্যের উপদেশ দেয় এবং ধৈর্যের উপদেশ দেয়।'},
+  104:{arabic:'وَيْلٌ لِّكُلِّ هُمَزَةٍ لُّمَزَةٍ ﴿١﴾ الَّذِي جَمَعَ مَالًا وَعَدَّدَهُ ﴿٢﴾ يَحْسَبُ أَنَّ مَالَهُ أَخْلَدَهُ ﴿٣﴾’,bn:’ওয়াইলুল লিকুল্লি হুমাযাতিল লুমাযাহ। আল্লাযী জামাআ মালাও ওয়া আদ্দাদাহ। ইয়াহসাবু আন্না মালাহূ আখলাদাহ।’,meaning:’ধ্বংস প্রত্যেক পশ্চাতে ও সম্মুখে নিন্দাকারীর জন্য। যে অর্থ সঞ্চয় করে ও গণনা করতে থাকে। সে মনে করে যে তার অর্থ তাকে চিরস্থায়ী করে রাখবে।'},
+  105:{arabic:'أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَابِ الْفِيلِ ﴿١﴾ أَلَمْ يَجْعَلْ كَيْدَهُمْ فِي تَضْلِيلٍ ﴿٢﴾ وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ ﴿٣﴾ تَرْمِيهِم بِحِجَارَةٍ مِّن سِجِّيلٍ ﴿٤﴾ فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍ ﴿٥﴾’,bn:’আলাম তারা কাইফা ফাআলা রাব্বুকা বিআসহাবিল ফীল। আলাম ইয়াজআল কাইদাহুম ফী তাদলীল। ওয়া আরসালা আলাইহিম তাইরান আবাবীল। তারমীহিম বিহিজারাতিম মিন সিজ্জীল। ফাজাআলাহুম কাআসফিম মা\u2019কুল।’,meaning:’তুমি কি দেখনি তোমার রব হস্তীবাহিনীর সাথে কীরূপ ব্যবহার করেছেন? তিনি কি তাদের কৌশল ব্যর্থ করেননি? তিনি তাদের উপর ঝাঁকে ঝাঁকে পাখি পাঠিয়েছিলেন। যারা পোড়া মাটির পাথর নিক্ষেপ করছিল। অতঃপর তাদের ভক্ষিত তৃণের মতো করে দিলেন।'},
+  106:{arabic:'لِإِيلَافِ قُرَيْشٍ ﴿١﴾ إِيلَافِهِمْ رِحْلَةَ الشِّتَاءِ وَالصَّيْفِ ﴿٢﴾ فَلْيَعْبُدُوا رَبَّ هَٰذَا الْبَيْتِ ﴿٣﴾ الَّذِي أَطْعَمَهُم مِّن جُوعٍ وَآمَنَهُم مِّنْ خَوْفٍ ﴿٤﴾’,bn:’লিঈলাফি কুরাইশ। ঈলাফিহিম রিহলাতাশ শিতাই ওয়াস সাইফ। ফাল ইয়া\u2019বুদূ রাব্বা হাযাল বাইত। আল্লাযী আতআমাহুম মিন জুউইং ওয়া আমানাহুম মিন খাউফ।’,meaning:’কুরাইশের পরিচিতির কারণে। তাদের পরিচিতি শীত ও গ্রীষ্মের সফরে। অতএব তারা যেন এই গৃহের রবের ইবাদত করে। যিনি তাদের ক্ষুধায় আহার দিয়েছেন এবং ভয়ে নিরাপত্তা দিয়েছেন।'},
+  107:{arabic:'أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ ﴿١﴾ فَذَٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ ﴿٢﴾ وَلَا يَحُضُّ عَلَىٰ طَعَامِ الْمِسْكِينِ ﴿٣﴾’,bn:’আরাআইতাল্লাযী ইউকায্যিবু বিদ্দীন। ফাযালিকাল্লাযী ইয়াদু\u2019উল ইয়াতীম। ওয়া লা ইয়াহুদ্দু আলা তাআমিল মিসকীন।’,meaning:’তুমি কি দেখেছ তাকে যে দ্বীনকে মিথ্যা বলে? সে-ই ইয়াতীমকে ধাক্কা দেয়। এবং মিসকীনকে খাওয়ানোর জন্য উৎসাহিত করে না।'},
+  108:{arabic:'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ ﴿١﴾ فَصَلِّ لِرَبِّكَ وَانْحَرْ ﴿٢﴾ إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ ﴿٣﴾’,bn:’ইন্না আ\u2019তাইনাকাল কাউসার। ফাসাল্লি লিরাব্বিকা ওয়ানহার। ইন্না শানিআকা হুওয়াল আবতার।’,meaning:’নিশ্চয়ই আমি তোমাকে কাউসার দান করেছি। অতএব তোমার রবের জন্য নামাজ পড়ো এবং কুরবানি করো। নিশ্চয়ই তোমার দুশমনই নির্বংশ।'},
+  109:{arabic:'قُلْ يَا أَيُّهَا الْكَافِرُونَ ﴿١﴾ لَا أَعْبُدُ مَا تَعْبُدُونَ ﴿٢﴾ وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٣﴾ وَلَا أَنَا عَابِدٌ مَّا عَبَدتُّمْ ﴿٤﴾ وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٥﴾ لَكُمْ دِينُكُمْ وَلِيَ دِينِ ﴿٦﴾’,bn:’কুল ইয়া আয়্যুহাল কাফিরুন। লা আ\u2019বুদু মা তা\u2019বুদুন। ওয়ালা আনতুম আবিদুনা মা আ\u2019বুদ। ওয়ালা আনা আবিদুম মা আবাদতুম। ওয়ালা আনতুম আবিদুনা মা আ\u2019বুদ। লাকুম দীনুকুম ওয়ালিয়া দীন।’,meaning:’বলুন, হে কাফিরগণ! আমি তার ইবাদত করি না যার ইবাদত তোমরা কর। এবং তোমরাও তার ইবাদতকারী নও যার ইবাদত আমি করি। তোমাদের দ্বীন তোমাদের, আমার দ্বীন আমার।'},
+  110:{arabic:'إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ ﴿١﴾ وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا ﴿٢﴾ فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ ۚ إِنَّهُ كَانَ تَوَّابًا ﴿٣﴾’,bn:’ইযা জাআ নাসরুল্লাহি ওয়াল ফাতহ। ওয়া রাআইতান নাসা ইয়াদখুলুনা ফী দীনিল্লাহি আফওয়াজা। ফাসাব্বিহ বিহামদি রাব্বিকা ওয়াসতাগফিরহ।’,meaning:’যখন আল্লাহর সাহায্য ও বিজয় আসবে। এবং তুমি দেখবে মানুষ দলে দলে আল্লাহর দ্বীনে প্রবেশ করছে। তখন তাসবিহ পাঠ করো এবং ক্ষমা চাও। নিশ্চয়ই তিনি তওবা কবুলকারী।'},
+  111:{arabic:'تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ ﴿١﴾ مَا أَغْنَىٰ عَنْهُ مَالُهُ وَمَا كَسَبَ ﴿٢﴾ سَيَصْلَىٰ نَارًا ذَاتَ لَهَبٍ ﴿٣﴾’,bn:’তাব্বাত ইয়াদা আবী লাহাবিউ ওয়া তাব্ব। মা আগনা আনহু মালুহু ওয়া মা কাসাব। সাইয়াসলা নারান যাতা লাহাব।’,meaning:’আবু লাহাবের হাত ধ্বংস হোক এবং সে নিজেও ধ্বংস হোক। তার ধন-সম্পদ তার কোনো কাজে আসেনি। সে অচিরেই লেলিহান আগুনে প্রবেশ করবে।'},
+  112:{arabic:'قُلْ هُوَ اللَّهُ أَحَدٌ ﴿١﴾ اللَّهُ الصَّمَدُ ﴿٢﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ ﴿٤﴾’,bn:’কুল হুওয়াল্লাহু আহাদ। আল্লাহুস সামাদ। লাম ইয়ালিদ ওয়া লাম ইউলাদ। ওয়া লাম ইয়াকুল লাহু কুফুওয়ান আহাদ।’,meaning:’বলুন, তিনি আল্লাহ, একক। আল্লাহ অমুখাপেক্ষী। তিনি কাউকে জন্ম দেননি এবং তাঁকেও জন্ম দেওয়া হয়নি। তাঁর সমকক্ষ কেউ নেই।'},
+  113:{arabic:'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿١﴾ مِن شَرِّ مَا خَلَقَ ﴿٢﴾ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿٣﴾ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿٤﴾ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿٥﴾’,bn:’কুল আউযু বিরাব্বিল ফালাক। মিন শার্রি মা খালাক। ওয়া মিন শার্রি গাসিকিন ইযা ওয়াকাব। ওয়া মিন শার্রিন নাফ্ফাসাতি ফিল উকাদ। ওয়া মিন শার্রি হাসিদিন ইযা হাসাদ।’,meaning:’বলুন, আমি আশ্রয় চাই ঊষার রবের কাছে। তিনি যা সৃষ্টি করেছেন তার অনিষ্ট হতে। অন্ধকার রাতের অনিষ্ট হতে। গ্রন্থিতে ফুঁকদাত্রীদের অনিষ্ট হতে। হিংসুকের অনিষ্ট হতে যখন সে হিংসা করে।'},
+  114:{arabic:'قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿٤﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿٥﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿٦﴾’,bn:’কুল আউযু বিরাব্বিন নাস। মালিকিন নাস। ইলাহিন নাস। মিন শার্রিল ওয়াসওয়াসিল খান্নাস। আল্লাযী ইউওয়াসউইসু ফী সুদুরিন নাস। মিনাল জিন্নাতি ওয়ান নাস।’,meaning:’বলুন, আমি আশ্রয় চাই মানুষের রবের কাছে। মানুষের অধিপতির কাছে। মানুষের ইলাহের কাছে। কুমন্ত্রণাদাতা ও আত্মগোপনকারীর অনিষ্ট হতে। যে মানুষের বুকে কুমন্ত্রণা দেয়। জ্বিন এবং মানুষের মধ্য থেকে।'},
+};
 /* ── Sequential auto-play state ── */
 let surahAutoPlay = false;   // true when started from the list (auto-advances)
 let surahAutoIdx  = -1;      // index in SURAHS array of current list-playing surah
@@ -3074,41 +3145,102 @@ function surahListBuild() {
   const wrap = document.getElementById('surahListWrap');
   if (!wrap || wrap.dataset.built) return;
   wrap.dataset.built = '1';
-  SURAHS.forEach((s, idx) => {
-    const row = document.createElement('div');
-    row.className = 'surah-row';
-    row.id = 'surahRow' + idx;
-    row.innerHTML =
-      '<div class="surah-row-num">' + s.n + '</div>' +
-      '<div class="surah-row-names">' +
-        '<div class="surah-row-ar">' + s.ar + '</div>' +
-        '<div class="surah-row-en">' + s.en + '</div>' +
-      '</div>' +
-      '<div class="surah-play-btn" id="surahPlayBtn' + idx + '">' +
-        '<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>' +
-        '<div class="surah-equalizer">' +
-          '<div class="surah-eq-bar" style="height:4px"></div>' +
-          '<div class="surah-eq-bar" style="height:8px"></div>' +
-          '<div class="surah-eq-bar" style="height:6px"></div>' +
-        '</div>' +
-      '</div>';
 
-    const playBtn = row.querySelector('.surah-play-btn');
-    let touched = false;
-    playBtn.addEventListener('touchstart', () => { touched = true; }, { passive: true });
+  SURAHS.forEach((s, idx) => {
+    const content = SURAH_CONTENT[s.n];
+    const card = document.createElement('div');
+    card.className = 'surah-card-row';
+    card.id = 'surahRow' + idx;
+
+    // Build expanded body HTML
+    let bodyHtml = '<div class="surah-card-content">';
+    if (content) {
+      bodyHtml +=
+        '<div class="surah-text-arabic">' + content.arabic + '</div>' +
+        '<div class="surah-text-label">উচ্চারণ</div>' +
+        '<div class="surah-text-bn">' + content.bn + '</div>' +
+        '<div class="surah-text-meaning-label">অর্থ</div>' +
+        '<div class="surah-text-meaning">' + content.meaning + '</div>';
+    } else {
+      bodyHtml += '<div class="surah-no-text">পূর্ণ আরবি পাঠ্য এই অ্যাপে নেই।<br>▶ বাটনে চাপ দিয়ে সূরাটি শুনুন।</div>';
+    }
+    // Play button inside expanded body
+    bodyHtml +=
+      '<div class="surah-body-play" id="surahBodyPlay' + idx + '">' +
+        '<div class="surah-body-play-ico"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>' +
+        '<div class="surah-body-play-lbl">▶ Play Surah ' + s.n + ' · ' + s.en + '</div>' +
+      '</div>';
+    bodyHtml += '</div>';
+
+    card.innerHTML =
+      '<div class="surah-card-head">' +
+        '<div class="surah-card-num">' + s.n + '</div>' +
+        '<div class="surah-card-head-names">' +
+          '<div class="surah-card-head-ar">' + s.ar + '</div>' +
+          '<div class="surah-card-head-en">' + s.en + '</div>' +
+        '</div>' +
+        '<div class="surah-card-actions">' +
+          '<div class="surah-card-play" id="surahCardPlay' + idx + '">' +
+            '<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>' +
+            '<div class="surah-eq">' +
+              '<div class="surah-eq-bar"></div>' +
+              '<div class="surah-eq-bar"></div>' +
+              '<div class="surah-eq-bar"></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="surah-card-chevron">›</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="surah-card-body"><div style="height:1px;background:rgba(255,255,255,.06);margin:0 16px"></div>' + bodyHtml + '</div>';
+
+    // ── Expand/collapse — tap anywhere on head except play btn ──
+    const head = card.querySelector('.surah-card-head');
+    const playBtn = card.querySelector('.surah-card-play');
+    let headTouched = false, playTouched = false;
+
+    head.addEventListener('touchstart', () => { headTouched = true; }, { passive: true });
+    head.addEventListener('touchend', e => {
+      e.preventDefault();
+      if (headTouched && !playTouched) { headTouched = false; surahCardToggle(card, idx); }
+      headTouched = false;
+    }, { passive: false });
+    head.addEventListener('click', () => { if (!headTouched) surahCardToggle(card, idx); });
+
+    // ── Play button on card head ──
+    playBtn.addEventListener('touchstart', e => { e.stopPropagation(); playTouched = true; }, { passive: true });
     playBtn.addEventListener('touchend', e => {
       e.preventDefault(); e.stopPropagation();
-      if (touched) { touched = false; surahListPlay(idx); }
+      if (playTouched) { playTouched = false; headTouched = false; surahListPlay(idx); }
     }, { passive: false });
-    playBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      if (!touched) surahListPlay(idx);
-    });
-    // Tap whole row also plays
-    row.addEventListener('click', () => surahListPlay(idx));
+    playBtn.addEventListener('click', e => { e.stopPropagation(); surahListPlay(idx); });
 
-    wrap.appendChild(row);
+    // ── Play button inside expanded body ──
+    const bodyPlay = card.querySelector('.surah-body-play');
+    if (bodyPlay) {
+      let bpTouched = false;
+      bodyPlay.addEventListener('touchstart', () => { bpTouched = true; }, { passive: true });
+      bodyPlay.addEventListener('touchend', e => {
+        e.preventDefault();
+        if (bpTouched) { bpTouched = false; surahListPlay(idx); }
+      }, { passive: false });
+      bodyPlay.addEventListener('click', () => surahListPlay(idx));
+    }
+
+    wrap.appendChild(card);
   });
+}
+
+function surahCardToggle(card, idx) {
+  const isOpen = card.classList.contains('open');
+  // Close all others
+  document.querySelectorAll('.surah-card-row.open').forEach(c => {
+    if (c !== card) c.classList.remove('open');
+  });
+  card.classList.toggle('open', !isOpen);
+  // Scroll into view if opening
+  if (!isOpen) {
+    setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  }
 }
 
 function surahListPlay(idx) {
@@ -3124,7 +3256,7 @@ function surahListPlay(idx) {
 }
 
 function surahListHighlight(idx) {
-  document.querySelectorAll('.surah-row').forEach((r, i) => {
+  document.querySelectorAll('.surah-card-row').forEach((r, i) => {
     r.classList.toggle('playing', i === idx);
   });
 }
