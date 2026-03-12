@@ -508,6 +508,34 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 .ai-key-save{width:100%;padding:13px;border-radius:11px;border:none;background:linear-gradient(135deg,#6c3fff,#a855f7);color:#fff;font-family:var(--mono);font-size:.84rem;font-weight:600;cursor:pointer;letter-spacing:.5px;-webkit-tap-highlight-color:transparent;}
 .ai-key-save:active{opacity:.85;}
 
+/* ── All-114 Surah List in Quran tab ── */
+.surah-list-section{display:flex;flex-direction:column;gap:10px;}
+.surah-list-header{display:flex;align-items:center;justify-content:space-between;padding:0 2px;}
+.surah-list-badge{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;background:rgba(240,165,0,.08);color:var(--gold);border:1px solid rgba(240,165,0,.2);border-radius:20px;padding:4px 14px;}
+.surah-list-hint{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.5px;}
+.surah-list-wrap{display:flex;flex-direction:column;gap:0;}
+.surah-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;transition:background .14s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.surah-row:active,.surah-row.playing{background:rgba(240,165,0,.07);}
+.surah-row.playing{border-left:2px solid var(--gold);padding-left:12px;}
+.surah-row-num{font-family:var(--mono);font-size:.7rem;color:var(--muted);min-width:28px;text-align:center;}
+.surah-row.playing .surah-row-num{color:var(--gold);}
+.surah-row-names{flex:1;display:flex;flex-direction:column;gap:2px;}
+.surah-row-ar{font-size:1.05rem;color:rgba(255,255,255,.85);line-height:1.2;}
+.surah-row-en{font-family:var(--mono);font-size:.7rem;color:rgba(255,255,255,.4);letter-spacing:.5px;}
+.surah-row.playing .surah-row-ar{color:#fff;}
+.surah-row.playing .surah-row-en{color:rgba(240,165,0,.7);}
+.surah-play-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .14s;-webkit-tap-highlight-color:transparent;}
+.surah-row:active .surah-play-btn,.surah-row.playing .surah-play-btn{border-color:rgba(240,165,0,.5);background:rgba(240,165,0,.1);}
+.surah-play-btn svg{width:14px;height:14px;fill:rgba(255,255,255,.5);}
+.surah-row.playing .surah-play-btn svg{fill:var(--gold);}
+.surah-equalizer{display:none;align-items:flex-end;gap:2px;height:14px;}
+.surah-row.playing .surah-equalizer{display:flex;}
+.surah-row.playing .surah-play-btn svg{display:none;}
+.surah-eq-bar{width:3px;background:var(--gold);border-radius:1px;animation:eqAnim 0.8s ease-in-out infinite alternate;}
+.surah-eq-bar:nth-child(2){animation-delay:.15s;}
+.surah-eq-bar:nth-child(3){animation-delay:.3s;}
+@keyframes eqAnim{from{height:3px}to{height:12px}}
+
 </style>
 </head>
 <body>
@@ -823,17 +851,13 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
         <div class="surah-dl-bar-lbl" id="surahDlBarLbl">0 / 114</div>
       </div>
     </div>
-    <div class="hadith-section">
-      <div class="hadith-section-top">
-        <div class="hadith-badge">হাদিস</div>
-        <div class="hadith-nav">
-          <div class="hadith-nav-dots" id="hadithDots"></div>
-          <div class="hadith-date-lbl" id="hadithDate"></div>
-        </div>
+    <!-- All 114 Surahs list -->
+    <div class="surah-list-section">
+      <div class="surah-list-header">
+        <div class="surah-list-badge">📖 All 114 Surahs</div>
+        <div class="surah-list-hint">Tap ▶ to play · auto-advances</div>
       </div>
-      <div class="hadith-viewport" id="hadithViewport">
-        <div class="hadith-track" id="hadithTrack"></div>
-      </div>
+      <div class="surah-list-wrap" id="surahListWrap"></div>
     </div>
   </div>
 
@@ -896,26 +920,37 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
 
 <!-- ═══════ BOTTOM NAV ═══════ -->
 
-<!-- ═══════ DUA / SURAH SCREEN ═══════ -->
+<!-- ═══════ DUA / HADITH SCREEN ═══════ -->
 <div class="scr" id="duaScr">
 
   <div class="dua-header">
-    <div class="dua-title">سُوَر وَأَدْعِيَة</div>
-    <div class="dua-subtitle">SURAHS & DUA · বাংলা উচ্চারণ</div>
+    <div class="dua-title">أَدْعِيَة وَحَدِيث</div>
+    <div class="dua-subtitle">DUA & HADITH · বাংলা</div>
   </div>
 
   <!-- Section tabs -->
   <div class="dua-tabs">
-    <button class="dua-tab active" id="duaTabSurah" onclick="duaTab('surah')">📖 Last 12 Surahs</button>
-    <button class="dua-tab"        id="duaTabDua"   onclick="duaTab('dua')">🤲 Important Dua</button>
+    <button class="dua-tab active" id="duaTabDua"    onclick="duaTab('dua')">🤲 Important Dua</button>
+    <button class="dua-tab"        id="duaTabHadith" onclick="duaTab('hadith')">📜 Hadith</button>
   </div>
 
   <!-- Content -->
-  <div id="duaPanelSurah">
-    <div class="dua-list" id="duaSurahList"></div>
-  </div>
-  <div id="duaPanelDua" style="display:none">
+  <div id="duaPanelDua">
     <div class="dua-list" id="duaDuaList"></div>
+  </div>
+  <div id="duaPanelHadith" style="display:none">
+    <div class="hadith-section">
+      <div class="hadith-section-top">
+        <div class="hadith-badge">হাদিস</div>
+        <div class="hadith-nav">
+          <div class="hadith-nav-dots" id="hadithDots"></div>
+          <div class="hadith-date-lbl" id="hadithDate"></div>
+        </div>
+      </div>
+      <div class="hadith-viewport" id="hadithViewport">
+        <div class="hadith-track" id="hadithTrack"></div>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -3031,6 +3066,82 @@ let surahPlaying = false;
 let surahStallTimer = null;
 let surahRetry = 0;
 
+/* ── Sequential auto-play state ── */
+let surahAutoPlay = false;   // true when started from the list (auto-advances)
+let surahAutoIdx  = -1;      // index in SURAHS array of current list-playing surah
+
+function surahListBuild() {
+  const wrap = document.getElementById('surahListWrap');
+  if (!wrap || wrap.dataset.built) return;
+  wrap.dataset.built = '1';
+  SURAHS.forEach((s, idx) => {
+    const row = document.createElement('div');
+    row.className = 'surah-row';
+    row.id = 'surahRow' + idx;
+    row.innerHTML =
+      '<div class="surah-row-num">' + s.n + '</div>' +
+      '<div class="surah-row-names">' +
+        '<div class="surah-row-ar">' + s.ar + '</div>' +
+        '<div class="surah-row-en">' + s.en + '</div>' +
+      '</div>' +
+      '<div class="surah-play-btn" id="surahPlayBtn' + idx + '">' +
+        '<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>' +
+        '<div class="surah-equalizer">' +
+          '<div class="surah-eq-bar" style="height:4px"></div>' +
+          '<div class="surah-eq-bar" style="height:8px"></div>' +
+          '<div class="surah-eq-bar" style="height:6px"></div>' +
+        '</div>' +
+      '</div>';
+
+    const playBtn = row.querySelector('.surah-play-btn');
+    let touched = false;
+    playBtn.addEventListener('touchstart', () => { touched = true; }, { passive: true });
+    playBtn.addEventListener('touchend', e => {
+      e.preventDefault(); e.stopPropagation();
+      if (touched) { touched = false; surahListPlay(idx); }
+    }, { passive: false });
+    playBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (!touched) surahListPlay(idx);
+    });
+    // Tap whole row also plays
+    row.addEventListener('click', () => surahListPlay(idx));
+
+    wrap.appendChild(row);
+  });
+}
+
+function surahListPlay(idx) {
+  surahAutoPlay = true;
+  surahAutoIdx  = idx;
+  surahListHighlight(idx);
+  surahBegin(SURAHS[idx]);
+  // Switch to Quran sub-tab if not already there
+  slTab('quran');
+  // Scroll player into view
+  const card = document.querySelector('.surah-card');
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function surahListHighlight(idx) {
+  document.querySelectorAll('.surah-row').forEach((r, i) => {
+    r.classList.toggle('playing', i === idx);
+  });
+}
+
+function surahListAdvance() {
+  if (!surahAutoPlay) return;
+  const next = surahAutoIdx + 1;
+  if (next < SURAHS.length) {
+    surahListPlay(next);
+  } else {
+    // Finished all surahs
+    surahAutoPlay = false;
+    surahAutoIdx  = -1;
+    surahListHighlight(-1);
+  }
+}
+
 function surahSearch(q) {
   const dd = document.getElementById('surahDropdown');
   const v = q.trim().toLowerCase();
@@ -3314,6 +3425,8 @@ function surahPlay(url, num, cdnIdx) {
   a.addEventListener('ended', () => {
     surahPlaying=false; surahIcon(false); surahStatus('');
     surahProg(1,1); document.getElementById('surahTime').textContent='—';
+    // Auto-advance to next surah if started from the list
+    setTimeout(surahListAdvance, 800);
   });
   a.addEventListener('timeupdate', () => {
     if (!a.duration) return;
@@ -3351,7 +3464,7 @@ function surahKill() {
   if (surahAudio) { surahAudio.pause(); if (surahAudio._blobURL) URL.revokeObjectURL(surahAudio._blobURL); surahAudio.src = ''; surahAudio = null; }
   surahPlaying = false;
 }
-function surahStop() { surahKill(); }
+function surahStop() { surahKill(); surahAutoPlay=false; surahAutoIdx=-1; surahListHighlight(-1); }
 function surahIcon(playing) {
   const btn = document.getElementById('surahPlayBtn');
   const ico = document.getElementById('surahPlayIco');
@@ -3544,7 +3657,7 @@ function slTab(t) {
     if (panel) panel.style.display = name === t ? 'flex' : 'none';
   });
   if (t === 'salah')  { slRender(); rmdUpdate(); }
-  if (t === 'quran')  { hadithLoad(); }
+  if (t === 'quran')  { surahListBuild(); }
   if (t === 'tasbih') { tsbRender(); }
 }
 
@@ -3727,14 +3840,15 @@ const IMPORTANT_DUA = [
   },
 ];
 
-let duaCurrentTab = 'surah';
+let duaCurrentTab = 'dua';
 
 function duaTab(t) {
   duaCurrentTab = t;
-  document.getElementById('duaPanelSurah').style.display = t === 'surah' ? 'block' : 'none';
-  document.getElementById('duaPanelDua').style.display   = t === 'dua'   ? 'block' : 'none';
-  document.getElementById('duaTabSurah').classList.toggle('active', t === 'surah');
-  document.getElementById('duaTabDua').classList.toggle('active',   t === 'dua');
+  document.getElementById('duaPanelDua').style.display    = t === 'dua'    ? 'block' : 'none';
+  document.getElementById('duaPanelHadith').style.display = t === 'hadith' ? 'block' : 'none';
+  document.getElementById('duaTabDua').classList.toggle('active',    t === 'dua');
+  document.getElementById('duaTabHadith').classList.toggle('active', t === 'hadith');
+  if (t === 'hadith') hadithLoad();
 }
 
 function duaRenderCard(item, container) {
@@ -3776,12 +3890,7 @@ function duaRenderCard(item, container) {
 }
 
 function duaInit() {
-  const surahList = document.getElementById('duaSurahList');
-  const duaList   = document.getElementById('duaDuaList');
-  if (surahList && !surahList.dataset.built) {
-    surahList.dataset.built = '1';
-    LAST_12_SURAHS.forEach(s => duaRenderCard(s, surahList));
-  }
+  const duaList = document.getElementById('duaDuaList');
   if (duaList && !duaList.dataset.built) {
     duaList.dataset.built = '1';
     IMPORTANT_DUA.forEach(d => duaRenderCard(d, duaList));
