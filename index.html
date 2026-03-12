@@ -999,11 +999,11 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
   <!-- Key setup screen -->
   <div id="aiKeySetup" style="display:flex;flex-direction:column;gap:14px;padding:16px 20px 24px;">
     <div class="ai-key-info">
-      <div class="ai-key-title">🔑 Google Gemini API Key</div>
-      <div class="ai-key-desc">This AI uses Google Gemini — <b style="color:#4ade80;">completely free</b>, no credit card needed.</div>
-      <div class="ai-key-desc" style="margin-top:4px;">① Go to <b style="color:rgba(168,85,247,.9);">aistudio.google.com</b><br>② Sign in with Google<br>③ Click <b>Get API key → Create API key</b><br>④ Paste it below</div>
+      <div class="ai-key-title">🔑 Anthropic Claude API Key</div>
+      <div class="ai-key-desc">Paste your Claude API key below. It is saved only on this device.</div>
+      <div class="ai-key-desc" style="margin-top:4px;">Get a key at: <b style="color:rgba(168,85,247,.9);">console.anthropic.com</b></div>
     </div>
-    <input class="ai-key-inp" id="aiKeyInp" type="password" placeholder="AIzaSy…" autocomplete="off" spellcheck="false"/>
+    <input class="ai-key-inp" id="aiKeyInp" type="password" placeholder="sk-ant-…" autocomplete="off" spellcheck="false"/>
     <div class="ai-key-err" id="aiKeyErr"></div>
     <button class="ai-key-save" ontouchend="aiSaveKey()" onclick="aiSaveKey()">Save & Start Chatting →</button>
   </div>
@@ -4031,11 +4031,11 @@ function duaInit() {
 
 
 /* ══════════════════════════════════════════════════════
-   AI CHAT — powered by Google Gemini (free tier)
+   AI CHAT — powered by Claude (Anthropic)
    ══════════════════════════════════════════════════════ */
 let aiOpen = false;
-let aiHistory = [];  // Gemini format: [{role:'user',parts:[{text:'...'}]}, ...]
-const AI_KEY_STORE = 'bell_gemini_key';
+let aiHistory = [];  // [{role:'user',content:'...'}, {role:'assistant',content:'...'}]
+const AI_KEY_STORE = 'bell_claude_key';
 const AI_SYSTEM = 'You are a helpful Islamic assistant built into a prayer app called Bell. Answer questions about Islam, prayer (salah), Quran, duas, tasbih, and general topics. Keep answers concise and warm. Respond in Bengali (Bangla) if the user writes in Bengali, otherwise respond in English. Always be respectful and accurate.';
 
 function aiGetKey() { return localStorage.getItem(AI_KEY_STORE) || ''; }
@@ -4060,8 +4060,8 @@ function aiCheckKeyUI() {
 
 function aiSaveKey() {
   const val = (document.getElementById('aiKeyInp').value || '').trim();
-  if (val.length < 20) {
-    document.getElementById('aiKeyErr').textContent = 'Please enter a valid API key (starts with AIza…)';
+  if (!val.startsWith('sk-ant-')) {
+    document.getElementById('aiKeyErr').textContent = 'Key must start with sk-ant-…';
     return;
   }
   localStorage.setItem(AI_KEY_STORE, val);
@@ -4097,21 +4097,24 @@ async function aiSend() {
 
   aiAddMsg(text, 'user');
 
-  // Add to Gemini history
-  aiHistory.push({ role: 'user', parts: [{ text }] });
+  // Add to conversation history
+  aiHistory.push({ role: 'user', content: text });
 
   const thinkEl = aiAddMsg('চিন্তা করছি…', 'bot thinking');
 
   try {
-    // Gemini 1.5 Flash — completely free tier
-    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=' + key;
-    const resp = await fetch(url, {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01'
+      },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: AI_SYSTEM }] },
-        contents: aiHistory,
-        generationConfig: { maxOutputTokens: 1024, temperature: 0.7 }
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1024,
+        system: AI_SYSTEM,
+        messages: aiHistory
       })
     });
 
@@ -4119,7 +4122,7 @@ async function aiSend() {
 
     if (!resp.ok) {
       const msg = data.error?.message || ('HTTP ' + resp.status);
-      if (resp.status === 400 || resp.status === 401 || resp.status === 403) {
+      if (resp.status === 401 || resp.status === 403) {
         localStorage.removeItem(AI_KEY_STORE);
         aiCheckKeyUI();
         throw new Error('Invalid API key — please re-enter your key.');
@@ -4127,19 +4130,17 @@ async function aiSend() {
       throw new Error(msg);
     }
 
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'দুঃখিত, উত্তর পাওয়া যায়নি।';
+    const reply = data.content?.[0]?.text || 'দুঃখিত, উত্তর পাওয়া যায়নি।';
     thinkEl.textContent = reply;
     thinkEl.className   = 'ai-msg bot';
 
-    // Add assistant reply to history
-    aiHistory.push({ role: 'model', parts: [{ text: reply }] });
-    // Keep last 20 turns
+    aiHistory.push({ role: 'assistant', content: reply });
     if (aiHistory.length > 20) aiHistory = aiHistory.slice(-20);
 
   } catch(e) {
     thinkEl.textContent = '⚠ ' + (e.message || 'Connection error. Check internet and try again.');
     thinkEl.className   = 'ai-msg bot';
-    aiHistory.pop(); // remove the failed user message
+    aiHistory.pop();
   }
 }
 
