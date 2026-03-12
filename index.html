@@ -991,7 +991,7 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
   <div class="ai-panel-head">
     <div class="ai-panel-title">✦ AI Assistant</div>
     <div style="display:flex;gap:6px;align-items:center;">
-      <button class="ai-close" onclick="aiClearKey()" title="Change API key" style="font-size:.9rem;opacity:.5;">🔑</button>
+      <button class="ai-close" onclick="aiClearKey()" title="Change proxy URL" style="font-size:.9rem;opacity:.5;">🔑</button>
       <button class="ai-close" onclick="aiToggle()">✕</button>
     </div>
   </div>
@@ -999,11 +999,16 @@ input:checked~.trk::after{transform:translateX(16px);background:var(--gold)}
   <!-- Key setup screen -->
   <div id="aiKeySetup" style="display:flex;flex-direction:column;gap:14px;padding:16px 20px 24px;">
     <div class="ai-key-info">
-      <div class="ai-key-title">🔑 Anthropic Claude API Key</div>
-      <div class="ai-key-desc">Paste your Claude API key below. It is saved only on this device.</div>
-      <div class="ai-key-desc" style="margin-top:4px;">Get a key at: <b style="color:rgba(168,85,247,.9);">console.anthropic.com</b></div>
+      <div class="ai-key-title">🔗 Proxy Worker URL</div>
+      <div class="ai-key-desc">Paste your Cloudflare Worker URL below. Your API key stays safe on the server — never in this app.</div>
+      <div class="ai-key-desc" style="margin-top:6px;line-height:1.8;">
+        ① <b style="color:#c084fc;">cloudflare.com</b> → Workers &amp; Pages → Create Worker<br>
+        ② Paste the <b>cloudflare-worker.js</b> code → Deploy<br>
+        ③ Settings → Variables → Add <b>ANTHROPIC_KEY</b> = your key<br>
+        ④ Copy the Worker URL and paste below
+      </div>
     </div>
-    <input class="ai-key-inp" id="aiKeyInp" type="password" placeholder="sk-ant-…" autocomplete="off" spellcheck="false"/>
+    <input class="ai-key-inp" id="aiKeyInp" type="url" placeholder="https://bell-ai-proxy.yourname.workers.dev" autocomplete="off" spellcheck="false" style="font-size:.78rem;"/>
     <div class="ai-key-err" id="aiKeyErr"></div>
     <button class="ai-key-save" ontouchend="aiSaveKey()" onclick="aiSaveKey()">Save & Start Chatting →</button>
   </div>
@@ -4035,7 +4040,7 @@ function duaInit() {
    ══════════════════════════════════════════════════════ */
 let aiOpen = false;
 let aiHistory = [];  // [{role:'user',content:'...'}, {role:'assistant',content:'...'}]
-const AI_KEY_STORE = 'bell_claude_key';
+const AI_KEY_STORE = 'bell_proxy_url';
 const AI_SYSTEM = 'You are a helpful Islamic assistant built into a prayer app called Bell. Answer questions about Islam, prayer (salah), Quran, duas, tasbih, and general topics. Keep answers concise and warm. Respond in Bengali (Bangla) if the user writes in Bengali, otherwise respond in English. Always be respectful and accurate.';
 
 function aiGetKey() { return localStorage.getItem(AI_KEY_STORE) || ''; }
@@ -4060,8 +4065,8 @@ function aiCheckKeyUI() {
 
 function aiSaveKey() {
   const val = (document.getElementById('aiKeyInp').value || '').trim();
-  if (!val.startsWith('sk-ant-')) {
-    document.getElementById('aiKeyErr').textContent = 'Key must start with sk-ant-…';
+  if (!val.startsWith('https://')) {
+    document.getElementById('aiKeyErr').textContent = 'URL must start with https://';
     return;
   }
   localStorage.setItem(AI_KEY_STORE, val);
@@ -4103,18 +4108,14 @@ async function aiSend() {
   const thinkEl = aiAddMsg('চিন্তা করছি…', 'bot thinking');
 
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    // POST to Cloudflare Worker proxy — API key lives on the server, not here
+    const resp = await fetch(key, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1024,
         system: AI_SYSTEM,
-        messages: aiHistory
+        messages: aiHistory,
+        max_tokens: 1024
       })
     });
 
@@ -4122,10 +4123,8 @@ async function aiSend() {
 
     if (!resp.ok) {
       const msg = data.error?.message || ('HTTP ' + resp.status);
-      if (resp.status === 401 || resp.status === 403) {
-        localStorage.removeItem(AI_KEY_STORE);
-        aiCheckKeyUI();
-        throw new Error('Invalid API key — please re-enter your key.');
+      if (resp.status === 401 || resp.status === 403 || resp.status === 500) {
+        throw new Error(msg + ' — check your Worker setup.');
       }
       throw new Error(msg);
     }
@@ -4138,8 +4137,13 @@ async function aiSend() {
     if (aiHistory.length > 20) aiHistory = aiHistory.slice(-20);
 
   } catch(e) {
-    thinkEl.textContent = '⚠ ' + (e.message || 'Connection error. Check internet and try again.');
-    thinkEl.className   = 'ai-msg bot';
+    const msg = e.message || '';
+    if (msg.includes('fetch') || msg.includes('network') || msg.toLowerCase().includes('failed')) {
+      thinkEl.textContent = '⚠ Cannot reach proxy. Check the Worker URL or your internet.';
+    } else {
+      thinkEl.textContent = '⚠ ' + (msg || 'Something went wrong. Try again.');
+    }
+    thinkEl.className = 'ai-msg bot';
     aiHistory.pop();
   }
 }
